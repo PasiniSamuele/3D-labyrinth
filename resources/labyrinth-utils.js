@@ -4,12 +4,12 @@
 
 const CENTERED = 1;                 // true if labyrinth centered, false if using custom offsets
 const CLOCKWISE_INDEXES = 0;         // true -> 2,1,0, 3,2,0    false-> 0,1,2, 0,2,3
-const VERTICES2D = 1;                // true returns a 2D array of vertices, false returns a 1D array
+const VERTICES2D = 0;                // true returns a 2D array of vertices, false returns a 1D array
 const MINIMAL_VERTICES = 0;         // true to optimize vertices (bad for meshes), false to make only squares
 
-const ENABLE_NORMALS = 1;
-const ENABLE_UV_WALL = 1;
-const ENABLE_UV_FLOOR = 1;
+const ENABLE_NORMALS = 0;
+const ENABLE_UV_WALL = 0;
+const ENABLE_UV_FLOOR = 0;
 
 const DEBUG_FRONT = 1;
 const DEBUG_RIGHT = 1;
@@ -21,19 +21,19 @@ const DEBUG_TOP = 0;
 /**
  * Function that returns arrays of 3D coordinates of a given 2D labyrinth
  * 
- * @param { matrix } labyrinth a nxm matrix of zeroes and ones (the ones are walls) with n,m > 2
+ * @param { any } labyrinth a nxm matrix of zeroes and ones (the ones are walls) with n,m > 2
  * 
- * @param { float } bottom height of the floor
- * @param { float } top height of the ceiling
+ * @param { number } bottom height of the floor
+ * @param { number } top height of the ceiling
  * 
- * @param { float } offset_x offset on the x axis
- * @param { float } offset_y offset on the y axis
- * @param { float } offset_z offset on the z axis
+ * @param { number } offset_x offset on the x axis
+ * @param { number } offset_y offset on the y axis
+ * @param { number } offset_z offset on the z axis
  * 
- * @param { float } size_multiplier multiplier for all dimensions
+ * @param { number } size_multiplier multiplier for all dimensions
  * 
- * @param { vec3 } wall_colours vec3 containing the colours of the walls
- * @param { vec3 } floor_colours vec3 containing the colours of the floor
+ * @param { any } wall_colours vec3 containing the colours of the walls
+ * @param { any } floor_colours vec3 containing the colours of the floor
  * 
  * @returns a vector of size 3 containing respectively vertices, indices and colours
  */
