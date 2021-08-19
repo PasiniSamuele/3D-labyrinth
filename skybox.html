@@ -136,7 +136,7 @@ for webgl-utils, m3, m4, and webgl-lessons-ui.
 			gl, ["skybox-vertex-shader", "skybox-fragment-shader"]);
 
 		// create buffers and fill with vertex data
-		const cubeBufferInfo = primitives.createCubeBufferInfo(gl, 1);
+		const cubeBufferInfo = primitives.createCubeBufferInfo(gl, 0.5);
 		const quadBufferInfo = primitives.createXYQuadBufferInfo(gl);
 
 		// Create a texture.
@@ -294,6 +294,15 @@ for webgl-utils, m3, m4, and webgl-lessons-ui.
 	}
 
 	main();
+</script>
+
+<script src="resources/labyrinth-utils.js"></script>
+<script>
+
+mat = generate2DLabyrinth(5,5,true,0.05);
+mat
+
+
 </script>
 
 </html>
