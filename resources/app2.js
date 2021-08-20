@@ -21,23 +21,11 @@ var gl;
 }*/
 
 var initResources = function(){
-    loadTextResource('resources/shaders/shader.vs.glsl')
-        .then((vsText) => loadTextResource("resources/shaders/shader.fs.glsl")
-            .then((fsText) => loadJSONResource("resources/assets/labyrinths/lab1.json")
-                .then((maze1) => init(vsText, fsText, maze1)
-                    , (e) => {
-                        alert("Error loading maze1");
-                        console.error(e);
-                    })
-                , (fsErr) => {
-                alert("Fatal error with fragment shader");
-                console.error(fsErr);
-            })
-        , (vsErr) => {
-            alert("Fatal error with vertex shader");
-            console.error(vsErr);
-    })
-    
+	Promise.all([
+		loadTextResource('resources/shaders/shader.vs.glsl'),
+		loadTextResource("resources/shaders/shader.fs.glsl"),
+		loadJSONResource("resources/assets/labyrinths/lab1.json")
+	]).then(values => init(values[0], values[1], values[2]), errors => console.error(errors));
 }
 
 var init = function(vertexShaderText, fragmentShaderText, maze1){
@@ -126,10 +114,10 @@ var init = function(vertexShaderText, fragmentShaderText, maze1){
     console.log(maze1Colours);
 
     var maze1ColourBufferObject = gl.createBuffer();
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, maze1ColourBufferObject);
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Float32Array(maze1Colours), gl.STATIC_DRAW);
+	gl.bindBuffer(gl.ARRAY_BUFFER, maze1ColourBufferObject);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(maze1Colours), gl.STATIC_DRAW);
 	var colorAttribLocation = gl.getAttribLocation(program, 'vertColor'); 
-    gl.enableVertexAttribArray(colorAttribLocation);
+	gl.enableVertexAttribArray(colorAttribLocation);
 	gl.vertexAttribPointer(
 		colorAttribLocation, // Attribute location
 		3, // Number of elements per attribute
