@@ -1,24 +1,17 @@
 /** @type {WebGLRenderingContext} */
 var gl;
 
-/*var initResources = function(){
-    loadTextResource('resources/shaders/shader.vs.glsl', function(vsErr, vsText){
-        if(vsErr){
-            alert("Fatal error with vertex shader");
-            console.error(vsErr);
-        } else {
-            loadTextResource("resources/shaders/shader.fs.glsl", function(fsErr, fsText){
-                if(fsErr){
-                    alert("Fatal error with fragment shader");
-                    console.error(fsErr);
-                } else {
-                    loadJSONResource("")
-                    init(vsText, fsText);
-                }
-            });
-        }
-    });
-}*/
+
+//Utility function to resize the canvas to full screen
+function autoResizeCanvas(canvas) {
+    const expandFullScreen = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    expandFullScreen();
+    // Resize screen when the browser has triggered the resize event
+    window.addEventListener('resize', expandFullScreen);
+  }
 
 var initResources = function(){
     loadTextResource('resources/shaders/shader.vs.glsl')
@@ -53,7 +46,7 @@ var init = function(vertexShaderText, fragmentShaderText, maze1){
 	if (!gl) {
 		alert('Your browser does not support WebGL');
 	}
-
+	autoResizeCanvas(canvas);
 	gl.clearColor(1.0, 1.0, 1.0, 1.0);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
