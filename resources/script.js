@@ -59,9 +59,9 @@ function main() {
 	var mazeVertexBufferObject = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, mazeVertexBufferObject);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mazeVertices), gl.STATIC_DRAW);
-	gl.enableVertexAttribArray(locations['vertPosition']);
-	gl.vertexAttribPointer(
-		locations['vertPosition'], // Attribute location
+    gl.enableVertexAttribArray(locations['labVertPosition']);
+    gl.vertexAttribPointer(
+		locations['labVertPosition'], // Attribute location
 		3, // Number of elements per attribute
 		gl.FLOAT, // Type of elements
 		gl.FALSE,
@@ -72,9 +72,9 @@ function main() {
 	var mazeColourBufferObject = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, mazeColourBufferObject);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mazeColours), gl.STATIC_DRAW);
-	gl.enableVertexAttribArray(locations['vertColor']);
+	gl.enableVertexAttribArray(locations['labVertColor']);
 	gl.vertexAttribPointer(
-		locations['vertColor'], // Attribute location
+		locations['labVertColor'], // Attribute location
 		3, // Number of elements per attribute
 		gl.FLOAT, // Type of elements
 		gl.FALSE,
@@ -112,7 +112,7 @@ function main() {
 		let viewWorldMatrix = utils.multiplyMatrices(viewMatrix, worldMatrix);
 		let projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, viewWorldMatrix);
 
-		gl.uniformMatrix4fv(locations['projMatrix'], gl.FALSE, utils.transposeMatrix(projectionMatrix));
+		gl.uniformMatrix4fv(locations['labProjMatrix'], gl.FALSE, utils.transposeMatrix(projectionMatrix));
 		gl.drawElements(gl.TRIANGLES, mazeIndices.length, gl.UNSIGNED_SHORT, 0);
 
 		// Keyboard, Mouse Functions
@@ -160,12 +160,12 @@ function main() {
 
 
 
-function getLocations() {
-	var map = {};
-	map['vertPosition'] = gl.getAttribLocation(program[0], 'vertPosition');
-	map['vertColor'] = gl.getAttribLocation(program[0], 'vertColor');
-	map['projMatrix'] = gl.getUniformLocation(program[0], 'projMatrix');
-	return map;
+function getLocations(){
+    var map = {};
+    map['labVertPosition'] =   gl.getAttribLocation(program[0], 'labVertPosition');
+    map['labVertColor'] =   gl.getAttribLocation(program[0], 'labVertColor');
+    map['labProjMatrix'] =   gl.getUniformLocation(program[0], 'labProjMatrix');
+    return map;
 
 }
 async function init() {
