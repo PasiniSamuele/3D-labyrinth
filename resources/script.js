@@ -23,7 +23,10 @@ let mouse = {
 	lastMovementX: 0, lastMovementY: 0,
 	lastLastMovementX: 0, lastLastMovementY: 0,
 };
-let wheel = 0;
+let wheel = {
+	deltaX: 0, deltaY: 0,
+	Xenhancement: 10.0, Yenhancement: 10.0,
+};
 
 // Debug constant for Position and Direction of the camera
 const DEBUG_MOVEMENT = false;
@@ -168,9 +171,19 @@ function main() {
 			const direction = keys['87'] ? 1 : -1;
 			cameraAcceleration.z = cameraAcceleration.zMax * direction;
 		}
+		if (wheel.deltaY != 0) {			// Mouse wheel vertical
+			const direction = (wheel.deltaY < 0) ? 1 : -1;
+			cameraAcceleration.z = cameraAcceleration.zMax * direction * wheel.Yenhancement;
+			wheel.deltaY = 0;
+		}
 		if (keys['65'] || keys['68']) {		// Keys A and D
 			const direction = keys['65'] ? 1 : -1;
 			cameraAcceleration.x = cameraAcceleration.xMax * direction;
+		}
+		if (wheel.deltaX != 0) {			// Mouse wheel horizontal
+			const direction = (wheel.deltaX < 0) ? 1 : -1;
+			cameraAcceleration.x = cameraAcceleration.xMax * direction * wheel.Xenhancement;
+			wheel.deltaX = 0;
 		}
 		if (keys['81'] || keys['69']) {		// Keys Q and E
 			const direction = keys['69'] ? 1 : -1;

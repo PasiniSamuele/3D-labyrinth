@@ -317,7 +317,8 @@ var utils = {
 		}
 		// Init mouse wheel movements
 		window.addEventListener('wheel', (e) => {
-			wheel += e.deltaY;
+			wheel.deltaX += e.deltaX;
+			wheel.deltaY += e.deltaY;
 		});
 	},
 
