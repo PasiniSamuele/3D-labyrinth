@@ -6,11 +6,9 @@ in vec3 vertColor;
 
 out vec3 fragColor;
 
-uniform mat4 mWorld;
-uniform mat4 mView;
-uniform mat4 mProj;
+uniform mat4 projMatrix;
 
 void main(){
     fragColor = vertColor;
-    gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
+    gl_Position = projMatrix * vec4(vertPosition, 1.0);
 }

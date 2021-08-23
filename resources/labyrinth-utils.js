@@ -2,7 +2,7 @@
 //  CONSTANTS & DEBUG
 //
 
-const CENTERED = 1;                 // true if labyrinth centered, false if using custom offsets
+const CENTERED = 0;                 // true if labyrinth centered, false if using custom offsets
 const CLOCKWISE_INDEXES = 0;         // true -> 2,1,0, 3,2,0    false-> 0,1,2, 0,2,3
 const VERTICES2D = 0;                // true returns a 2D array of vertices, false returns a 1D array
 const MINIMAL_VERTICES = 0;         // true to optimize vertices (bad for meshes), false to make only squares
@@ -48,10 +48,16 @@ const DEBUG_TOP = 0;
 
     const MIN_X = 0.0;
     let MAX_X = X_SIZE;
+
+    //const MIN_X = -X_SIZE;
+    //let MAX_X = 0.0;
+
     let MIN_Y = bottom;
     let MAX_Y = top;
     const MIN_Z = 0.0;
     let MAX_Z = Z_SIZE;
+    //let MIN_Z = -Z_SIZE;
+   // const MAX_Z = 0.0;
 
     if(CENTERED){
         offset_x = -(MAX_X-MIN_X)/2;
