@@ -3,12 +3,18 @@ var program;
 var gl;
 var shaderDir; 
 var baseDir;
-var maze;
+var assetDir;
+var mazes;
 
-var cubeRx = 0.0;
-  var cubeRy = 0.0;
-  var cubeRz = 0.0;
-  var lastUpdateTime = (new Date).getTime();
+var levelsSize = 1;
+var activeLevel;
+
+//TODO: remove
+var mazeRx = 0.0;
+var mazeRy = 0.0;
+var mazeRz = 0.0;
+
+var lastUpdateTime = (new Date).getTime();
 
 function main() {
   
@@ -21,22 +27,22 @@ function main() {
 	gl.frontFace(gl.CCW);
 	gl.cullFace(gl.BACK);
 
-    var maze13D = compute3DLabyrinth(maze, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, [0.6, 0.7, 0.2], [1.0, 0.0, 0.0]);
+    var maze3D = compute3DLabyrinth(maze, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, [0.6, 0.7, 0.2], [1.0, 0.0, 0.0]);
 
-    var maze1Vertices = maze13D[0];
-	var maze1Indices = maze13D[1];
-    var maze1Colours = maze13D[2];
+    var mazeVertices = maze3D[0];
+	var mazeIndices = maze3D[1];
+    var mazeColours = maze3D[2];
 
-    console.log(maze1Vertices);
+    console.log(mazeVertices);
 
     locations = getLocations();
 
     vao = gl.createVertexArray();
     gl.bindVertexArray(vao);
 
-    var maze1VertexBufferObject = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, maze1VertexBufferObject);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(maze1Vertices), gl.STATIC_DRAW);
+    var mazeVertexBufferObject = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, mazeVertexBufferObject);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mazeVertices), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(locations['vertPosition']);
     gl.vertexAttribPointer(
 		locations['vertPosition'], // Attribute location
@@ -47,9 +53,9 @@ function main() {
 		0 // Offset from the beginning of a single vertex to this attribute
 	);
 
-    var maze1ColourBufferObject = gl.createBuffer();
-	gl.bindBuffer(gl.ARRAY_BUFFER, maze1ColourBufferObject);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(maze1Colours), gl.STATIC_DRAW);
+    var mazeColourBufferObject = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, mazeColourBufferObject);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mazeColours), gl.STATIC_DRAW);
 	gl.enableVertexAttribArray(locations['vertColor']);
 	gl.vertexAttribPointer(
 		locations['vertColor'], // Attribute location
@@ -60,18 +66,18 @@ function main() {
 		0 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
 	);
 
-    var maze1IndexBufferObject = gl.createBuffer();
-	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, maze1IndexBufferObject);
-	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(maze1Indices), gl.STATIC_DRAW);
+    var mazeIndexBufferObject = gl.createBuffer();
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mazeIndexBufferObject);
+	gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(mazeIndices), gl.STATIC_DRAW);
 
     var perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width/gl.canvas.height, 0.1, 100.0);
-    var worldMatrix = utils.MakeWorld(  0.0, 0.0, 0.0, cubeRx, cubeRy, cubeRz, 1.0);
+    var worldMatrix = utils.MakeWorld(  0.0, 0.5, 0.0, mazeRx, mazeRy, mazeRz, 1.0);
     
     drawScene();
     
     function drawScene(){
         //animate();
-        gl.useProgram(program);
+        gl.useProgram(program[0]);
         utils.resizeCanvasToDisplaySize(gl.canvas);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         gl.clearColor(1, 1, 1, 0);
@@ -79,12 +85,12 @@ function main() {
         gl.enable(gl.DEPTH_TEST);
         gl.enable(gl.CULL_FACE);
 
-        var viewMatrix = utils.MakeView(0.0, 0.0, 0.0, 0.0, 90.0);
+        var viewMatrix = utils.MakeView(0.0, 0.0, 0.0, -10.0, 90.0);
         var viewWorldMatrix = utils.multiplyMatrices(viewMatrix, worldMatrix);
         var projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, viewWorldMatrix);
 
         gl.uniformMatrix4fv(locations['projMatrix'], gl.FALSE, utils.transposeMatrix(projectionMatrix));
-        gl.drawElements(gl.TRIANGLES, maze1Indices.length, gl.UNSIGNED_SHORT, 0);
+        gl.drawElements(gl.TRIANGLES, mazeIndices.length, gl.UNSIGNED_SHORT, 0);
     
           window.requestAnimationFrame(drawScene);
     
@@ -98,7 +104,7 @@ function main() {
           cubeRy -= deltaC;
           cubeRz += deltaC;
         }
-        worldMatrix = utils.MakeWorld(  0.0, 0.0, 0.0, cubeRx, cubeRy, cubeRz, 1.0);
+        worldMatrix = utils.MakeWorld(  0.0, 0.0, 0.0, mazeRx, mazeRy, mazeRz, 1.0);
         lastUpdateTime = currentTime;               
       }
 }
@@ -107,9 +113,9 @@ function main() {
 
 function getLocations(){
     var map = {};
-    map['vertPosition'] =   gl.getAttribLocation(program, 'vertPosition');
-    map['vertColor'] =   gl.getAttribLocation(program, 'vertColor');
-    map['projMatrix'] =   gl.getUniformLocation(program, 'projMatrix');
+    map['vertPosition'] =   gl.getAttribLocation(program[0], 'vertPosition');
+    map['vertColor'] =   gl.getAttribLocation(program[0], 'vertColor');
+    map['projMatrix'] =   gl.getUniformLocation(program[0], 'projMatrix');
     return map;
 
 }
@@ -131,22 +137,42 @@ async function init(){
 		alert('Your browser does not support WebGL');
 	}
 
-    await utils.loadFiles([shaderDir + 'shader.vs.glsl', shaderDir + 'shader.fs.glsl'], function (shaderText) {
-      var vertexShader = utils.createShader(gl, gl.VERTEX_SHADER, shaderText[0]);
-      console.log(vertexShader);
-      var fragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, shaderText[1]);
-      program = utils.createProgram(gl, vertexShader, fragmentShader);
-
-    });
-
-    await utils.loadFiles(['resources/assets/labyrinths/lab1.json'], function (lab) {
-       // maze=lab;
-       maze = [[0,1,0],[0,1,0],[0,0,0]];
-  
-      });
-
+    activeLevel=0;
+    program = [];
     
+    await initResources();
     main();
+    
+}
+
+async function initResources(){
+    try{
+        var labToLoad = activeLevel+1;
+        const results = await Promise.all([
+        utils.loadTextResource('resources/shaders/labShader.vs.glsl'),
+		utils.loadTextResource("resources/shaders/labShader.fs.glsl"),
+		utils.loadJSONResource("resources/assets/labyrinths/lab"+labToLoad+".json")
+        ])
+        var labVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[0]);
+        var labFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[1]);
+        program[0] = utils.createProgram(gl, labVertexShader, labFragmentShader);
+        // maze=results[3];
+        maze = [[0,1,0],[0,1,0],[0,0,0]];
+
+    }
+    catch(err){
+        console.error(err);
+    }   
+}
+
+async function endLevel(){
+    if (activeLevel<levelsSize){
+        activeLevel++;
+        await initResources();
+        main();
+    }
+    else
+        alert("You won!");
 }
 
 window.onload = init;

@@ -5,6 +5,49 @@
 
 var utils={
 
+	loadTextResource:function(url) {
+		return new Promise((resolve, reject) => {
+			var request = new XMLHttpRequest();
+			request.open('GET', url + "?a=" + Math.random(), true);
+			request.onload = function () {
+				if (request.status < 200 || request.status > 299) {
+					reject("Error: HTTP Status " + request.status + " on resource: " + url);
+				} else {
+					resolve(request.responseText);
+				}
+			};
+			request.send();
+		});
+	},
+	
+	loadImage:function(url) {
+		return new Promise((resolve, reject) => {
+			var image = new Image();
+			image.onload = function () {
+				resolve(image);
+			}
+			image.src = url;
+		})
+	},
+	
+	loadJSONResource:function(url) {
+		return new Promise((resolve, reject) => {
+			utils.loadTextResource(url)
+				.then(
+					(result) => {
+						try {
+							resolve(JSON.parse(result));
+						} catch (e) {
+							reject(e);
+						}
+					}
+					, (error) => {
+						reject(error);
+					}
+				)
+		})
+	},
+
 createAndCompileShaders:function(gl, shaderText) {
   
   var vertexShader = utils.createShader(gl, gl.VERTEX_SHADER, shaderText[0]);
