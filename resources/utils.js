@@ -97,8 +97,8 @@ var utils = {
 
 	resizeCanvasToDisplaySize: function (canvas) {
 		const expandFullScreen = () => {
-			canvas.width = window.innerWidth * 0.93;
-			canvas.height = window.innerHeight * 0.93;
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
 			//console.log(canvas.width+" "+window.innerWidth);
 
 		};
@@ -282,12 +282,13 @@ var utils = {
 		// global variables: keys, mouse
 		// Init keyboard keydown
 		window.addEventListener('keydown', (e) => {
-			keys[e.keyCode] = true;
+			keys[e.code] = true;
+			console.log(e);
 			e.preventDefault();
 		});
 		// Init keyboard keyup
 		window.addEventListener('keyup', (e) => {
-			keys[e.keyCode] = false;
+			keys[e.code] = false;
 			e.preventDefault();
 		});
 		// Init pointer lock
