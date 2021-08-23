@@ -19,20 +19,45 @@ var mazeRz = 0.0;
 // Interaction
 let keys = {};
 let mouse = {
-	movementX: 0,
-	movementY: 0,
+	movementX: 0, movementY: 0,
+	lastMovementX: 0, lastMovementY: 0,
+	lastLastMovementX: 0, lastLastMovementY: 0,
 };
 let wheel = 0;
 
+// Debug constant for Position and Direction of the camera
+const DEBUG_MOVEMENT = false;
+
 // Position and Direction of the camera
-let cameraX = 0, cameraY = 0, cameraZ = 0;
-let elev = 0, ang = 0, roll = 0;
-let speed = 1, turnSpeed = 90;
+let cameraPosition = {
+	x: 0.5,
+	y: 1.0,
+	z: 0.5,
+	angle: 180.0, angleMouseCoefficient: 0.5,
+	elevation: 180.0 * DEBUG_MOVEMENT, elevationMouseCoefficient: 0.0,
+	roll: 0.0, rollMouseCoefficient: 0.0,
+};
+let cameraSpeed = {
+	x: 0.0, xMax: 2.0, xMin: 0.1,
+	y: 0.0, yMax: 2.0, yMin: 0.1,
+	z: 0.0, zMax: 2.0, zMin: 0.1,
+	angle: 0.0, angleMax: 180.0, angleMin: 0.1,
+	elevation: 0.0, elevationMax: 180.0, elevationMin: 0.1,
+	roll: 0.0, rollMax: 180.0, rollMin: 0.1,
+};
+let cameraAcceleration = {
+	x: 0.0, xMax: 2.5, xDeceleration: 20.0,
+	y: 0.0, yMax: 2.5 * DEBUG_MOVEMENT, yDeceleration: 20.0,
+	z: 0.0, zMax: 2.5, zDeceleration: 10.0,
+	angle: 0.0, angleMax: 720.0, angleDeceleration: 10.0,
+	elevation: 0.0, elevationMax: 0.0, elevationDeceleration: 10.0,
+	roll: 0.0, rollMax: 0.0, rollDeceleration: 10.0,
+};
 
 function main() {
 
-	// Initialize key listener
-	utils.initInteraction();
+	// Initialize interaction listeners
+	utils.initInteraction(gl.canvas);
 
 	utils.resizeCanvasToDisplaySize(gl.canvas);
 	gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -43,7 +68,7 @@ function main() {
 	gl.frontFace(gl.CCW);
 	gl.cullFace(gl.BACK);
 
-	var maze3D = compute3DLabyrinth(maze, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, [0.6, 0.7, 0.2], [1.0, 0.0, 0.0]);
+	var maze3D = compute3DLabyrinth(maze, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, [0.6, 1.0, 0.2], [0.0, 0.7, 1.0]);
 
 	var mazeVertices = maze3D[0];
 	var mazeIndices = maze3D[1];
@@ -55,12 +80,12 @@ function main() {
 
 	vao = gl.createVertexArray();
 	gl.bindVertexArray(vao);
-
+	
 	var mazeVertexBufferObject = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, mazeVertexBufferObject);
 	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(mazeVertices), gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(locations['labVertPosition']);
-    gl.vertexAttribPointer(
+	gl.enableVertexAttribArray(locations['labVertPosition']);
+	gl.vertexAttribPointer(
 		locations['labVertPosition'], // Attribute location
 		3, // Number of elements per attribute
 		gl.FLOAT, // Type of elements
@@ -108,44 +133,63 @@ function main() {
 		gl.enable(gl.CULL_FACE);
 
 		// View, World, Projection Matrix
-		let viewMatrix = utils.MakeView(0.2 + cameraX, 1.0 + cameraY, 0.2 + cameraZ, 0.0 + elev, 90.0 + ang);
+		let viewMatrix = utils.MakeView(cameraPosition.x, cameraPosition.y, cameraPosition.z, cameraPosition.elevation, cameraPosition.angle);
 		let viewWorldMatrix = utils.multiplyMatrices(viewMatrix, worldMatrix);
 		let projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, viewWorldMatrix);
-
 		gl.uniformMatrix4fv(locations['labProjMatrix'], gl.FALSE, utils.transposeMatrix(projectionMatrix));
 		gl.drawElements(gl.TRIANGLES, mazeIndices.length, gl.UNSIGNED_SHORT, 0);
 
+		// Movement speed
+		cameraSpeed.x = acc.computeSpeed(cameraSpeed.x, cameraAcceleration.x, cameraAcceleration.xDeceleration, cameraSpeed.xMax, cameraSpeed.xMin, deltaTime);
+		cameraSpeed.y = acc.computeSpeed(cameraSpeed.y, cameraAcceleration.y, cameraAcceleration.yDeceleration, cameraSpeed.yMax, cameraSpeed.yMin, deltaTime);
+		cameraSpeed.z = acc.computeSpeed(cameraSpeed.z, cameraAcceleration.z, cameraAcceleration.zDeceleration, cameraSpeed.zMax, cameraSpeed.zMin, deltaTime);
+		cameraSpeed.angle = acc.computeSpeed(cameraSpeed.angle, cameraAcceleration.angle, cameraAcceleration.angleDeceleration, cameraSpeed.angleMax, cameraSpeed.angleMin, deltaTime);
+		cameraSpeed.elevation = acc.computeSpeed(cameraSpeed.elevation, cameraAcceleration.elevation, cameraAcceleration.elevationDeceleration, cameraSpeed.elevationMax, cameraSpeed.elevationMin, deltaTime);
+		cameraSpeed.roll = acc.computeSpeed(cameraSpeed.roll, cameraAcceleration.roll, cameraAcceleration.rollDeceleration, cameraSpeed.rollMax, cameraSpeed.rollMin, deltaTime);
+
+		// Movement position
+		cameraPosition.x -= (viewMatrix[0] * cameraSpeed.x + viewMatrix[4] * cameraSpeed.y + viewMatrix[8] * cameraSpeed.z) * deltaTime;
+		cameraPosition.y -= (viewMatrix[1] * cameraSpeed.x + viewMatrix[5] * cameraSpeed.y + viewMatrix[9] * cameraSpeed.z) * deltaTime;
+		cameraPosition.z -= (viewMatrix[2] * cameraSpeed.x + viewMatrix[6] * cameraSpeed.y + viewMatrix[10] * cameraSpeed.z) * deltaTime;
+		cameraPosition.angle += cameraSpeed.angle * deltaTime;
+		cameraPosition.elevation += cameraSpeed.elevation * deltaTime;
+		cameraPosition.roll += cameraSpeed.roll * deltaTime;
+
+		// Movement acceleration reset
+		cameraAcceleration.x = 0.0;
+		cameraAcceleration.y = 0.0;
+		cameraAcceleration.z = 0.0;
+		cameraAcceleration.angle = 0.0;
+		cameraAcceleration.elevation = 0.0;
+		cameraAcceleration.roll = 0.0;
+
 		// Keyboard, Mouse Functions
-		if (keys['87'] || keys['83']) {	// w s
+		if (keys['87'] || keys['83']) {		// Keys W and S
 			const direction = keys['87'] ? 1 : -1;
-			cameraX -= viewMatrix[8] * deltaTime * speed * direction;
-			cameraY -= viewMatrix[9] * deltaTime * speed * direction;
-			cameraZ -= viewMatrix[10] * deltaTime * speed * direction;
+			cameraAcceleration.z = cameraAcceleration.zMax * direction;
 		}
-		if (keys['65'] || keys['68']) { // a d
+		if (keys['65'] || keys['68']) {		// Keys A and D
 			const direction = keys['65'] ? 1 : -1;
-			cameraX -= viewMatrix[0] * deltaTime * speed * direction;
-			cameraY -= viewMatrix[1] * deltaTime * speed * direction;
-			cameraZ -= viewMatrix[2] * deltaTime * speed * direction;
+			cameraAcceleration.x = cameraAcceleration.xMax * direction;
 		}
-		if (keys['81'] || keys['69']) { // q e
+		if (keys['81'] || keys['69']) {		// Keys Q and E
 			const direction = keys['69'] ? 1 : -1;
-			cameraY -= deltaTime * speed * direction;
+			cameraAcceleration.y = cameraAcceleration.yMax * direction;
 		}
-		if (keys['37'] || keys['39']) { // LEFT RIGHT
+		if (keys['37'] || keys['39']) {		// Keys LEFT and RIGHT
 			const direction = keys['39'] ? 1 : -1;
-			ang += deltaTime * turnSpeed * direction;
+			cameraAcceleration.angle = cameraAcceleration.angleMax * direction;
 		}
-		if (keys['38'] || keys['40']) {	// UP DOWN
+		if (keys['38'] || keys['40']) {		// Keys UP and DOWN
 			const direction = keys['38'] ? 1 : -1;
-			elev += deltaTime * turnSpeed * direction;
+			cameraAcceleration.elevation = cameraAcceleration.elevationMax * direction;
 		}
-		if (mouse.movementX != 0) {
-			ang += mouse.movementX;  // mouse.movementX
+		if (mouse.movementX != 0) {			// Horizontal mouse movements
+			cameraPosition.angle += ((mouse.lastLastMovementX + mouse.lastMovementX + mouse.movementX) / 3.0) * cameraPosition.angleMouseCoefficient;
 			mouse.movementX = 0;
 		}
-		if (mouse.movementY != 0) {
-			elev += mouse.movementY;  // mouse.movementY
+		if (mouse.movementY != 0) {			// Vertical mouse movements
+			cameraPosition.elevation -= ((mouse.lastLastMovementY + mouse.lastMovementY + mouse.movementY) / 3.0) * cameraPosition.elevationMouseCoefficient;
 			mouse.movementY = 0;
 		}
 
@@ -160,12 +204,12 @@ function main() {
 
 
 
-function getLocations(){
-    var map = {};
-    map['labVertPosition'] =   gl.getAttribLocation(program[0], 'labVertPosition');
-    map['labVertColor'] =   gl.getAttribLocation(program[0], 'labVertColor');
-    map['labProjMatrix'] =   gl.getUniformLocation(program[0], 'labProjMatrix');
-    return map;
+function getLocations() {
+	var map = {};
+	map['labVertPosition'] = gl.getAttribLocation(program[0], 'labVertPosition');
+	map['labVertColor'] = gl.getAttribLocation(program[0], 'labVertColor');
+	map['labProjMatrix'] = gl.getUniformLocation(program[0], 'labProjMatrix');
+	return map;
 
 }
 async function init() {
