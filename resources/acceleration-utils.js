@@ -17,9 +17,20 @@ var acc = {
 	 * 
 	 * @param { number } deltaTime time elapsed since the last time the algorithm was run
 	 * 
+	 * @param { number } maxSpeed maximum speed the object can assume
+	 * @param { number } minSpeed minimum speed the object can assume
+	 * @param { number } minSpeed minimum speed the object can assume
+	 * 
 	 * @returns returns the new speed calculated according to the input parameters
 	 */
-	computeSpeed: function (speed, acceleration, deceleration, maxSpeed, minSpeed, deltaTime) {
+	computeSpeed: function (speed, acceleration, deceleration, maxSpeed, minSpeed, deltaTime, currentPosition = false, minPosition = false, maxPosition = false) {
+		// If max or min position [optional]
+		if (currentPosition !== false && maxPosition !== false && minPosition !== false)
+			if (currentPosition > maxPosition && acceleration > 0) {
+				acceleration = 0.0;
+			} else if (currentPosition < minPosition && acceleration < 0) {
+				acceleration = 0.0;
+			}
 		// Acceleration
 		speed += acceleration * deltaTime;
 		// Max speed
