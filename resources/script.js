@@ -11,6 +11,11 @@ var mazes;
 var levelsSize = 1;
 var activeLevel;
 
+
+//skyboxes
+var skyboxDayTexture, skyboxNightTexture;
+var skyboxVao;
+
 //TODO: remove
 var mazeRx = 0.0;
 var mazeRy = 0.0;
@@ -74,6 +79,9 @@ function main() {
 
 	locations = getLocations();
 
+	LoadEnvironment();
+
+
 	vao = gl.createVertexArray();
 	gl.bindVertexArray(vao);
 	
@@ -129,6 +137,7 @@ function main() {
 		gl.enable(gl.CULL_FACE);
 		gl.frontFace(gl.CCW);
 		gl.cullFace(gl.BACK);
+		gl.bindVertexArray(vao);
 
 		// View, World, Projection Matrix
 		let viewMatrix = utils.MakeView(cameraPosition.x, cameraPosition.y, cameraPosition.z, cameraPosition.elevation, cameraPosition.angle);
@@ -201,7 +210,29 @@ function main() {
 			cameraPosition.elevation -= ((mouse.lastLastMovementY + mouse.lastMovementY + mouse.movementY) / 3.0) * cameraPosition.elevationMouseCoefficient;
 			mouse.movementY = 0;
 		}
+		
+	function DrawSkybox(){
+		gl.useProgram(program[1]);
+		
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_CUBE_MAP, skyboxDayTexture);
+		gl.uniform1i(locations['env_u_day_texture'], 0);
 
+		gl.activeTexture(gl.TEXTURE0+1);
+		gl.bindTexture(gl.TEXTURE_CUBE_MAP, skyboxNightTexture);
+		gl.uniform1i(locations['env_u_night_texture'], 1);
+		
+		var viewProjMat = utils.multiplyMatrices(perspectiveMatrix, viewMatrix);
+		inverseViewProjMatrix = utils.invertMatrix(viewProjMat);
+		gl.uniformMatrix4fv(locations['env_inverseViewProjMatrix'], gl.FALSE, utils.transposeMatrix(inverseViewProjMatrix));
+
+		gl.uniform1f(locations['radians_over_time'], now);
+		
+		gl.bindVertexArray(skyboxVao);
+		gl.depthFunc(gl.LEQUAL);
+		gl.drawArrays(gl.TRIANGLES, 0, 1*6);
+	}
+		DrawSkybox();
 		// Redraw when requested
 		window.requestAnimationFrame(drawScene);
 	}
@@ -211,6 +242,149 @@ function main() {
 
 }
 
+function LoadEnvironment(){
+	var labToLoad = activeLevel + 1;
+    skyboxVertPos = new Float32Array(
+    [
+      -1, -1, 1.0,
+       1, -1, 1.0,
+      -1,  1, 1.0,
+      -1,  1, 1.0,
+       1, -1, 1.0,
+       1,  1, 1.0,
+    ]);
+    
+    skyboxVao = gl.createVertexArray();
+    gl.bindVertexArray(skyboxVao);
+    
+    var positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, skyboxVertPos, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(locations['env_in_position']);
+    gl.vertexAttribPointer(locations['env_in_position'], 3, gl.FLOAT, false, 0, 0);
+    
+    skyboxDayTexture = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, skyboxDayTexture);
+
+	skyboxNightTexture = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0+1);
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, skyboxNightTexture);
+    
+    var envTexDir = baseDir+"resources/assets/env/"+labToLoad+"/";
+ 
+    const faceInfos = [
+        {
+            target: gl.TEXTURE_CUBE_MAP_POSITIVE_X, 
+            url: envTexDir+'miramar_right.jpg',
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 
+            url: envTexDir+'miramar_left.jpg',
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 
+            url: envTexDir+'miramar_top.jpg',
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 
+            url: envTexDir+'miramar_bottom.jpg',
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 
+            url: envTexDir+'miramar_back.jpg',
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 
+            url: envTexDir+'miramar_front.jpg',
+        },
+    ];
+    faceInfos.forEach((faceInfo) => {
+        const {target, url} = faceInfo;
+        
+        // Upload the canvas to the cubemap face.
+        const level = 0;
+        const internalFormat = gl.RGBA;
+        const width = 1024;
+        const height = 1024;
+        const format = gl.RGBA;
+        const type = gl.UNSIGNED_BYTE;
+        
+        // setup each face so it's immediately renderable
+        gl.texImage2D(target, level, internalFormat, width, height, 0, format, type, null);
+        
+        // Asynchronously load an image
+        const image = new Image();
+        image.src = url;
+        image.addEventListener('load', function() {
+            // Now that the image has loaded upload it to the texture.
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, skyboxDayTexture);
+            gl.texImage2D(target, level, internalFormat, format, type, image);
+            gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+        });
+    
+        
+    });
+
+	const faceInfos2 = [
+		{
+            target: gl.TEXTURE_CUBE_MAP_POSITIVE_X, 
+            url: envTexDir+'grimmnight_right.jpg',
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 
+            url: envTexDir+'grimmnight_left.jpg',
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 
+            url: envTexDir+'grimmnight_top.jpg',
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 
+            url: envTexDir+'grimmnight_bottom.jpg',
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 
+            url: envTexDir+'grimmnight_back.jpg',
+        },
+        {
+            target: gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 
+            url: envTexDir+'grimmnight_front.jpg',
+        },
+    ];
+    faceInfos2.forEach((faceInfo) => {
+        const {target, url} = faceInfo;
+        
+        // Upload the canvas to the cubemap face.
+        const level = 0;
+        const internalFormat = gl.RGBA;
+        const width = 1024;
+        const height = 1024;
+        const format = gl.RGBA;
+        const type = gl.UNSIGNED_BYTE;
+        
+        // setup each face so it's immediately renderable
+        gl.texImage2D(target, level, internalFormat, width, height, 0, format, type, null);
+        
+        // Asynchronously load an image
+        const image = new Image();
+        image.src = url;
+        image.addEventListener('load', function() {
+            // Now that the image has loaded upload it to the texture.
+            gl.activeTexture(gl.TEXTURE0+1);
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, skyboxNightTexture);
+            gl.texImage2D(target, level, internalFormat, format, type, image);
+            gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+        });
+    
+        
+    });
+    gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    
+}
+
 
 
 function getLocations() {
@@ -218,6 +392,11 @@ function getLocations() {
 	map['labVertPosition'] = gl.getAttribLocation(program[0], 'labVertPosition');
 	map['labVertColor'] = gl.getAttribLocation(program[0], 'labVertColor');
 	map['labProjMatrix'] = gl.getUniformLocation(program[0], 'labProjMatrix');
+	map['env_u_day_texture'] = gl.getUniformLocation(program[1], "env_u_day_texture"); 
+	map['env_u_night_texture'] = gl.getUniformLocation(program[1], "env_u_night_texture"); 
+    map['env_inverseViewProjMatrix'] = gl.getUniformLocation(program[1], "env_inverseViewProjMatrix"); 
+    map['env_in_position'] = gl.getAttribLocation(program[1], "env_in_position");
+	map['radians_over_time'] = gl.getUniformLocation(program[1], "radians_over_time");
 	return map;
 
 }
@@ -251,14 +430,19 @@ async function initResources() {
 	try {
 		var labToLoad = activeLevel + 1;
 		const results = await Promise.all([
-			utils.loadTextResource('resources/shaders/labShader.vs.glsl'),
-			utils.loadTextResource("resources/shaders/labShader.fs.glsl"),
+			utils.loadTextResource("resources/shaders/" + labToLoad + "/labShader.vs.glsl"),
+			utils.loadTextResource("resources/shaders/" + labToLoad + "/labShader.fs.glsl"),
+			utils.loadTextResource("resources/shaders/" + labToLoad + "/envmap.vs.glsl"),
+			utils.loadTextResource("resources/shaders/" + labToLoad + "/envmap.fs.glsl"),
 			utils.loadJSONResource("resources/assets/labyrinths/lab" + labToLoad + ".json")
 		])
 		var labVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[0]);
 		var labFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[1]);
+		var envVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[2]);
+		var envFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[3]);
 		program[0] = utils.createProgram(gl, labVertexShader, labFragmentShader);
-		maze = results[2];
+		program[1] = utils.createProgram(gl, envVertexShader, envFragmentShader);
+		maze = results[4];
 		//maze = [[0, 1, 0], [0, 1, 0], [0, 0, 0]];
 
 	}
