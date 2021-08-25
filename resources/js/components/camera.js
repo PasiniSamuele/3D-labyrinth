@@ -74,16 +74,17 @@ function Camera(settings) {
 	this.lastRotationY = [];
 	function setRotationY(value) {
 		// Limit control
-		if ((position.elevation < settings.position.elevation.max || mouse.movementY > 0) && (position.elevation > settings.position.elevation.max || mouse.movementY < 0))
-		// Smoothness
-		if (lastRotationY > settings.position.elevation.mouseSmoothness)
-			lastRotationY.shift();
-		lastRotationY.push(value);
-		lastRotationSum = 0.0;
-		for (let i = 0; i < lastRotationY.length; i++)
-			lastRotationSum += lastRotationY[i];
-		// New value
-		position.elevation += ((lastRotationSum + value) / lastRotationY.length) * settings.elevation.angle.mouseReactivity;
+		if ((position.elevation < settings.position.elevation.max || value > 0) && (position.elevation > settings.position.elevation.max || value < 0)) {
+			// Smoothness
+			if (lastRotationY > settings.position.elevation.mouseSmoothness)
+				lastRotationY.shift();
+			lastRotationY.push(value);
+			lastRotationSum = 0.0;
+			for (let i = 0; i < lastRotationY.length; i++)
+				lastRotationSum += lastRotationY[i];
+			// New value
+			position.elevation += ((lastRotationSum + value) / lastRotationY.length) * settings.elevation.angle.mouseReactivity;
+		}
 	}
 
 	/**
