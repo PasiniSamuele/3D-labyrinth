@@ -17,9 +17,9 @@ var acc = {
 	 * 
 	 * @param { number } deltaTime time elapsed since the last time the algorithm was run
 	 * 
-	 * @param { number } maxSpeed maximum speed the object can assume
-	 * @param { number } minSpeed minimum speed the object can assume
-	 * @param { number } minSpeed minimum speed the object can assume
+	 * @param { number } currentPosition [optional] current position of the object
+	 * @param { number } minPosition [optional] minimum position the object can assume
+	 * @param { number } maxPosition [optional] maximum position the object can assume
 	 * 
 	 * @returns returns the new speed calculated according to the input parameters
 	 */
