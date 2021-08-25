@@ -1,18 +1,16 @@
-function LoadingHandler(settingsUrl){
+function LoadingHandler(){
 
     this.levels=[];
     this.actualLevel=0;
     this.RANDOM_GENERATION=false;
-
-    this.init(settingsUrl);
 
     this.init=async function(settingsUrl){
 
         let settings = await utils.loadJSONResource(settingsUrl);
         this.RANDOM_GENERATION = settings.RANDOM_GENERATION;
         this.levels=settings.levels;
-        this.initResources(this.levels[this.actualLevel],);
-    }
+        this.initResources(this.levels[this.actualLevel]);
+    };
 
     this.initResources=async function(level){
         let levelSettings = await utils.loadJSONResource(level.level);
@@ -32,21 +30,30 @@ function LoadingHandler(settingsUrl){
 
         let camera = new Camera(levelSettings.camera);
         let textures=[];
-        levelSettings.skybox.skyboxes.forEach(element => {
-            textures.push()
-            
+        levelSettings.skybox.skyboxes.forEach((faceInfos, index) => {
+            textures.push(new SkyboxTexture(faceInfos, gl.TEXTURE0+index)); 
         });
+        let skybox = new Skybox(textures, program[1]);
         let labyrinth;
         if(RANDOM_GENERATION){
             let randomSettings = await utils.loadJSONResource(level.random);
-            let maze2D = generate2DLabyrinth(randomSettings[0], randomSettings[1], randomSettings[2], randomSettings[3]);
+            let maze2D = generate2DLabyrinth(randomSettings.rows, randomSettings.columns, randomSettings.JOIN_SIDES, randomSettings.join_parameters);
             labyrinth = new Labyrinth(maze2D, program[0]);
         }
 
         labyrinth = new Labyrinth(result[0], program[0]);
-            
+        let activeLevel = new Level(labyrinth, skybox, camera)
+        return activeLevel;
+    };
 
-        
-    }
+    this.loadNextLevel=async function(){
+        this.actualLevel++;
+        if(this.actualLevel>=this.levels.length)
+            return null;
+        else
+            return initResources(this.levels[actualLevel])
+    };
+
+    this.init(settingsUrl);
 
 }

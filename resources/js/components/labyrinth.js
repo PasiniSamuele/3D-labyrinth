@@ -1,4 +1,4 @@
-function Labyrinth(structure, program, locations){
+function Labyrinth(structure, program){
     
     //ATTRIBUTES
     this.program=program;
@@ -13,8 +13,8 @@ function Labyrinth(structure, program, locations){
     this.colours=[];
 
     //METHODS
-    this.init = function(locations){
-        this.loadLocations(locations);
+    this.init = function(){
+        this.loadLocations();
         this.loadLabyrinth();
         this.loadVAO();
     };
@@ -23,6 +23,8 @@ function Labyrinth(structure, program, locations){
         let worldMatrix = utils.MakeWorld(0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 1.0);
         let viewWorldMatrix = utils.multiplyMatrices(viewMatrix, worldMatrix);
 		let projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, viewWorldMatrix);
+        gl.useProgram(this.program);
+        gl.bindVertexArray(this.vao);
 		gl.uniformMatrix4fv(this.locations['labProjMatrix'], gl.FALSE, utils.transposeMatrix(projectionMatrix));
 		gl.drawElements(gl.TRIANGLES, mazeIndices.length, gl.UNSIGNED_SHORT, 0);
     }
@@ -69,12 +71,12 @@ function Labyrinth(structure, program, locations){
         this.colours = maze3D[2];
     }
 
-    this.loadLocations = function(locations){
+    this.loadLocations = function(){
         this.locations['labVertPosition'] = gl.getAttribLocation(this.program, 'labVertPosition');
         this.locations['labVertColor'] = gl.getAttribLocation(this.program, 'labVertColor');
         this.locations['labProjMatrix'] = gl.getUniformLocation(this.program, 'labProjMatrix');
     };
 
     //CALLS
-    this.init(locations);
+    this.init();
 }
