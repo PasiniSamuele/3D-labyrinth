@@ -2,10 +2,11 @@
 var settings = "resources/settings/settings.json"
 
 
-//handlers
+// Handlers
 var loadingHandler;
 var movementHandler;
 var collisionHandler;
+var interactionHandler;
 var sceneHandler;
 
 //variables
@@ -16,11 +17,11 @@ var activeLevel;
 
 
 function main(){
-    utils.initInteraction(gl.canvas);
+    interactionHandler = new InteractionHandler();
 	utils.resizeCanvasToDisplaySize(gl.canvas);
     sceneHandler.setLevel(activeLevel);
-
 }
+
 function loadGl(){
     let canvas = document.getElementById("canvas-id");
 	gl = canvas.getContext("webgl2");
@@ -37,7 +38,7 @@ function loadGl(){
 function init(){
     loadingHandler = new LoadingHandler();
     movementHandler = new MovementHandler();
-    collisionHandler = new CollisionHandler();
+    //collisionHandler = new CollisionHandler();
     sceneHandler = new SceneHandler();
 
     loadGl();

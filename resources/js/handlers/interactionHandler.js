@@ -14,14 +14,14 @@ function InteractionHandler() {
 	// Interaction attributes
 	let keys = {};
 	let mouse = {
-		x = 0.0, y = 0.0,
+		x: 0.0, y: 0.0,
 	};
 	let wheel = {
-		delta = {
-			x = 0.0, y = 0.0,
+		delta: {
+			x: 0.0, y: 0.0,
 		},
-		enhancement = {
-			x = 10.0, y = 10.0,
+		enhancement: {
+			x: 10.0, y: 10.0,
 		},
 	};
 
@@ -38,10 +38,10 @@ function InteractionHandler() {
 	});
 
 	// Init pointer lock
-	canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
+	gl.canvas.requestPointerLock = gl.canvas.requestPointerLock || gl.canvas.mozRequestPointerLock;
 	document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
-	canvas.onclick = function () {
-		canvas.requestPointerLock();
+	gl.canvas.onclick = function () {
+		gl.canvas.requestPointerLock();
 	}
 	document.addEventListener('pointerlockchange', lockChangeAlert, false);
 	document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
@@ -56,18 +56,14 @@ function InteractionHandler() {
 
 	// Init mouse move function
 	function onMouseMove(e) {
-		mouse.lastLastMovementX = mouse.movementX;
-		mouse.lastLastMovementY = mouse.movementY;
-		mouse.lastMovementX = mouse.movementX;
-		mouse.lastMovementY = mouse.movementY;
-		mouse.movementX = e.movementX;
-		mouse.movementY = e.movementY;
+		mouse.x = e.movementX;
+		mouse.x = e.movementY;
 	}
 
 	// Init mouse wheel movements
 	window.addEventListener('wheel', (e) => {
-		wheel.deltaX += e.deltaX;
-		wheel.deltaY += e.deltaY;
+		wheel.delta.x += e.deltaX;
+		wheel.delta.y += e.deltaY;
 	});
 
 	/*******************

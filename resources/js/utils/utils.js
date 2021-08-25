@@ -286,13 +286,13 @@ var utils = {
 		// global variables: keys, mouse
 		// Init keyboard keydown
 		window.addEventListener('keydown', (e) => {
-			keys[e.code] = true;
+			interactionHandler.keys[e.code] = true;
 			console.log(e);
 			e.preventDefault();
 		});
 		// Init keyboard keyup
 		window.addEventListener('keyup', (e) => {
-			keys[e.code] = false;
+			interactionHandler.keys[e.code] = false;
 			e.preventDefault();
 		});
 		// Init pointer lock
@@ -313,12 +313,12 @@ var utils = {
 		}
 		// Mouse move function
 		function onMouseMove(e) {
-			mouse.lastLastMovementX = mouse.movementX;
-			mouse.lastLastMovementY = mouse.movementY;
-			mouse.lastMovementX = mouse.movementX;
-			mouse.lastMovementY = mouse.movementY;
-			mouse.movementX = e.movementX;
-			mouse.movementY = e.movementY;
+			interactionHandler.mouse.lastLastMovementX = interactionHandler.mouse.movementX;
+			interactionHandler.mouse.lastLastMovementY = interactionHandler.mouse.movementY;
+			interactionHandler.mouse.lastMovementX = interactionHandler.mouse.movementX;
+			interactionHandler.mouse.lastMovementY = interactionHandler.mouse.movementY;
+			interactionHandler.mouse.movementX = e.movementX;
+			interactionHandler.mouse.movementY = e.movementY;
 		}
 		// Init mouse wheel movements
 		window.addEventListener('wheel', (e) => {

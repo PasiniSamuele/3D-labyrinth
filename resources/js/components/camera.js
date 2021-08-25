@@ -17,33 +17,33 @@ function Camera(settings) {
 	this.settings = settings;
 
 	// Attributes
-	this.position = {
-		x: this.settings.position.x.default,
-		y: this.settings.position.y.default,
-		z: this.settings.position.z.default,
-		angle: this.settings.position.angle.default,
-		elevation: this.settings.position.elevation.default,
+	let position = {
+		x: settings.position.x.default,
+		y: settings.position.y.default,
+		z: settings.position.z.default,
+		angle: settings.position.angle.default,
+		elevation: settings.position.elevation.default,
 	}
-	this.speed = {
-		x: this.settings.speed.x.default,
-		y: this.settings.speed.y.default,
-		z: this.settings.speed.z.default,
-		angle: this.settings.speed.angle.default,
-		elevation: this.settings.speed.elevation.default,
+	let speed = {
+		x: settings.speed.x.default,
+		y: settings.speed.y.default,
+		z: settings.speed.z.default,
+		angle: settings.speed.angle.default,
+		elevation: settings.speed.elevation.default,
 	}
-	this.acceleration = {
-		x: this.settings.acceleration.x.default,
-		y: this.settings.acceleration.y.default,
-		z: this.settings.acceleration.z.default,
-		angle: this.settings.acceleration.angle.default,
-		elevation: this.settings.acceleration.elevation.default,
+	let acceleration = {
+		x: settings.acceleration.x.default,
+		y: settings.acceleration.y.default,
+		z: settings.acceleration.z.default,
+		angle: settings.acceleration.angle.default,
+		elevation: settings.acceleration.elevation.default,
 	}
-	this.viewMatrix = computeViewMatrix();
-	this.viewMatrixNoElevation = computeViewMatrixNoElevation();
-	this.perspectiveMatrix = computePerspectiveMatrix();
+	let viewMatrix = computeViewMatrix();
+	let viewMatrixNoElevation = computeViewMatrixNoElevation();
+	let perspectiveMatrix = computePerspectiveMatrix();
 
 	/*******************
-	 * Functions
+	 * Methods
 	 ******************/
 
 	function moveRight() { acceleration.x = settings.acceleration.x.max; }
@@ -58,7 +58,7 @@ function Camera(settings) {
 	function rotateUp() { acceleration.elevation = settings.acceleration.elevation.max; }
 	function rotateDown() { acceleration.elevation = -settings.acceleration.elevation.max; }
 
-	this.lastRotationX = [];
+	let lastRotationX = [];
 	function setRotationX(value) {
 		// Smoothness
 		if (lastRotationX > settings.position.angle.mouseSmoothness)
@@ -71,7 +71,7 @@ function Camera(settings) {
 		position.angle += ((lastRotationSum + value) / lastRotationX.length) * settings.position.angle.mouseReactivity;
 	}
 
-	this.lastRotationY = [];
+	let lastRotationY = [];
 	function setRotationY(value) {
 		// Limit control
 		if ((position.elevation < settings.position.elevation.max || value > 0) && (position.elevation > settings.position.elevation.max || value < 0)) {
