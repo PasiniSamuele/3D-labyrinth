@@ -18,6 +18,13 @@ const DEBUG_LEFT = 1;
 const DEBUG_FLOOR = 1;
 const DEBUG_TOP = 0;                
 
+const mazeElement = {
+    FLOOR: 0,
+    WALL: 1, 
+
+    BLOCKS: [1]
+}
+
 /**
  * Function that returns arrays of 3D coordinates of a given 2D labyrinth
  * 
@@ -72,7 +79,7 @@ const DEBUG_TOP = 0;
 
 		vertex.push((x+offset_x)*size_multiplier);
 		vertex.push((y+offset_y)*size_multiplier);
-		vertex.push((MAX_Z-z+offset_z)*size_multiplier);
+		vertex.push((z+offset_z)*size_multiplier);
 
 		if(ENABLE_NORMALS){
 			switch(dir){
@@ -129,7 +136,7 @@ const DEBUG_TOP = 0;
 
 		vertex.push((x+offset_x)*size_multiplier);
 		vertex.push((y+offset_y)*size_multiplier);
-		vertex.push((MAX_Z-z+offset_z)*size_multiplier);
+		vertex.push((z+offset_z)*size_multiplier);
 		
 		if(ENABLE_NORMALS) vertex.push(0.0, 1.0, 0.0);
 
@@ -175,257 +182,68 @@ const DEBUG_TOP = 0;
     }
 
     //
-    //  FRONT
+    //  COMPUTE WALLS
     //
 
-    if(DEBUG_FRONT){
-
-        //external walls
-        for(j = 0; j < X_SIZE; j++){
-            if(labyrinth[0][j] === 0){
-                let vtl = computeWallVertex(j, MAX_Y, MAX_Z, 0, 0);
-                let vbl = computeWallVertex(j, MIN_Y, MAX_Z, 0, 1);
-
-                if(MINIMAL_VERTICES){
-                    while((j+1) < X_SIZE){
-                        if(labyrinth[0][j+1] === 0) j++;
-                        else break;
-                    }
-                }
-
-                let vbr = computeWallVertex(j+1, MIN_Y, MAX_Z, 0, 2);
-                let vtr = computeWallVertex(j+1, MAX_Y, MAX_Z, 0, 3);
-
-                vertices.push(vtl, vbl, vbr, vtr);
-                incrementIndexes();
-            }
-        }
-
-        //internal walls
-        for(i = 0; i < Z_SIZE-1; i++){
-            for(j = 0; j < X_SIZE; j++){
-
-                //when a valid wall is present...
-                if(labyrinth[i][j] === 1 && labyrinth[i+1][j] !== 1){
-
-                    //...compute the left side...
-                    let vtl = computeWallVertex(j, MAX_Y, Z_SIZE-i-1, 0, 0);
-                    let vbl = computeWallVertex(j, MIN_Y, Z_SIZE-i-1, 0, 1);
-
-                    
-                    //...then search its right side until a right wall occurs
-                    if(MINIMAL_VERTICES){
-                        while((j+1) < X_SIZE){
-                            if(labyrinth[i][j+1] === 1 && labyrinth[i+1][j+1] !== 1) j++;
-                            else break;
-                        }
-                    }
-
-                    //...then the right side
-                    let vbr = computeWallVertex(j+1, MIN_Y, Z_SIZE-i-1, 0, 2);
-                    let vtr = computeWallVertex(j+1, MAX_Y, Z_SIZE-i-1, 0, 3);
-
-                    vertices.push(vtl, vbl, vbr, vtr);
-                    incrementIndexes();
-                }
-            }
-        }
-    }
-
-    //
-    //  RIGHT
-    //
-
-    if(DEBUG_RIGHT){
-
-        //external walls
-        for(i = 0; i < Z_SIZE; i++){
-            if(labyrinth[i][X_SIZE-1] === 0){
-                let vtl = computeWallVertex(MAX_X, MAX_Y, Z_SIZE-i, 1, 0);
-                let vbl = computeWallVertex(MAX_X, MIN_Y, Z_SIZE-i, 1, 1);
-
-                if(MINIMAL_VERTICES){
-                    while((i+1) < Z_SIZE){
-                        if(labyrinth[i+1][X_SIZE-1] === 0) i++;
-                        else break;
-                    }
-                }
-
-                let vbr = computeWallVertex(MAX_X, MIN_Y, Z_SIZE-i-1, 1, 2);
-                let vtr = computeWallVertex(MAX_X, MAX_Y, Z_SIZE-i-1, 1, 3);
-
-                vertices.push(vtl, vbl, vbr, vtr);
-                incrementIndexes();
-            }
-        }
-
-        //internal walls
-        for(j = X_SIZE-1; j > 0; j--){
-            for(i = 0; i < Z_SIZE; i++){
-
-                //when a valid wall is present...
-                if(labyrinth[i][j] === 1 && labyrinth[i][j-1] !== 1){
-
-                    //...compute the left side...
-                    let vtl = computeWallVertex(j, MAX_Y, Z_SIZE-i, 1, 0);
-                    let vbl = computeWallVertex(j, MIN_Y, Z_SIZE-i, 1, 1);
-
-                    
-                    //...then search its right side until a right wall occurs
-                    if(MINIMAL_VERTICES){
-                        while((i+1) < Z_SIZE){
-                            if(labyrinth[i+1][j] === 1 && labyrinth[i+1][j-1] !== 1) i++;
-                            else break;
-                        }
-                    }
-
-                    //...then the right side
-                    let vbr = computeWallVertex(j, MIN_Y, Z_SIZE-i-1, 1, 2);
-                    let vtr = computeWallVertex(j, MAX_Y, Z_SIZE-i-1, 1, 3);
-
-                    vertices.push(vtl, vbl, vbr, vtr);
-                    incrementIndexes();
-                }
-            }
-        }
-    }
-
-    //
-    //  BACK
-    //
-
-    if(DEBUG_BACK){
-
-        //external walls
-        for(j = X_SIZE-1; j >= 0; j--){
-            if(labyrinth[Z_SIZE-1][j] === 0){
-                let vtl = computeWallVertex(j+1, MAX_Y, MIN_Z, 2, 0);
-                let vbl = computeWallVertex(j+1, MIN_Y, MIN_Z, 2, 1);
-
-                if(MINIMAL_VERTICES){
-                    while((j-1) >= 0){
-                        if(labyrinth[Z_SIZE-1][j-1] === 0) j--;
-                        else break;
-                    }
-                }
-
-                let vbr = computeWallVertex(j, MIN_Y, MIN_Z, 2, 2);
-                let vtr = computeWallVertex(j, MAX_Y, MIN_Z, 2, 3);
-
-                vertices.push(vtl, vbl, vbr, vtr);
-                incrementIndexes();
-            }
-        }
-
-        //internal walls
-        for(i = Z_SIZE-1; i > 0; i--){
-            for(j = X_SIZE-1; j >= 0; j--){
-
-                //when a valid wall is present...
-                if(labyrinth[i][j] === 1 && labyrinth[i-1][j] !== 1){
-
-                    //...compute the left side...
-                    let vtl = computeWallVertex(j+1, MAX_Y, Z_SIZE-i, 2, 0);
-                    let vbl = computeWallVertex(j+1, MIN_Y, Z_SIZE-i, 2, 1);
-
-                    
-                    //...then search its right side until a right wall occurs
-                    if(MINIMAL_VERTICES){
-                        while((j-1) > 0){
-                            if(labyrinth[i][j-1] === 1 && labyrinth[i-1][j-1] !== 1) j--;
-                            else break;
-                        }
-                    }
-
-                    //...then the right side
-
-                    let vbr = computeWallVertex(j, MIN_Y, Z_SIZE-i, 2, 2);
-                    let vtr = computeWallVertex(j, MAX_Y, Z_SIZE-i, 2, 3);
-
-                    vertices.push(vtl, vbl, vbr, vtr);
-                    incrementIndexes();
-                }
-            }
-        }
-    }
-
-    //
-    //  LEFT
-    //
-
-    if(DEBUG_LEFT){
-
-        //external walls
-        for(i = Z_SIZE-1; i >= 0; i--){
-            if(labyrinth[i][0] === 0){
-                let vtl = computeWallVertex(MIN_X, MAX_Y, Z_SIZE-i-1, 3, 0);
-                let vbl = computeWallVertex(MIN_X, MIN_Y, Z_SIZE-i-1, 3, 1);
-
-                if(MINIMAL_VERTICES){
-                    while((i-1) >= 0){
-                        if(labyrinth[i-1][0] === 0) i--;
-                        else break;
-                    }
-                }
-
-                let vbr = computeWallVertex(MIN_X, MIN_Y, Z_SIZE-i, 3, 2);
-                let vtr = computeWallVertex(MIN_X, MAX_Y, Z_SIZE-i, 3, 3);
-
-                vertices.push(vtl, vbl, vbr, vtr);
-                incrementIndexes();
-            }
-        }
-
-        //internal walls
-        for(j = 0; j < X_SIZE-1; j++){
-            for(i = Z_SIZE-1; i >= 0; i--){
-
-                //when a valid wall is present...
-                if(labyrinth[i][j] === 1 && labyrinth[i][j+1] !== 1){
-
-                    //...compute the left side...
-                    let vtl = computeWallVertex(j+1, MAX_Y, Z_SIZE-i-1, 3, 0);
-                    let vbl = computeWallVertex(j+1, MIN_Y, Z_SIZE-i-1, 3, 1);
-
-                    //...then search its right side until a right wall occurs
-                    if(MINIMAL_VERTICES){
-                        while((i-1) > 0){
-                            if(labyrinth[i-1][j] === 1 && labyrinth[i-1][j+1] !== 1) i--;
-                            else break;
-                        }
-                    }
-
-                    //...then the right side
-
-                    let vbr = computeWallVertex(j+1, MIN_Y, Z_SIZE-i, 3, 2);
-                    let vtr = computeWallVertex(j+1, MAX_Y, Z_SIZE-i, 3, 3);
-
-                    vertices.push(vtl, vbl, vbr, vtr);
-                    incrementIndexes();
-                }
-            }
-        }
-    }
-
-    //
-    //  FLOOR + TOP 
-    //
-
-    for(i = 0; i < Z_SIZE; i++){
-        for(j = 0; j < X_SIZE; j++){
-            if(labyrinth[i][j] === 1){
-                if(DEBUG_TOP){
+    for(let i = 0; i < Z_SIZE; i++){
+        for(let j = 0; j < X_SIZE; j++){
+            if(!mazeElement.BLOCKS.includes(labyrinth[i][j])){
+                //FRONT
+                if(DEBUG_FRONT && ((i-1 < 0) ? true : mazeElement.BLOCKS.includes(labyrinth[i-1][j]))) {
                     vertices.push(
-                        computeFloorVertex(j, MAX_Y, Z_SIZE-i, 0), computeFloorVertex(j, MAX_Y, Z_SIZE-i-1, 1), 
-                        computeFloorVertex(j+1, MAX_Y, Z_SIZE-i-1, 2), computeFloorVertex(j+1, MAX_Y, Z_SIZE-i, 3)
+                        computeWallVertex(j, MAX_Y, i, 0, 0),
+                        computeWallVertex(j, MIN_Y, i, 0, 1),
+                        computeWallVertex(j+1, MIN_Y, i, 0, 2),
+                        computeWallVertex(j+1, MAX_Y, i, 0, 3)
+                    );
+                    incrementIndexes();
+                }
+
+                //RIGHT
+                if(DEBUG_RIGHT && ((j+1 >= X_SIZE) ? true : mazeElement.BLOCKS.includes(labyrinth[i][j+1]))){
+                    vertices.push(
+                        computeWallVertex(j+1, MAX_Y, i, 1, 0),
+                        computeWallVertex(j+1, MIN_Y, i, 1, 1),
+                        computeWallVertex(j+1, MIN_Y, i+1, 1, 2),
+                        computeWallVertex(j+1, MAX_Y, i+1, 1, 3)
+                    );
+                    incrementIndexes();
+                }
+
+                //BACK
+                if(DEBUG_BACK && ((i+1 >= Z_SIZE) ? true : mazeElement.BLOCKS.includes(labyrinth[i+1][j]))){
+                    vertices.push(
+                        computeWallVertex(j+1, MAX_Y, i+1, 2, 0),
+                        computeWallVertex(j+1, MIN_Y, i+1, 2, 1),
+                        computeWallVertex(j, MIN_Y, i+1, 2, 2),
+                        computeWallVertex(j, MAX_Y, i+1, 2, 3)
+                    );
+                    incrementIndexes();
+                }
+
+                //LEFT
+                if(DEBUG_LEFT && ((j-1 < 0) ? true : mazeElement.BLOCKS.includes(labyrinth[i][j-1]))){
+                    vertices.push(
+                        computeWallVertex(j, MAX_Y, i+1, 3, 0),
+                        computeWallVertex(j, MIN_Y, i+1, 3, 1),
+                        computeWallVertex(j, MIN_Y, i, 3, 2),
+                        computeWallVertex(j, MAX_Y, i, 3, 3)
+                    );
+                    incrementIndexes();
+                }
+
+                if(DEBUG_FLOOR){
+                    vertices.push(
+                        computeFloorVertex(j, MIN_Y, i, 0), computeFloorVertex(j, MIN_Y, i+1, 1), 
+                        computeFloorVertex(j+1, MIN_Y, i+1, 2), computeFloorVertex(j+1, MIN_Y, i, 3)
                     );
                     incrementIndexes();
                 }
             } else {
-                if(DEBUG_FLOOR){
+                if(DEBUG_TOP){
                     vertices.push(
-                        computeFloorVertex(j, MIN_Y, Z_SIZE-i, 0), computeFloorVertex(j, MIN_Y, Z_SIZE-i-1, 1), 
-                        computeFloorVertex(j+1, MIN_Y, Z_SIZE-i-1, 2), computeFloorVertex(j+1, MIN_Y, Z_SIZE-i, 3)
+                        computeFloorVertex(j, MAX_Y, i, 0), computeFloorVertex(j, MAX_Y, i+1, 1), 
+                        computeFloorVertex(j+1, MAX_Y, i+1, 2), computeFloorVertex(j+1, MAX_Y, i, 3)
                     );
                     incrementIndexes();
                 }
