@@ -1,5 +1,6 @@
 //directories
-var settings = "resources/settings/settings.json"
+// TODO: non può essere globale
+//var settings = "resources/settings/settings.json"
 
 
 // Handlers
@@ -16,14 +17,15 @@ var gl;
 var activeLevel;
 
 
-function main(){
-    interactionHandler = new InteractionHandler();
+function main() {
+	interactionHandler = new InteractionHandler();
 	utils.resizeCanvasToDisplaySize(gl.canvas);
-    sceneHandler.setLevel(activeLevel);
+	sceneHandler.setLevel(activeLevel);
+	sceneHandler.start();
 }
 
-function loadGl(){
-    let canvas = document.getElementById("canvas-id");
+function loadGl() {
+	let canvas = document.getElementById("canvas-id");
 	gl = canvas.getContext("webgl2");
 	if (!gl) {
 		console.log('WebGL not supported, falling back on experimental-webgl');
@@ -35,16 +37,18 @@ function loadGl(){
 	}
 }
 
-function init(){
-    loadingHandler = new LoadingHandler();
-    movementHandler = new MovementHandler();
-    //collisionHandler = new CollisionHandler();
-    sceneHandler = new SceneHandler();
+async function init() {
+	loadingHandler = new LoadingHandler();
+	movementHandler = new MovementHandler();
+	//collisionHandler = new CollisionHandler();
+	sceneHandler = new SceneHandler();
 
-    loadGl();
-    activeLevel = loadingHandler.init(settings);
+	loadGl();
 
-    main();
+	var settings = "resources/settings/settings.json"
+	activeLevel = await loadingHandler.init(settings);
+
+	main();
 }
 
 window.onload = init;

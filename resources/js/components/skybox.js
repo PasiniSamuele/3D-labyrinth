@@ -22,8 +22,8 @@ function Skybox(textures, program){
         var positionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, skyboxVertPos, gl.STATIC_DRAW);
-        gl.enableVertexAttribArray(locations['env_in_position']);
-        gl.vertexAttribPointer(locations['env_in_position'], 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(this.locations['env_in_position']);
+        gl.vertexAttribPointer(this.locations['env_in_position'], 3, gl.FLOAT, false, 0, 0);
     };
 
     this.loadLocations=function(){

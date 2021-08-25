@@ -31,7 +31,7 @@ function Labyrinth(structure, program){
 
     this.loadVAO = function(){
         this.vao = gl.createVertexArray();
-        gl.bindVertexArray(vao);
+        gl.bindVertexArray(this.vao);
 
         var mazeVertexBufferObject = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, mazeVertexBufferObject);
