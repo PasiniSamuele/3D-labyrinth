@@ -1,8 +1,9 @@
 {
     "RANDOM_GENERATION":false,
     "settings":[
-        "resources/settings/0/settings.json",
-        "resources/settings/1/settings.json",
-        "resources/settings/2/settings.json"
+        {
+            "level":"resources/settings/0/settings.json",
+            "random":"resources/settings/0/random.json"
+        }
     ]
 }
