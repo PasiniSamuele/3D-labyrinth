@@ -5,6 +5,10 @@
 
 var utils = {
 
+	getTextureSlotOffset: function(gl,slot){
+		return (slot - gl.TEXTURE0);
+	},
+
 	loadTextResource: function (url) {
 		return new Promise((resolve, reject) => {
 			var request = new XMLHttpRequest();

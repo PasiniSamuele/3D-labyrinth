@@ -1,0 +1,8 @@
+{
+    "RANDOM_GENERATION":false,
+    "settings":[
+        "resources/settings/0/settings.json",
+        "resources/settings/1/settings.json",
+        "resources/settings/2/settings.json"
+    ]
+}

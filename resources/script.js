@@ -10,6 +10,7 @@ var mazes;
 
 var levelsSize = 1;
 var activeLevel;
+var testVar;
 
 
 //skyboxes
@@ -402,6 +403,8 @@ function getLocations() {
 }
 async function init() {
 
+	testVar='ciao';
+	var test = new Test();
 	var path = window.location.pathname;
 	var page = path.split("/").pop();
 	baseDir = window.location.href.replace(page, '');
