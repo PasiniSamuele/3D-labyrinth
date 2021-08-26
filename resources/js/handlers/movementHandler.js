@@ -5,7 +5,15 @@
 /**
  * Object to manage the movements of the camera
  */
-function MovementHandler() {
+class MovementHandler {
+
+	/*******************
+	 * Constructor
+	 ******************/
+
+	constructor() {
+
+	}
 
 	/*******************
 	 * Methods
@@ -13,13 +21,16 @@ function MovementHandler() {
 
 	/**
 	 * Function to be called every time the display is updated
-	 * 
+	 *
 	 * @param { object } camera camera object
 	 * @param { object } interactionHandler interactionHandler object
-	 * 
+	 *
 	 * @returns the new camera object
 	 */
-	this.idle = function(camera, interactionHandler) {
+	idle(camera, interactionHandler) {
+
+		if (interactionHandler.keys['ArrowUp'])
+			console.log("dfdfdfs");
 
 		if (interactionHandler.keys['KeyW']) { camera.moveForward(); }
 		if (interactionHandler.keys['KeyS']) { camera.moveBackward(); }
@@ -41,7 +52,7 @@ function MovementHandler() {
 			interactionHandler.resetMouse();
 		}
 		// Return camera and interactionHandler
-		return {"camera":camera, "interactionHandler":interactionHandler};
+		return { "camera": camera, "interactionHandler": interactionHandler };
 	}
 
 }
