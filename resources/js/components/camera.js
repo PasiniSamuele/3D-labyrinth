@@ -46,44 +46,44 @@ function Camera(settings) {
 	 * Methods
 	 ******************/
 
-	this.moveRight = function() { acceleration.x = settings.acceleration.x.max; }
-	this.moveLeft = function() { acceleration.x = -settings.acceleration.x.max; }
-	this.moveUp = function() { acceleration.y = settings.acceleration.y.max; }
-	this.moveDown = function() { acceleration.y = -settings.acceleration.y.max; }
-	this.moveForward = function() { acceleration.z = settings.acceleration.z.max; }
-	this.moveBackward = function() { acceleration.z = -settings.acceleration.z.max; }
+	this.moveRight = function() { this.acceleration.x = this.settings.acceleration.x.max; }
+	this.moveLeft = function() { this.acceleration.x = -this.settings.acceleration.x.max; }
+	this.moveUp = function() { this.acceleration.y = this.settings.acceleration.y.max; }
+	this.moveDown = function() { this.acceleration.y = -this.settings.acceleration.y.max; }
+	this.moveForward = function() { this.acceleration.z = this.settings.acceleration.z.max; }
+	this.moveBackward = function() {this. acceleration.z = -this.settings.acceleration.z.max; }
 
-	this.rotateRight = function() { acceleration.angle = settings.acceleration.angle.max }
-	this.rotateLeft = function() { acceleration.angle = -settings.acceleration.angle.max }
-	this.rotateUp = function() { acceleration.elevation = settings.acceleration.elevation.max; }
-	this.rotateDown = function() { acceleration.elevation = -settings.acceleration.elevation.max; }
+	this.rotateRight = function() { this.acceleration.angle = this.settings.acceleration.angle.max }
+	this.rotateLeft = function() { this.acceleration.angle = -this.settings.acceleration.angle.max }
+	this.rotateUp = function() { this.acceleration.elevation = this.settings.acceleration.elevation.max; }
+	this.rotateDown = function() { this.acceleration.elevation = -this.settings.acceleration.elevation.max; }
 
 	this.lastRotationX = [];
 	this.setRotationX = function(value) {
 		// Smoothness
-		if (lastRotationX > settings.position.angle.mouseSmoothness)
-			lastRotationX.shift();
-		lastRotationX.push(value);
-		lastRotationSum = 0.0;
-		for (let i = 0; i < lastRotationX.length; i++)
-			lastRotationSum += lastRotationX[i];
+		if (this.lastRotationX > this.settings.position.angle.mouseSmoothness)
+			this.lastRotationX.shift();
+		this.lastRotationX.push(value);
+		this.lastRotationSum = 0.0;
+		for (let i = 0; i < this.lastRotationX.length; i++)
+			this.lastRotationSum += this.lastRotationX[i];
 		// New value
-		position.angle += ((lastRotationSum + value) / lastRotationX.length) * settings.position.angle.mouseReactivity;
+		this.position.angle += ((this.lastRotationSum + value) / this.lastRotationX.length) * this.settings.position.angle.mouseReactivity;
 	}
 
 	this.lastRotationY = [];
 	this.setRotationY = function(value) {
 		// Limit control
-		if ((position.elevation < settings.position.elevation.max || value > 0) && (position.elevation > settings.position.elevation.max || value < 0)) {
+		if ((this.position.elevation < this.settings.position.elevation.max || value > 0) && (this.position.elevation > this.settings.position.elevation.max || value < 0)) {
 			// Smoothness
-			if (lastRotationY > settings.position.elevation.mouseSmoothness)
-				lastRotationY.shift();
-			lastRotationY.push(value);
-			lastRotationSum = 0.0;
-			for (let i = 0; i < lastRotationY.length; i++)
-				lastRotationSum += lastRotationY[i];
+			if (this.lastRotationY > this.settings.position.elevation.mouseSmoothness)
+				this.lastRotationY.shift();
+			this.lastRotationY.push(value);
+			this.lastRotationSum = 0.0;
+			for (let i = 0; i < this.lastRotationY.length; i++)
+				this.lastRotationSum += this.lastRotationY[i];
 			// New value
-			position.elevation += ((lastRotationSum + value) / lastRotationY.length) * settings.elevation.angle.mouseReactivity;
+			this.position.elevation += ((this.lastRotationSum + value) / this.lastRotationY.length) * this.settings.elevation.angle.mouseReactivity;
 		}
 	}
 
@@ -94,18 +94,18 @@ function Camera(settings) {
 	 */
 	this.idle = function(deltaTime) {
 		// Compute all speeds
-		computeSpeeds(deltaTime);
+		this.computeSpeeds(deltaTime);
 
 		// Compute all positions
-		computePositions(deltaTime);
+		this.computePositions(deltaTime);
 
 		// Compute all matrices (with and without elevation, perspective)
-		perspectiveMatrix = computePerspectiveMatrix();
-		viewMatrix = computeViewMatrix();
-		viewMatrixNoElevation = computeViewMatrixNoElevation();
+		this.perspectiveMatrix = computePerspectiveMatrix();
+		this.viewMatrix = computeViewMatrix();
+		this.viewMatrixNoElevation = computeViewMatrixNoElevation();
 
 		// Reset all accelerations
-		resetAccelerations();
+		this.resetAccelerations();
 	}
 
 	/*******************
@@ -147,31 +147,31 @@ function Camera(settings) {
 	}
 
 	this.computeSpeeds = function(deltaTime) {
-		this.speed.x = computeSpeed(speed.x, acceleration.x, settings.acceleration.x.decelerationCoefficient, settings.speed.x.max, settings.speed.x.min, deltaTime);
-		this.speed.y = computeSpeed(speed.y, acceleration.y, settings.acceleration.y.decelerationCoefficient, settings.speed.y.max, settings.speed.y.min, deltaTime);
-		this.speed.z = computeSpeed(speed.z, acceleration.z, settings.acceleration.z.decelerationCoefficient, settings.speed.z.max, settings.speed.z.min, deltaTime);
-		this.speed.angle = computeSpeed(speed.angle, acceleration.angle, settings.acceleration.angle.decelerationCoefficient, settings.speed.angle.max, settings.speed.angle.min, deltaTime);
-		this.speed.elevation = computeSpeed(speed.elevation, acceleration.elevation, settings.acceleration.elevation.decelerationCoefficient, settings.speed.elevation.max, settings.speed.elevation.min, deltaTime, position.elevation, settings.position.elevation.min, settings.position.elevation.max);
+		this.speed.x = this.computeSpeed(this.speed.x, this.acceleration.x, this.settings.acceleration.x.decelerationCoefficient, this.settings.speed.x.max, this.settings.speed.x.min, deltaTime);
+		this.speed.y = this.computeSpeed(this.speed.y, this.acceleration.y, this.settings.acceleration.y.decelerationCoefficient, this.settings.speed.y.max, this.settings.speed.y.min, deltaTime);
+		this.speed.z = this.computeSpeed(this.speed.z, this.acceleration.z, this.settings.acceleration.z.decelerationCoefficient, this.settings.speed.z.max, this.settings.speed.z.min, deltaTime);
+		this.speed.angle = this.computeSpeed(this.speed.angle, this.acceleration.angle, this.settings.acceleration.angle.decelerationCoefficient, this.settings.speed.angle.max, this.settings.speed.angle.min, deltaTime);
+		this.speed.elevation = this.computeSpeed(this.speed.elevation, this.acceleration.elevation, this.settings.acceleration.elevation.decelerationCoefficient, this.settings.speed.elevation.max, this.settings.speed.elevation.min, deltaTime, this.position.elevation, this.settings.position.elevation.min, this.settings.position.elevation.max);
 	}
 
 	this.computePositions = function(deltaTime) {
-		position.x -= (viewMatrixNoElevation[0] * speed.x + viewMatrixNoElevation[4] * speed.y + viewMatrixNoElevation[8] * speed.z) * deltaTime;
-		position.y -= (viewMatrixNoElevation[1] * speed.x + viewMatrixNoElevation[5] * speed.y + viewMatrixNoElevation[9] * speed.z) * deltaTime;
-		position.z -= (viewMatrixNoElevation[2] * speed.x + viewMatrixNoElevation[6] * speed.y + viewMatrixNoElevation[10] * speed.z) * deltaTime;
-		position.angle += speed.angle * deltaTime;
-		position.elevation += speed.elevation * deltaTime;
+		this.position.x -= (this.viewMatrixNoElevation[0] * this.speed.x + this.viewMatrixNoElevation[4] * this.speed.y + this.viewMatrixNoElevation[8] * this.speed.z) * deltaTime;
+		this.position.y -= (this.viewMatrixNoElevation[1] * this.speed.x + this.viewMatrixNoElevation[5] * this.speed.y + this.viewMatrixNoElevation[9] * this.speed.z) * deltaTime;
+		this.position.z -= (this.viewMatrixNoElevation[2] * this.speed.x + this.viewMatrixNoElevation[6] * this.speed.y + this.viewMatrixNoElevation[10] * this.speed.z) * deltaTime;
+		this.position.angle += this.speed.angle * deltaTime;
+		this.position.elevation += this.speed.elevation * deltaTime;
 	}
 
 	this.computeViewMatrix = function() {
-		viewMatrix = utils.MakeView(position.x, position.y, position.z, position.angle, position.elevation);
+		this.viewMatrix = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.angle, this.position.elevation);
 	}
 
 	this.computeViewMatrixNoElevation = function() {
-		viewMatrixNoElevation = utils.MakeView(position.x, position.y, position.z, position.angle, position.elevation);
+		this.viewMatrixNoElevation = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.angle, this.position.elevation);
 	}
 
 	this.computePerspectiveMatrix = function() {
-		perspectiveMatrix = utils.MakePerspective(settings.fovy, gl.canvas.width / gl.canvas.height, settings.near, settings.far);
+		this.perspectiveMatrix = utils.MakePerspective(this.settings.fovy, gl.canvas.width / gl.canvas.height, this.settings.near, this.settings.far);
 	}
 
 }

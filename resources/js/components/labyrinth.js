@@ -65,7 +65,7 @@ function Labyrinth(structure, program){
     }
 
     this.loadLabyrinth = function(){
-        let maze3D = compute3DLabyrinth(structure, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]);
+        let maze3D = compute3DLabyrinth(structure, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, [1.0, 0.0, 0.0]);
         this.vertices = maze3D[0];
         this.indices = maze3D[1];
         this.colours = maze3D[2];

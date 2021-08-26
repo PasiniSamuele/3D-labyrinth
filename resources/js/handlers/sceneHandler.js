@@ -17,7 +17,6 @@ function SceneHandler(){
 		gl.frontFace(gl.CCW);
 		gl.cullFace(gl.BACK);
 
-		console.log(this.level);
 
 		this.level.camera.idle();
 		this.level.camera = movementHandler.idle(this.level.camera);

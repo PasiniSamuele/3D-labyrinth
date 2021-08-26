@@ -55,7 +55,4 @@ function LoadingHandler(){
             return initResources(this.levels[actualLevel])
     };
 
-	// TODO VERIFICARE SE E' SUPERFLUO
-    //this.init(settingsUrl);
-
 }
