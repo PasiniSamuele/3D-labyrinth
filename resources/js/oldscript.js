@@ -302,7 +302,7 @@ function LoadEnvironment() {
 		},
 	];
 	faceInfos.forEach((faceInfo) => {
-		const { target, url } = faceInfo;
+		let target = utils.faceInfo.target
 
 		// Upload the canvas to the cubemap face.
 		const level = 0;

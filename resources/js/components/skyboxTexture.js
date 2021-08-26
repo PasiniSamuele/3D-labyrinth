@@ -4,15 +4,15 @@ function SkyboxTexture(faceInfos, slot){
     this.texture;
 
     this.init=function(){
-        console.log(this.slot);
-        console.log(gl.TEXTURE0);
         this.texture = gl.createTexture();
 	    gl.activeTexture(slot);
 	    gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
         scope=this;
         this.faceInfos.forEach((faceInfo) => {
-            const { target, url } = faceInfo;
-    
+            
+            let target = utils.computeTargetFace(faceInfo.target);
+            let url = faceInfo.url;
+
             // Upload the canvas to the cubemap face.
             const level = 0;
             const internalFormat = gl.RGBA;
@@ -20,7 +20,6 @@ function SkyboxTexture(faceInfos, slot){
             const height = 1024;
             const format = gl.RGBA;
             const type = gl.UNSIGNED_BYTE;
-            console.log(gl);
             // setup each face so it's immediately renderable
             gl.texImage2D(target, level, internalFormat, width, height, 0, format, type, null);
     
