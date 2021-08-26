@@ -18,29 +18,30 @@ function Camera(settings) {
 
 	// Attributes
 	this.position = {
-		x: settings.position.x.default,
-		y: settings.position.y.default,
-		z: settings.position.z.default,
-		angle: settings.position.angle.default,
-		elevation: settings.position.elevation.default,
+		x: this.settings.position.x.default,
+		y: this.settings.position.y.default,
+		z: this.settings.position.z.default,
+		angle: this.settings.position.angle.default,
+		elevation: this.settings.position.elevation.default,
 	}
 	this.speed = {
-		x: settings.speed.x.default,
-		y: settings.speed.y.default,
-		z: settings.speed.z.default,
-		angle: settings.speed.angle.default,
-		elevation: settings.speed.elevation.default,
+		x: this.settings.speed.x.default,
+		y: this.settings.speed.y.default,
+		z: this.settings.speed.z.default,
+		angle: this.settings.speed.angle.default,
+		elevation: this.settings.speed.elevation.default,
 	}
 	this.acceleration = {
-		x: settings.acceleration.x.default,
-		y: settings.acceleration.y.default,
-		z: settings.acceleration.z.default,
-		angle: settings.acceleration.angle.default,
-		elevation: settings.acceleration.elevation.default,
+		x: this.settings.acceleration.x.default,
+		y: this.settings.acceleration.y.default,
+		z: this.settings.acceleration.z.default,
+		angle: this.settings.acceleration.angle.default,
+		elevation: this.settings.acceleration.elevation.default,
 	}
-	this.viewMatrix;
-	this.viewMatrixNoElevation/* = computeViewMatrixNoElevation()*/;
-	this.perspectiveMatrix/* = computePerspectiveMatrix()*/;
+	this.perspectiveMatrix = utils.MakePerspective(this.settings.fovy, gl.canvas.width / gl.canvas.height, this.settings.near, this.settings.far);
+	this.viewMatrix = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.angle, this.position.elevation);
+	this.viewMatrixNoElevation = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.angle, 0.0);
+
 
 	/*******************
 	 * Methods
@@ -64,11 +65,11 @@ function Camera(settings) {
 		if (this.lastRotationX > this.settings.position.angle.mouseSmoothness)
 			this.lastRotationX.shift();
 		this.lastRotationX.push(value);
-		this.lastRotationSum = 0.0;
+		let lastRotationSum = 0.0;
 		for (let i = 0; i < this.lastRotationX.length; i++)
-			this.lastRotationSum += this.lastRotationX[i];
+			lastRotationSum += this.lastRotationX[i];
 		// New value
-		this.position.angle += ((this.lastRotationSum + value) / this.lastRotationX.length) * this.settings.position.angle.mouseReactivity;
+		this.position.angle += ((lastRotationSum + value) / this.lastRotationX.length) * this.settings.position.angle.mouseReactivity;
 	}
 
 	this.lastRotationY = [];
@@ -100,9 +101,9 @@ function Camera(settings) {
 		this.computePositions(deltaTime);
 
 		// Compute all matrices (with and without elevation, perspective)
-		this.perspectiveMatrix = computePerspectiveMatrix();
-		this.viewMatrix = computeViewMatrix();
-		this.viewMatrixNoElevation = computeViewMatrixNoElevation();
+		this.perspectiveMatrix = utils.MakePerspective(this.settings.fovy, gl.canvas.width / gl.canvas.height, this.settings.near, this.settings.far);
+		this.viewMatrix = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.angle, this.position.elevation);
+		this.viewMatrixNoElevation = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.angle, 0.0);
 
 		// Reset all accelerations
 		this.resetAccelerations();
@@ -160,18 +161,6 @@ function Camera(settings) {
 		this.position.z -= (this.viewMatrixNoElevation[2] * this.speed.x + this.viewMatrixNoElevation[6] * this.speed.y + this.viewMatrixNoElevation[10] * this.speed.z) * deltaTime;
 		this.position.angle += this.speed.angle * deltaTime;
 		this.position.elevation += this.speed.elevation * deltaTime;
-	}
-
-	this.computeViewMatrix = function() {
-		this.viewMatrix = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.angle, this.position.elevation);
-	}
-
-	this.computeViewMatrixNoElevation = function() {
-		this.viewMatrixNoElevation = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.angle, this.position.elevation);
-	}
-
-	this.computePerspectiveMatrix = function() {
-		this.perspectiveMatrix = utils.MakePerspective(this.settings.fovy, gl.canvas.width / gl.canvas.height, this.settings.near, this.settings.far);
 	}
 
 }

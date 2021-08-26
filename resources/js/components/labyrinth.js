@@ -26,7 +26,7 @@ function Labyrinth(structure, program){
         gl.useProgram(this.program);
         gl.bindVertexArray(this.vao);
 		gl.uniformMatrix4fv(this.locations['labProjMatrix'], gl.FALSE, utils.transposeMatrix(projectionMatrix));
-		gl.drawElements(gl.TRIANGLES, mazeIndices.length, gl.UNSIGNED_SHORT, 0);
+		gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
     }
 
     this.loadVAO = function(){

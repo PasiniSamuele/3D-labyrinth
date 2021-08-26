@@ -1,6 +1,6 @@
 function SceneHandler(){
     this.then=0;
-    this.level = 0;
+    this.level;
     this.drawScene=function(now) {
         // Get current time
 		now *= 0.001;  // seconds;
@@ -19,7 +19,10 @@ function SceneHandler(){
 
 
 		this.level.camera.idle();
-		this.level.camera = movementHandler.idle(this.level.camera);
+		let movementHandlerRet = movementHandler.idle(this.level.camera, interactionHandler);
+		this.level.camera = movementHandlerRet.camera;
+		movementHandler = movementHandlerRet.movementHandler;
+
 
         // Perspective, World Matrix
 		let perspectiveMatrix = this.level.camera.perspectiveMatrix;
