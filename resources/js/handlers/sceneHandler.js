@@ -4,7 +4,7 @@ function SceneHandler(movementHandler, interactionHandler){
 	this.movementHandler=movementHandler;
 	this.interactionHandler=interactionHandler;
 
-    this.drawScene=function(now,scope) {
+    this.drawScene=function(now,scope, iter) {
 
         // Get current time
 		now *= 0.001;  // seconds;
@@ -34,13 +34,16 @@ function SceneHandler(movementHandler, interactionHandler){
         scope.level.skybox.draw(now, perspectiveMatrix, viewMatrix)
         scope.level.labyrinth.draw(perspectiveMatrix, viewMatrix);
 
-        window.requestAnimationFrame(scope.drawScene(now,scope));
+		if(iter==0)
+        	window.requestAnimationFrame(()=>scope.drawScene(now,scope,iter+1));
     }
+
     this.setLevel=function(level){
         this.level=level;
     }
 	this.start = function() {
-        this.drawScene(0,this);
+        this.drawScene(Date.now(),this,0);
+		
 	}
 
 	// TODO VERIFICARE SE E' SUPERFLUO
