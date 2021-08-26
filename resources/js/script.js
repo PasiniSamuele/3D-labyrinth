@@ -18,7 +18,6 @@ var activeLevel;
 
 
 function main() {
-	interactionHandler = new InteractionHandler();
 	utils.resizeCanvasToDisplaySize(gl.canvas);
 	sceneHandler.setLevel(activeLevel);
 	sceneHandler.start();
@@ -38,12 +37,15 @@ function loadGl() {
 }
 
 async function init() {
+	loadGl();
+	
 	loadingHandler = new LoadingHandler();
 	movementHandler = new MovementHandler();
+	interactionHandler = new InteractionHandler()
 	//collisionHandler = new CollisionHandler();
-	sceneHandler = new SceneHandler();
+	sceneHandler = new SceneHandler(movementHandler, interactionHandler);
 
-	loadGl();
+	
 
 	var settings = "resources/settings/settings.json"
 	activeLevel = await loadingHandler.init(settings);

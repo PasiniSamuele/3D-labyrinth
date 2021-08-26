@@ -20,7 +20,7 @@ function MovementHandler() {
 	 * @returns the new camera object
 	 */
 	this.idle = function(camera, interactionHandler) {
-		console.log(interactionHandler);
+
 		if (interactionHandler.keys['KeyW']) { camera.moveForward(); }
 		if (interactionHandler.keys['KeyS']) { camera.moveBackward(); }
 		if (interactionHandler.keys['KeyA']) { camera.moveRight(); }

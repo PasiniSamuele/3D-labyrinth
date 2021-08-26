@@ -1,11 +1,15 @@
-function SceneHandler(){
+function SceneHandler(movementHandler, interactionHandler){
     this.then=0;
     this.level;
-    this.drawScene=function(now) {
+	this.movementHandler=movementHandler;
+	this.interactionHandler=interactionHandler;
+
+    this.drawScene=function(now,scope) {
+
         // Get current time
 		now *= 0.001;  // seconds;
-		let deltaTime = now - this.then;
-		this.then = now;
+		let deltaTime = now - scope.then;
+		scope.then = now;
 
 
         utils.resizeCanvasToDisplaySize(gl.canvas);
@@ -17,27 +21,26 @@ function SceneHandler(){
 		gl.frontFace(gl.CCW);
 		gl.cullFace(gl.BACK);
 
-
-		this.level.camera.idle();
-		let movementHandlerRet = movementHandler.idle(this.level.camera, interactionHandler);
-		this.level.camera = movementHandlerRet.camera;
-		movementHandler = movementHandlerRet.movementHandler;
+		scope.level.camera.idle(deltaTime);
+		let movementHandlerRet = scope.movementHandler.idle(scope.level.camera, scope.interactionHandler);
+		scope.level.camera = movementHandlerRet.camera;
+		scope.interactionHandler = movementHandlerRet.interactionHandler;
 
 
         // Perspective, World Matrix
-		let perspectiveMatrix = this.level.camera.perspectiveMatrix;
-        let viewMatrix = this.level.camera.viewMatrix;
+		let perspectiveMatrix = scope.level.camera.perspectiveMatrix;
+        let viewMatrix = scope.level.camera.viewMatrix;
 
-        this.level.skybox.draw(now, perspectiveMatrix, viewMatrix)
-        this.level.labyrinth.draw(perspectiveMatrix, viewMatrix);
+        scope.level.skybox.draw(now, perspectiveMatrix, viewMatrix)
+        scope.level.labyrinth.draw(perspectiveMatrix, viewMatrix);
 
-        window.requestAnimationFrame(this.drawScene);
+        window.requestAnimationFrame(scope.drawScene(now,scope));
     }
     this.setLevel=function(level){
         this.level=level;
     }
 	this.start = function() {
-        this.drawScene(0);
+        this.drawScene(0,this);
 	}
 
 	// TODO VERIFICARE SE E' SUPERFLUO
