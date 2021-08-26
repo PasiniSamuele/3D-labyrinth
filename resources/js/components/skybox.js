@@ -1,5 +1,5 @@
 function Skybox(textures, program){
-    this.textures=textures
+    this.textures = textures
     this.program = program;
     this.locations = {};
     this.vao;
@@ -37,19 +37,19 @@ function Skybox(textures, program){
     this.draw=function(now, perspectiveMatrix, viewMatrix){
             gl.useProgram(this.program);
 
-			gl.activeTexture(texture[0].slot);
-			gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture[0].texture);
-			gl.uniform1i(locations['env_u_day_texture'], utils.getTextureSlotOffset(gl,texture[0].slot));
+			gl.activeTexture(this.textures[0].slot);
+			gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.textures[0].texture);
+			gl.uniform1i(this.locations['env_u_day_texture'], utils.getTextureSlotOffset(gl,this.textures[0].slot));
 
-			gl.activeTexture(texture[1].slot);
-			gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture[1].texture);
-			gl.uniform1i(locations['env_u_night_texture'], utils.getTextureSlotOffset(gl,texture[1].slot));
+			gl.activeTexture(this.textures[1].slot);
+			gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.textures[1].texture);
+			gl.uniform1i(this.locations['env_u_night_texture'], utils.getTextureSlotOffset(gl,this.textures[1].slot));
 
 			var viewProjMat = utils.multiplyMatrices(perspectiveMatrix, viewMatrix);
 			inverseViewProjMatrix = utils.invertMatrix(viewProjMat);
-			gl.uniformMatrix4fv(locations['env_inverseViewProjMatrix'], gl.FALSE, utils.transposeMatrix(inverseViewProjMatrix));
+			gl.uniformMatrix4fv(this.locations['env_inverseViewProjMatrix'], gl.FALSE, utils.transposeMatrix(inverseViewProjMatrix));
 
-			gl.uniform1f(locations['radians_over_time'], now);
+			gl.uniform1f(this.locations['radians_over_time'], now);
 
 			gl.bindVertexArray(this.vao);
 			gl.depthFunc(gl.LEQUAL);

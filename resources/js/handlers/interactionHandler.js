@@ -12,11 +12,11 @@ function InteractionHandler() {
 	 ******************/
 
 	// Interaction attributes
-	let keys = {};
-	let mouse = {
+	this.keys = {};
+	this.mouse = {
 		x: 0.0, y: 0.0,
 	};
-	let wheel = {
+	this.wheel = {
 		delta: {
 			x: 0.0, y: 0.0,
 		},
@@ -27,13 +27,12 @@ function InteractionHandler() {
 
 	// Init keyboard keydown
 	window.addEventListener('keydown', (e) => {
-		keys[e.code] = true;
-		console.log(e);
+		this.keys[e.code] = true;
 		e.preventDefault();
 	});
 	// Init keyboard keyup
 	window.addEventListener('keyup', (e) => {
-		keys[e.code] = false;
+		this.keys[e.code] = false;
 		e.preventDefault();
 	});
 
@@ -56,23 +55,23 @@ function InteractionHandler() {
 
 	// Init mouse move function
 	function onMouseMove(e) {
-		mouse.x = e.movementX;
-		mouse.x = e.movementY;
+		this.mouse.x = e.movementX;
+		this.mouse.x = e.movementY;
 	}
 
 	// Init mouse wheel movements
 	window.addEventListener('wheel', (e) => {
-		wheel.delta.x += e.deltaX;
-		wheel.delta.y += e.deltaY;
+		this.wheel.delta.x += e.deltaX;
+		this.wheel.delta.y += e.deltaY;
 	});
 
 	/*******************
 	 * Methods
 	 ******************/
 
-	function resetMouse() {
-		mouse.x = 0;
-		mouse.y = 0;
+	this.resetMouse = function() {
+		this.mouse.x = 0;
+		this.mouse.y = 0;
 	}
 
 }

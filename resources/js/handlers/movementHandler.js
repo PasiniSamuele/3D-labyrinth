@@ -15,10 +15,12 @@ function MovementHandler() {
 	 * Function to be called every time the display is updated
 	 * 
 	 * @param { object } camera camera object
+	 * @param { object } interactionHandler interactionHandler object
 	 * 
 	 * @returns the new camera object
 	 */
-	function idle(camera) {
+	this.idle = function(camera, interactionHandler) {
+		console.log(interactionHandler);
 		if (interactionHandler.keys['KeyW']) { camera.moveForward(); }
 		if (interactionHandler.keys['KeyS']) { camera.moveBackward(); }
 		if (interactionHandler.keys['KeyA']) { camera.moveRight(); }
@@ -38,8 +40,8 @@ function MovementHandler() {
 			camera.setRotationY(interactionHandler, interactionHandler.mouse.y);
 			interactionHandler.resetMouse();
 		}
-		// Return the camera
-		return camera;
+		// Return camera and interactionHandler
+		return {"camera":camera, "interactionHandler":interactionHandler};
 	}
 
 }
