@@ -2,8 +2,8 @@
 //  CONSTANTS & DEBUG
 //
 
-const CENTERED = 1;                 // true if labyrinth centered, false if using custom offsets
-const CLOCKWISE_INDEXES = 1;         // true -> 2,1,0, 3,2,0    false-> 0,1,2, 0,2,3
+const CENTERED = 0;                 // true if labyrinth centered, false if using custom offsets
+const CLOCKWISE_INDEXES = 0;         // true -> 2,1,0, 3,2,0    false-> 0,1,2, 0,2,3
 const VERTICES2D = 0;                // true returns a 2D array of vertices, false returns a 1D array
 const MINIMAL_VERTICES = 0;         // true to optimize vertices (bad for meshes), false to make only squares
 
@@ -61,7 +61,7 @@ const vertPosition = {
  * 
  * @returns a vector of size 3 containing respectively vertices, indices and colours
  */
- var compute3DLabyrinth = function(labyrinth, MIN_Y, MAX_Y, offset_x, offset_y, offset_z, size_multiplier, colour){
+ var compute3DLabyrinth = function(labyrinth, MIN_Y, MAX_Y, offset_x, offset_y, offset_z, size_multiplier){
     //
     //  INITIALIZATION
     //
@@ -79,6 +79,15 @@ const vertPosition = {
     let indexes = [];
     let icount = 0;
     let colours = [];
+
+    let computeColor = function(material){
+        switch(material){
+            case mazeElement.FLOOR:
+                return [0.0, 1.0, 0.0];
+            case mazeElement.WALL:
+                return [1.0, 0.0, 0.0];
+        }
+    }
 
     let computeUV = function(position, material){
         if(ENABLE_UV){
@@ -132,7 +141,7 @@ const vertPosition = {
 
     let computeVertex = function(x,y,z,dir,uv,mat){
 
-        colours.push(colour[0], colour[1], colour[2]);
+        colours = colours.concat(computeColor(mat));
 
 		let vertex = [];
 

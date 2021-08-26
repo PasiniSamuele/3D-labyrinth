@@ -36,7 +36,7 @@ function Skybox(textures, program){
 
     this.draw=function(now, perspectiveMatrix, viewMatrix){
             gl.useProgram(this.program);
-
+            
 			gl.activeTexture(this.textures[0].slot);
 			gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.textures[0].texture);
 			gl.uniform1i(this.locations['env_u_day_texture'], utils.getTextureSlotOffset(gl,this.textures[0].slot));
@@ -48,9 +48,8 @@ function Skybox(textures, program){
 			var viewProjMat = utils.multiplyMatrices(perspectiveMatrix, viewMatrix);
 			inverseViewProjMatrix = utils.invertMatrix(viewProjMat);
 			gl.uniformMatrix4fv(this.locations['env_inverseViewProjMatrix'], gl.FALSE, utils.transposeMatrix(inverseViewProjMatrix));
-
-			gl.uniform1f(this.locations['radians_over_time'], now);
-
+            //var time = ((new Date()).getTime()*0.003)%6.28;
+			gl.uniform1f(this.locations['radians_over_time'], utils.degToRad(now%360));
 			gl.bindVertexArray(this.vao);
 			gl.depthFunc(gl.LEQUAL);
 			gl.drawArrays(gl.TRIANGLES, 0, 1 * 6);

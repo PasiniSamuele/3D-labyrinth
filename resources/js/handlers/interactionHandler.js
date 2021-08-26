@@ -24,15 +24,16 @@ function InteractionHandler() {
 			x: 10.0, y: 10.0,
 		},
 	};
+	let scope=this;
 
 	// Init keyboard keydown
 	window.addEventListener('keydown', (e) => {
-		this.keys[e.code] = true;
+		scope.keys[e.code] = true;
 		e.preventDefault();
 	});
 	// Init keyboard keyup
 	window.addEventListener('keyup', (e) => {
-		this.keys[e.code] = false;
+		scope.keys[e.code] = false;
 		e.preventDefault();
 	});
 
@@ -42,27 +43,27 @@ function InteractionHandler() {
 	gl.canvas.onclick = function () {
 		gl.canvas.requestPointerLock();
 	}
-	document.addEventListener('pointerlockchange', lockChangeAlert, false);
-	document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
-	function lockChangeAlert() {
-		if (document.pointerLockElement === canvas ||
-			document.mozPointerLockElement === canvas) {
-			window.addEventListener('mousemove', onMouseMove, false);
+	document.addEventListener('pointerlockchange', scope.lockChangeAlert, false);
+	document.addEventListener('mozpointerlockchange', scope.lockChangeAlert, false);
+	this.lockChangeAlert=function() {
+		if (document.pointerLockElement === gl.canvas ||
+			document.mozPointerLockElement === gl.canvas) {
+			window.addEventListener('mousemove', scope.onMouseMove, false);
 		} else {
-			window.removeEventListener("mousemove", onMouseMove, false);
+			window.removeEventListener("mousemove", scope.onMouseMove, false);
 		}
 	}
 
 	// Init mouse move function
-	function onMouseMove(e) {
-		this.mouse.x = e.movementX;
-		this.mouse.x = e.movementY;
+	this.onMouseMove=function(e) {
+		scope.mouse.x = e.movementX;
+		scope.mouse.x = e.movementY;
 	}
 
 	// Init mouse wheel movements
 	window.addEventListener('wheel', (e) => {
-		this.wheel.delta.x += e.deltaX;
-		this.wheel.delta.y += e.deltaY;
+		scope.wheel.delta.x += e.deltaX;
+		scope.wheel.delta.y += e.deltaY;
 	});
 
 	/*******************
@@ -70,8 +71,8 @@ function InteractionHandler() {
 	 ******************/
 
 	this.resetMouse = function() {
-		this.mouse.x = 0;
-		this.mouse.y = 0;
+		scope.mouse.x = 0;
+		scope.mouse.y = 0;
 	}
 
 }

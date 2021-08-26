@@ -5,9 +5,10 @@ function SceneHandler(movementHandler, interactionHandler){
 	this.interactionHandler=interactionHandler;
 
     this.drawScene=function(now,scope, iter) {
-
+		
         // Get current time
-		now *= 0.001;  // seconds;
+		now =Math.floor(now* 0.001);  // seconds;
+		console.log(now);
 		let deltaTime = now - scope.then;
 		scope.then = now;
 
@@ -29,13 +30,15 @@ function SceneHandler(movementHandler, interactionHandler){
 
         // Perspective, World Matrix
 		let perspectiveMatrix = scope.level.camera.perspectiveMatrix;
+		//let perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width / gl.canvas.height, 0.1, 100.0);
         let viewMatrix = scope.level.camera.viewMatrix;
+		//let viewMatrix = utils.MakeView(0.5, 1, 0.5, 0, 90);
 
         scope.level.skybox.draw(now, perspectiveMatrix, viewMatrix)
         scope.level.labyrinth.draw(perspectiveMatrix, viewMatrix);
 
-		if(iter==0)
-        	window.requestAnimationFrame(()=>scope.drawScene(now,scope,iter+1));
+		//if(iter==0)
+        	window.requestAnimationFrame(()=>scope.drawScene(Date.now(),scope,iter+1));
     }
 
     this.setLevel=function(level){

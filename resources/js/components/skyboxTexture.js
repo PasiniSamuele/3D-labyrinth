@@ -7,7 +7,7 @@ function SkyboxTexture(faceInfos, slot){
         this.texture = gl.createTexture();
 	    gl.activeTexture(slot);
 	    gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
-        scope=this;
+        let scope=this;
         this.faceInfos.forEach((faceInfo) => {
             
             let target = utils.computeTargetFace(faceInfo.target);
