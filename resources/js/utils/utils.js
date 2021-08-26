@@ -5,6 +5,23 @@
 
 var utils = {
 
+	computeTargetFace: function(targetString){
+		switch(targetString){
+			case "gl.TEXTURE_CUBE_MAP_POSITIVE_X":
+				return gl.TEXTURE_CUBE_MAP_POSITIVE_X;
+			case "gl.TEXTURE_CUBE_MAP_NEGATIVE_X":
+				return gl.TEXTURE_CUBE_MAP_NEGATIVE_X;
+			case "gl.TEXTURE_CUBE_MAP_POSITIVE_Y":
+				return gl.TEXTURE_CUBE_MAP_POSITIVE_Y;		
+			case "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y":
+				return gl.TEXTURE_CUBE_MAP_NEGATIVE_Y
+			case "gl.TEXTURE_CUBE_MAP_POSITIVE_Z":
+				return gl.TEXTURE_CUBE_MAP_POSITIVE_Z;
+			case "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z":
+				return gl.TEXTURE_CUBE_MAP_NEGATIVE_Z;			
+		}
+	},
+
 	getTextureSlotOffset: function(gl,slot){
 		return (slot - gl.TEXTURE0);
 	},
