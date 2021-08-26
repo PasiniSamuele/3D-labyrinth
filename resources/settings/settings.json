@@ -1,9 +1,11 @@
 {
-    "RANDOM_GENERATION":false,
-    "settings":[
-        {
-            "level":"resources/settings/0/settings.json",
-            "random":"resources/settings/0/random.json"
-        }
-    ]
+	"RANDOM_GENERATION": false,
+	"settings": {
+		"levels": [
+			{
+				"level": "resources/settings/0/settings.json",
+				"random": "resources/settings/0/random.json"
+			}
+		]
+	}
 }
