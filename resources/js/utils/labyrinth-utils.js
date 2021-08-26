@@ -8,8 +8,7 @@ const VERTICES2D = 0;                // true returns a 2D array of vertices, fal
 const MINIMAL_VERTICES = 0;         // true to optimize vertices (bad for meshes), false to make only squares
 
 const ENABLE_NORMALS = 0;
-const ENABLE_UV_WALL = 0;
-const ENABLE_UV_FLOOR = 0;
+const ENABLE_UV = 0;
 
 const DEBUG_FRONT = 1;
 const DEBUG_RIGHT = 1;
@@ -18,12 +17,30 @@ const DEBUG_LEFT = 1;
 const DEBUG_FLOOR = 1;
 const DEBUG_TOP = 0;                
 
+const U_UNIT = 0.5;
+const V_UNIT = 1.0;
+
 const mazeElement = {
     FLOOR: 0,
     WALL: 1, 
 
     BLOCKS: [1]
-}
+};
+
+const mazeDirection = {
+    FRONT: 0,
+    RIGHT: 1,
+    BACK: 2,
+    LEFT: 3,
+    FLOOR: 4
+};
+
+const vertPosition = {
+    TOP_LEFT: 0,
+    BOTTOM_LEFT: 1,
+    BOTTOM_RIGHT: 2,
+    TOP_RIGHT: 3
+};
 
 /**
  * Function that returns arrays of 3D coordinates of a given 2D labyrinth
@@ -44,8 +61,7 @@ const mazeElement = {
  * 
  * @returns a vector of size 3 containing respectively vertices, indices and colours
  */
- var compute3DLabyrinth = function(labyrinth, bottom, top, offset_x, offset_y, offset_z, size_multiplier, wall_colours, floor_colours){
-
+ var compute3DLabyrinth = function(labyrinth, MIN_Y, MAX_Y, offset_x, offset_y, offset_z, size_multiplier, colour){
     //
     //  INITIALIZATION
     //
@@ -53,17 +69,10 @@ const mazeElement = {
     let X_SIZE = labyrinth[0].length;
     let Z_SIZE = labyrinth.length;
 
-    const MIN_X = 0.0;
-    let MAX_X = X_SIZE;
-    let MIN_Y = bottom;
-    let MAX_Y = top;
-    const MIN_Z = 0.0;
-    let MAX_Z = Z_SIZE;
-
     if(CENTERED){
-        offset_x = -(MAX_X-MIN_X)/2;
+        offset_x = -(X_SIZE)/2;
         offset_y = -(MAX_Y-MIN_Y)/2;
-        offset_z = -(MAX_Z-MIN_Z)/2;
+        offset_z = -(Z_SIZE)/2;
     }
 
     let vertices = [];
@@ -71,9 +80,59 @@ const mazeElement = {
     let icount = 0;
     let colours = [];
 
-    let computeWallVertex = function(x,y,z,dir,uv){
+    let computeUV = function(position, material){
+        if(ENABLE_UV){
+            let uv;
+            
+            switch(material){
+                case mazeElement.FLOOR:
+                    uv = [0.5, 0.0];
+                    break;
+                case mazeElement.WALL:
+                    uv = [0.0, 0.0];
+                    break;
+                default:
+                    uv = [0.0, 0.0];
+                    break;
+            }
 
-        colours.push(wall_colours[0], wall_colours[1], wall_colours[2]);
+            switch(position){
+                case vertPosition.BOTTOM_LEFT:
+                    return uv;
+                case vertPosition.BOTTOM_RIGHT:
+                    uv[0] += U_UNIT;
+                    return uv;
+                case vertPosition.TOP_LEFT:
+                    uv[1] += V_UNIT;
+                    return uv;
+                case vertPosition.TOP_RIGHT:
+                    uv[0] += U_UNIT;
+                    uv[1] += V_UNIT;
+                    return uv;
+            }
+        } else return [];
+    }
+
+    let computeNormals = function(direction){
+        if(ENABLE_NORMALS){
+            switch(direction){
+                case mazeDirection.FRONT:
+                    return [0.0, 0.0, 1.0];
+                case mazeDirection.RIGHT:
+                    return [-1.0, 0.0, 0.0];
+                case mazeDirection.BACK:
+                    return [0.0, 0.0, -1.0];
+                case mazeDirection.LEFT:
+                    return [1.0, 0.0, 0.0];
+                case mazeDirection.FLOOR:
+                    return [0.0, 1.0, 0.0];
+            }
+        } else return [];
+    }
+
+    let computeVertex = function(x,y,z,dir,uv,mat){
+
+        colours.push(colour[0], colour[1], colour[2]);
 
 		let vertex = [];
 
@@ -81,88 +140,9 @@ const mazeElement = {
 		vertex.push((y+offset_y)*size_multiplier);
 		vertex.push((z+offset_z)*size_multiplier);
 
-		if(ENABLE_NORMALS){
-			switch(dir){
-				case 0:
-					//front
-					vertex.push(0.0, 0.0, 1.0);
-					break;
-				case 1:
-					//right
-					vertex.push(-1.0, 0.0, 0.0);
-					break;
-				case 2:
-					//back
-					vertex.push(0.0, 0.0, -1.0);
-					break;
-				case 3:
-					//left
-					vertex.push(1.0, 0.0, 0.0);
-					break;
-				default:
-					console.error("???");
-			}
-		}
+		vertex = vertex.concat(computeNormals(dir));
+        vertex = vertex.concat(computeUV(uv,mat));
 
-        if(ENABLE_UV_WALL){
-			switch(uv){
-				case 0:
-					//top left
-					vertex.push(0.0, 1.0);
-					break;
-				case 1:
-					//bottom left
-					vertex.push(0.0, 0.0);
-					break;
-				case 2:
-					//bottom right
-					vertex.push(1.0, 0.0);
-					break;
-				case 3:
-					//top right
-					vertex.push(1.0, 1.0);
-					break;
-				default:
-					console.error("???");
-			}
-		}
-
-        return vertex;
-    }
-
-    let computeFloorVertex = function(x,y,z,uv){
-        colours.push(floor_colours[0], floor_colours[1], floor_colours[2]);
-        let vertex = [];
-
-		vertex.push((x+offset_x)*size_multiplier);
-		vertex.push((y+offset_y)*size_multiplier);
-		vertex.push((z+offset_z)*size_multiplier);
-		
-		if(ENABLE_NORMALS) vertex.push(0.0, 1.0, 0.0);
-
-        if(ENABLE_UV_FLOOR){
-			switch(uv){
-				case 0:
-					//top left
-					vertex.push(0.0, 1.0);
-					break;
-				case 1:
-					//bottom left
-					vertex.push(0.0, 0.0);
-					break;
-				case 2:
-					//bottom right
-					vertex.push(1.0, 0.0);
-					break;
-				case 3:
-					//top right
-					vertex.push(1.0, 1.0);
-					break;
-				default:
-					console.error("???");
-			}
-		}
-		
         return vertex;
     }
 
@@ -191,10 +171,10 @@ const mazeElement = {
                 //FRONT
                 if(DEBUG_FRONT && ((i-1 < 0) ? true : mazeElement.BLOCKS.includes(labyrinth[i-1][j]))) {
                     vertices.push(
-                        computeWallVertex(j, MAX_Y, i, 0, 0),
-                        computeWallVertex(j, MIN_Y, i, 0, 1),
-                        computeWallVertex(j+1, MIN_Y, i, 0, 2),
-                        computeWallVertex(j+1, MAX_Y, i, 0, 3)
+                        computeVertex(j, MAX_Y, i, mazeDirection.FRONT, vertPosition.TOP_LEFT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j]),
+                        computeVertex(j, MIN_Y, i, mazeDirection.FRONT, vertPosition.BOTTOM_LEFT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j]),
+                        computeVertex(j+1, MIN_Y, i, mazeDirection.FRONT, vertPosition.BOTTOM_RIGHT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j]),
+                        computeVertex(j+1, MAX_Y, i, mazeDirection.FRONT, vertPosition.TOP_RIGHT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j])
                     );
                     incrementIndexes();
                 }
@@ -202,10 +182,10 @@ const mazeElement = {
                 //RIGHT
                 if(DEBUG_RIGHT && ((j+1 >= X_SIZE) ? true : mazeElement.BLOCKS.includes(labyrinth[i][j+1]))){
                     vertices.push(
-                        computeWallVertex(j+1, MAX_Y, i, 1, 0),
-                        computeWallVertex(j+1, MIN_Y, i, 1, 1),
-                        computeWallVertex(j+1, MIN_Y, i+1, 1, 2),
-                        computeWallVertex(j+1, MAX_Y, i+1, 1, 3)
+                        computeVertex(j+1, MAX_Y, i, mazeDirection.RIGHT, vertPosition.TOP_LEFT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1]),
+                        computeVertex(j+1, MIN_Y, i, mazeDirection.RIGHT, vertPosition.BOTTOM_LEFT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1]),
+                        computeVertex(j+1, MIN_Y, i+1, mazeDirection.RIGHT, vertPosition.BOTTOM_RIGHT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1]),
+                        computeVertex(j+1, MAX_Y, i+1, mazeDirection.RIGHT, vertPosition.TOP_RIGHT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1])
                     );
                     incrementIndexes();
                 }
@@ -213,10 +193,10 @@ const mazeElement = {
                 //BACK
                 if(DEBUG_BACK && ((i+1 >= Z_SIZE) ? true : mazeElement.BLOCKS.includes(labyrinth[i+1][j]))){
                     vertices.push(
-                        computeWallVertex(j+1, MAX_Y, i+1, 2, 0),
-                        computeWallVertex(j+1, MIN_Y, i+1, 2, 1),
-                        computeWallVertex(j, MIN_Y, i+1, 2, 2),
-                        computeWallVertex(j, MAX_Y, i+1, 2, 3)
+                        computeVertex(j+1, MAX_Y, i+1, mazeDirection.BACK, vertPosition.TOP_LEFT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j]),
+                        computeVertex(j+1, MIN_Y, i+1, mazeDirection.BACK, vertPosition.BOTTOM_LEFT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j]),
+                        computeVertex(j, MIN_Y, i+1, mazeDirection.BACK, vertPosition.BOTTOM_RIGHT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j]),
+                        computeVertex(j, MAX_Y, i+1, mazeDirection.BACK, vertPosition.TOP_RIGHT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j])
                     );
                     incrementIndexes();
                 }
@@ -224,26 +204,21 @@ const mazeElement = {
                 //LEFT
                 if(DEBUG_LEFT && ((j-1 < 0) ? true : mazeElement.BLOCKS.includes(labyrinth[i][j-1]))){
                     vertices.push(
-                        computeWallVertex(j, MAX_Y, i+1, 3, 0),
-                        computeWallVertex(j, MIN_Y, i+1, 3, 1),
-                        computeWallVertex(j, MIN_Y, i, 3, 2),
-                        computeWallVertex(j, MAX_Y, i, 3, 3)
+                        computeVertex(j, MAX_Y, i+1, mazeDirection.LEFT, vertPosition.TOP_LEFT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
+                        computeVertex(j, MIN_Y, i+1, mazeDirection.LEFT, vertPosition.BOTTOM_LEFT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
+                        computeVertex(j, MIN_Y, i, mazeDirection.LEFT, vertPosition.BOTTOM_RIGHT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
+                        computeVertex(j, MAX_Y, i, mazeDirection.LEFT, vertPosition.TOP_RIGHT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1])
                     );
                     incrementIndexes();
                 }
 
+                //FLOOR
                 if(DEBUG_FLOOR){
                     vertices.push(
-                        computeFloorVertex(j, MIN_Y, i, 0), computeFloorVertex(j, MIN_Y, i+1, 1), 
-                        computeFloorVertex(j+1, MIN_Y, i+1, 2), computeFloorVertex(j+1, MIN_Y, i, 3)
-                    );
-                    incrementIndexes();
-                }
-            } else {
-                if(DEBUG_TOP){
-                    vertices.push(
-                        computeFloorVertex(j, MAX_Y, i, 0), computeFloorVertex(j, MAX_Y, i+1, 1), 
-                        computeFloorVertex(j+1, MAX_Y, i+1, 2), computeFloorVertex(j+1, MAX_Y, i, 3)
+                        computeVertex(j, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_LEFT, labyrinth[i][j]),
+                        computeVertex(j, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_LEFT, labyrinth[i][j]), 
+                        computeVertex(j+1, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_RIGHT, labyrinth[i][j]),
+                        computeVertex(j+1, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_RIGHT, labyrinth[i][j])
                     );
                     incrementIndexes();
                 }
