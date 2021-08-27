@@ -20,8 +20,7 @@ class Camera {
 
 		// Camera settings
 		this.settings = settings;
-
-		// Attributes
+		// Position
 		this.position = {
 			x: this.settings.position.x.default,
 			y: this.settings.position.y.default,
@@ -29,6 +28,7 @@ class Camera {
 			angle: this.settings.position.angle.default,
 			elevation: this.settings.position.elevation.default,
 		};
+		// Speed
 		this.speed = {
 			x: this.settings.speed.x.default,
 			y: this.settings.speed.y.default,
@@ -36,6 +36,7 @@ class Camera {
 			angle: this.settings.speed.angle.default,
 			elevation: this.settings.speed.elevation.default,
 		};
+		// Acceleration
 		this.acceleration = {
 			x: this.settings.acceleration.x.default,
 			y: this.settings.acceleration.y.default,
@@ -43,12 +44,15 @@ class Camera {
 			angle: this.settings.acceleration.angle.default,
 			elevation: this.settings.acceleration.elevation.default,
 		};
+		// Matrices
 		this.perspectiveMatrix = utils.MakePerspective(this.settings.fovy, gl.canvas.width / gl.canvas.height, this.settings.near, this.settings.far);
 		this.viewMatrix = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.elevation, this.position.angle);
 		this.viewMatrixNoElevation = utils.MakeView(this.position.x, this.position.y, this.position.z, 0.0, this.position.angle, 0.0);
-
+		// Rotation smoothness vector
 		this.lastRotationX = [];
 		this.lastRotationY = [];
+		// DEBUG PARAMETERS
+		this.DEBUG = false;
 	}
 
 	/*******************
@@ -68,12 +72,12 @@ class Camera {
 	/**
 	 * Move the camera up
 	 */
-	moveUp() { this.acceleration.y = this.settings.acceleration.y.max; };
+	moveUp() { if (this.DEBUG) this.acceleration.y = this.settings.acceleration.y.max; };
 
 	/**
 	 * Move the camera down
 	 */
-	moveDown() { this.acceleration.y = -this.settings.acceleration.y.max; };
+	moveDown() { if (this.DEBUG) this.acceleration.y = -this.settings.acceleration.y.max; };
 
 	/**
 	 * Move the camera forward
@@ -125,7 +129,7 @@ class Camera {
 	 */
 	setRotationY(value) {
 		// Limit control
-		if ((this.position.elevation < this.settings.position.elevation.max || value > 0) && (this.position.elevation > this.settings.position.elevation.min || value < 0)) {
+		if (this.DEBUG || (this.position.elevation < this.settings.position.elevation.max || value > 0) && (this.position.elevation > this.settings.position.elevation.min || value < 0)) {
 			// Smoothness
 			if (this.lastRotationY.length > this.settings.position.elevation.mouseSmoothness)
 				this.lastRotationY.shift();
