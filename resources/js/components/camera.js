@@ -6,7 +6,7 @@
  * Object to manage camera and its movements
  */
 class Camera {
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -78,28 +78,35 @@ class Camera {
 	/**
 	 * Move the camera forward
 	 */
-	moveForward() { this.acceleration.z = -this.settings.acceleration.z.max; };
+	moveForward() {
+		this.acceleration.z = (this.speed.z > 0 && this.acceleration.z != 0) ? 0.0 : -this.settings.acceleration.z.max;
+		console.log(this.acceleration.z);
+	};
 
 	/**
 	 * Move the camera backward
 	 */
-	moveBackward() { this.acceleration.z = this.settings.acceleration.z.max; };
+	moveBackward() {	
+		this.acceleration.z = (this.speed.z < 0 && this.acceleration.z != 0) ? 0.0 : this.settings.acceleration.z.max;
+	
+		console.log(this.acceleration.z);
+	};
 
 	/**
 	 * Rotate the camera right
 	 */
 	rotateRight() { this.acceleration.angle = this.settings.acceleration.angle.max; };
-	
+
 	/**
 	 * Rotate the camera left
 	 */
 	rotateLeft() { this.acceleration.angle = -this.settings.acceleration.angle.max; };
-	
+
 	/**
 	 * Rotate the camera up
 	 */
 	rotateUp() { this.acceleration.elevation = this.settings.acceleration.elevation.max; };
-	
+
 	/**
 	 * Rotate the camera down
 	 */
@@ -198,7 +205,7 @@ class Camera {
 		if (speed > maxSpeed || speed < -maxSpeed)
 			speed = maxSpeed * Math.sign(speed);
 		// Deceleration
-		if (acceleration == 0)
+		if (acceleration == 0 || Math.sign(acceleration) != Math.sign(speed))
 			if (Math.abs(speed) > minSpeed)
 				if (Math.abs(speed) > Math.abs(deltaTime * Math.pow(speed, 2) * Math.sign(speed) * deceleration))
 					speed -= deltaTime * Math.pow(speed, 2) * Math.sign(speed) * deceleration;
