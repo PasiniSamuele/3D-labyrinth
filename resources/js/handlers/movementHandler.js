@@ -29,13 +29,10 @@ class MovementHandler {
 	 */
 	idle(camera, interactionHandler) {
 
-		if (interactionHandler.keys['ArrowUp'])
-			console.log("dfdfdfs");
-
 		if (interactionHandler.keys['KeyW']) { camera.moveForward(); }
 		if (interactionHandler.keys['KeyS']) { camera.moveBackward(); }
-		if (interactionHandler.keys['KeyA']) { camera.moveRight(); }
-		if (interactionHandler.keys['KeyD']) { camera.moveLeft(); }
+		if (interactionHandler.keys['KeyD']) { camera.moveRight(); }
+		if (interactionHandler.keys['KeyA']) { camera.moveLeft(); }
 		if (interactionHandler.keys['KeyQ']) { camera.moveUp(); }
 		if (interactionHandler.keys['KeyE']) { camera.moveDown(); }
 		if (interactionHandler.keys['ArrowRight']) { camera.rotateRight(); }
@@ -44,11 +41,11 @@ class MovementHandler {
 		if (interactionHandler.keys['ArrowDown']) { camera.rotateDown(); }
 
 		if (interactionHandler.mouse.x != 0) {
-			camera.setRotationX(interactionHandler, interactionHandler.mouse.x);
+			camera.setRotationX(interactionHandler.mouse.x);
 			interactionHandler.resetMouse();
 		}
 		if (interactionHandler.mouse.y != 0) {
-			camera.setRotationY(interactionHandler, interactionHandler.mouse.y);
+			camera.setRotationY(interactionHandler.mouse.y);
 			interactionHandler.resetMouse();
 		}
 		// Return camera and interactionHandler

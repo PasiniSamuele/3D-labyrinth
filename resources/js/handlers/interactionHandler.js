@@ -38,37 +38,18 @@ class InteractionHandler {
 			e.preventDefault();
 		});
 
-		// Init mouse move function
-		this.onMouseMove = function (e) {
-			this.mouse.x = e.movementX;
-			this.mouse.x = e.movementY;
-		}
-
-		// Init mouse wheel movements
-		this.onMouseWheelMove = function (e) {
-			this.wheel.delta.x += e.deltaX;
-			this.wheel.delta.y += e.deltaY;
-		}
-
 		// Init pointer lock
+		this.pointerLockBool = false;
 		gl.canvas.requestPointerLock = gl.canvas.requestPointerLock || gl.canvas.mozRequestPointerLock;
 		document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
 		gl.canvas.onclick = function () {
-			gl.canvas.requestPointerLock();
+			//if (!this.pointerLockBool)
+				gl.canvas.requestPointerLock();
 		};
-		document.addEventListener('pointerlockchange', lockChangeAlert, false);
-		document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
-		function lockChangeAlert() {
-			if (document.pointerLockElement === gl.canvas ||
-				document.mozPointerLockElement === gl.canvas) {
-				window.addEventListener('mousemove', this.onMouseMove, false);
-				window.addEventListener('wheel', this.onMouseWheelMove, false);
-			} else {
-				window.removeEventListener("mousemove", this.onMouseMove, false);
-				window.removeEventListener("wheel", this.onMouseWheelMove, false);
-			}
-		}
+		document.addEventListener('pointerlockchange', () => this.lockChangeAlert(), false);
+		document.addEventListener('mozpointerlockchange', () => this.lockChangeAlert(), false);
 
+		this.onMouseMoveHandler;
 	}
 
 	/*******************
@@ -78,6 +59,34 @@ class InteractionHandler {
 	resetMouse() {
 		this.mouse.x = 0;
 		this.mouse.y = 0;
+	}
+
+	/*******************
+	 * Private
+	 ******************/
+
+	// Init mouse move function
+	onMouseMove(e) {
+		this.mouse.x = e.movementX;
+		this.mouse.y = e.movementY;
+	}
+
+	// Init mouse wheel movements
+	onMouseWheelMove(e) {
+		this.wheel.delta.x += e.deltaX;
+		this.wheel.delta.y += e.deltaY;
+	}
+
+	// Init pointer lock
+	lockChangeAlert() {
+		if (document.pointerLockElement === gl.canvas ||
+			document.mozPointerLockElement === gl.canvas) {
+			this.pointerLockBool = true;
+			window.addEventListener('mousemove', this.onMouseMoveHandler = ((e) => { this.onMouseMove(e); }), false);
+		} else {
+			this.pointerLockBool = true;
+			window.removeEventListener("mousemove", this.onMouseMoveHandler, false);
+		}
 	}
 
 }

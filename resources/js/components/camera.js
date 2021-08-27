@@ -45,8 +45,8 @@ class Camera {
 			elevation: this.settings.acceleration.elevation.default,
 		};
 		this.perspectiveMatrix = utils.MakePerspective(this.settings.fovy, gl.canvas.width / gl.canvas.height, this.settings.near, this.settings.far);
-		this.viewMatrix = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.angle, this.position.elevation);
-		this.viewMatrixNoElevation = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.angle, 0.0);
+		this.viewMatrix = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.elevation, this.position.angle);
+		this.viewMatrixNoElevation = utils.MakeView(this.position.x, this.position.y, this.position.z, 0.0, this.position.angle, 0.0);
 
 		this.lastRotationX = [];
 		this.lastRotationY = [];
@@ -60,8 +60,8 @@ class Camera {
 	moveLeft() { this.acceleration.x = -this.settings.acceleration.x.max; };
 	moveUp() { this.acceleration.y = this.settings.acceleration.y.max; };
 	moveDown() { this.acceleration.y = -this.settings.acceleration.y.max; };
-	moveForward() { this.acceleration.z = this.settings.acceleration.z.max; };
-	moveBackward() { this.acceleration.z = -this.settings.acceleration.z.max; };
+	moveForward() { this.acceleration.z = -this.settings.acceleration.z.max; };
+	moveBackward() { this.acceleration.z = this.settings.acceleration.z.max; };
 
 	rotateRight() { this.acceleration.angle = this.settings.acceleration.angle.max; };
 	rotateLeft() { this.acceleration.angle = -this.settings.acceleration.angle.max; };
@@ -70,7 +70,7 @@ class Camera {
 
 	setRotationX(value) {
 		// Smoothness
-		if (this.lastRotationX > this.settings.position.angle.mouseSmoothness)
+		if (this.lastRotationX.length > this.settings.position.angle.mouseSmoothness)
 			this.lastRotationX.shift();
 		this.lastRotationX.push(value);
 		let lastRotationSum = 0.0;
@@ -82,16 +82,20 @@ class Camera {
 
 	setRotationY(value) {
 		// Limit control
-		if ((this.position.elevation < this.settings.position.elevation.max || value > 0) && (this.position.elevation > this.settings.position.elevation.max || value < 0)) {
+		if ((this.position.elevation < this.settings.position.elevation.max || value > 0) && (this.position.elevation > this.settings.position.elevation.min || value < 0)) {
 			// Smoothness
-			if (this.lastRotationY > this.settings.position.elevation.mouseSmoothness)
+			if (this.lastRotationY.length > this.settings.position.elevation.mouseSmoothness)
 				this.lastRotationY.shift();
 			this.lastRotationY.push(value);
-			this.lastRotationSum = 0.0;
+			let lastRotationSum = 0.0;
 			for (let i = 0; i < this.lastRotationY.length; i++)
-				this.lastRotationSum += this.lastRotationY[i];
+				lastRotationSum += this.lastRotationY[i];
 			// New value
-			this.position.elevation += ((this.lastRotationSum + value) / this.lastRotationY.length) * this.settings.elevation.angle.mouseReactivity;
+			this.position.elevation -= ((lastRotationSum + value) / this.lastRotationY.length) * this.settings.position.elevation.mouseReactivity;
+			if (this.position.elevation > this.settings.position.elevation.max)
+				this.position.elevation = this.settings.position.elevation.max;
+			else if (this.position.elevation < this.settings.position.elevation.min)
+				this.position.elevation = this.settings.position.elevation.min;
 		}
 	}
 
@@ -109,8 +113,8 @@ class Camera {
 
 		// Compute all matrices (with and without elevation, perspective)
 		this.perspectiveMatrix = utils.MakePerspective(this.settings.fovy, gl.canvas.width / gl.canvas.height, this.settings.near, this.settings.far);
-		this.viewMatrix = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.angle, this.position.elevation);
-		this.viewMatrixNoElevation = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.angle, 0.0);
+		this.viewMatrix = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.elevation, this.position.angle);
+		this.viewMatrixNoElevation = utils.MakeView(this.position.x, this.position.y, this.position.z, 0.0, this.position.angle);
 
 		// Reset all accelerations
 		this.resetAccelerations();
@@ -135,7 +139,7 @@ class Camera {
 		this.speed.angle = this.computeSpeed(this.speed.angle, this.acceleration.angle, this.settings.acceleration.angle.decelerationCoefficient, this.settings.speed.angle.max, this.settings.speed.angle.min, deltaTime);
 		this.speed.elevation = this.computeSpeed(this.speed.elevation, this.acceleration.elevation, this.settings.acceleration.elevation.decelerationCoefficient, this.settings.speed.elevation.max, this.settings.speed.elevation.min, deltaTime, this.position.elevation, this.settings.position.elevation.min, this.settings.position.elevation.max);
 	}
-	
+
 	computeSpeed(speed, acceleration, deceleration, maxSpeed, minSpeed, deltaTime, currentPosition = false, minPosition = false, maxPosition = false) {
 		// If max or min position [optional]
 		if (currentPosition !== false && maxPosition !== false && minPosition !== false)
@@ -165,9 +169,9 @@ class Camera {
 	}
 
 	computePositions(deltaTime) {
-		this.position.x -= (this.viewMatrixNoElevation[0] * this.speed.x + this.viewMatrixNoElevation[4] * this.speed.y + this.viewMatrixNoElevation[8] * this.speed.z) * deltaTime;
-		this.position.y -= (this.viewMatrixNoElevation[1] * this.speed.x + this.viewMatrixNoElevation[5] * this.speed.y + this.viewMatrixNoElevation[9] * this.speed.z) * deltaTime;
-		this.position.z -= (this.viewMatrixNoElevation[2] * this.speed.x + this.viewMatrixNoElevation[6] * this.speed.y + this.viewMatrixNoElevation[10] * this.speed.z) * deltaTime;
+		this.position.x += (this.viewMatrixNoElevation[0] * this.speed.x + this.viewMatrixNoElevation[4] * this.speed.y + this.viewMatrixNoElevation[8] * this.speed.z) * deltaTime;
+		this.position.y += (this.viewMatrixNoElevation[1] * this.speed.x + this.viewMatrixNoElevation[5] * this.speed.y + this.viewMatrixNoElevation[9] * this.speed.z) * deltaTime;
+		this.position.z += (this.viewMatrixNoElevation[2] * this.speed.x + this.viewMatrixNoElevation[6] * this.speed.y + this.viewMatrixNoElevation[10] * this.speed.z) * deltaTime;
 		this.position.angle += this.speed.angle * deltaTime;
 		this.position.elevation += this.speed.elevation * deltaTime;
 	}
