@@ -77,6 +77,8 @@ const vertPosition = {
 
     let vertices = [];
     let indexes = [];
+    let normals = [];
+    let uvs = [];
     let icount = 0;
     let colours = [];
 
@@ -90,53 +92,49 @@ const vertPosition = {
     }
 
     let computeUV = function(position, material){
-        if(ENABLE_UV){
-            let uv;
-            
-            switch(material){
-                case mazeElement.FLOOR:
-                    uv = [0.5, 0.0];
-                    break;
-                case mazeElement.WALL:
-                    uv = [0.0, 0.0];
-                    break;
-                default:
-                    uv = [0.0, 0.0];
-                    break;
-            }
+        let uv;
+        
+        switch(material){
+            case mazeElement.FLOOR:
+                uv = [0.5, 0.0];
+                break;
+            case mazeElement.WALL:
+                uv = [0.0, 0.0];
+                break;
+            default:
+                uv = [0.0, 0.0];
+                break;
+        }
 
-            switch(position){
-                case vertPosition.BOTTOM_LEFT:
-                    return uv;
-                case vertPosition.BOTTOM_RIGHT:
-                    uv[0] += U_UNIT;
-                    return uv;
-                case vertPosition.TOP_LEFT:
-                    uv[1] += V_UNIT;
-                    return uv;
-                case vertPosition.TOP_RIGHT:
-                    uv[0] += U_UNIT;
-                    uv[1] += V_UNIT;
-                    return uv;
-            }
-        } else return [];
+        switch(position){
+            case vertPosition.BOTTOM_LEFT:
+                return uv;
+            case vertPosition.BOTTOM_RIGHT:
+                uv[0] += U_UNIT;
+                return uv;
+            case vertPosition.TOP_LEFT:
+                uv[1] += V_UNIT;
+                return uv;
+            case vertPosition.TOP_RIGHT:
+                uv[0] += U_UNIT;
+                uv[1] += V_UNIT;
+                return uv;
+        }
     }
 
     let computeNormals = function(direction){
-        if(ENABLE_NORMALS){
-            switch(direction){
-                case mazeDirection.FRONT:
-                    return [0.0, 0.0, 1.0];
-                case mazeDirection.RIGHT:
-                    return [-1.0, 0.0, 0.0];
-                case mazeDirection.BACK:
-                    return [0.0, 0.0, -1.0];
-                case mazeDirection.LEFT:
-                    return [1.0, 0.0, 0.0];
-                case mazeDirection.FLOOR:
-                    return [0.0, 1.0, 0.0];
-            }
-        } else return [];
+        switch(direction){
+            case mazeDirection.FRONT:
+                return [0.0, 0.0, 1.0];
+            case mazeDirection.RIGHT:
+                return [-1.0, 0.0, 0.0];
+            case mazeDirection.BACK:
+                return [0.0, 0.0, -1.0];
+            case mazeDirection.LEFT:
+                return [1.0, 0.0, 0.0];
+            case mazeDirection.FLOOR:
+                return [0.0, 1.0, 0.0];
+        }
     }
 
     let computeVertex = function(x,y,z,dir,uv,mat){
@@ -149,8 +147,8 @@ const vertPosition = {
 		vertex.push((y+offset_y)*size_multiplier);
 		vertex.push((z+offset_z)*size_multiplier);
 
-		vertex = vertex.concat(computeNormals(dir));
-        vertex = vertex.concat(computeUV(uv,mat));
+		normals = normals.concat(computeNormals(dir));
+        uvs = uvs.concat(computeUV(uv,mat));
 
         return vertex;
     }
@@ -235,8 +233,8 @@ const vertPosition = {
         }
     }
 
-    if(VERTICES2D) return [vertices, [].concat(indexes), colours];
-    else return [[].concat.apply([],vertices), [].concat(indexes), colours];
+    if(VERTICES2D) return [vertices, [].concat(indexes), colours, normals, uvs];
+    else return [[].concat.apply([],vertices), [].concat(indexes), colours, normals, uvs];
 }
 
 function shuffle(array) {

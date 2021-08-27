@@ -2,13 +2,13 @@
 precision mediump float;
 
 in vec3 labVertPosition;
-in vec3 labVertColor;
+in vec2 labVertTexCoord;
 
-out vec3 fragColor;
+out vec2 fragTexCoord;
 
 uniform mat4 labProjMatrix;
 
 void main(){
-    fragColor = labVertColor;
+    fragTexCoord = labVertTexCoord;
     gl_Position = labProjMatrix * vec4(labVertPosition, 1.0);
 }

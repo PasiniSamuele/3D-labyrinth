@@ -11,10 +11,13 @@ function Labyrinth(structure, program){
     this.vertices=[];
     this.indices=[];
     this.colours=[];
+    this.normals=[];
+    this.uvs=[];
 
     //METHODS
     this.init = function(){
         this.loadLocations();
+        this.loadImage();
         this.loadLabyrinth();
         this.loadVAO();
     };
@@ -46,22 +49,24 @@ function Labyrinth(structure, program){
             0 // Offset from the beginning of a single vertex to this attribute
         );
 
-        var mazeColourBufferObject = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, mazeColourBufferObject);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.colours), gl.STATIC_DRAW);
-        gl.enableVertexAttribArray(this.locations['labVertColor']);
+        var mazeTexCoordBufferObject = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, mazeTexCoordBufferObject);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.uvs), gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(this.locations['labVertTexCoord']);
         gl.vertexAttribPointer(
-            this.locations['labVertColor'], // Attribute location
-            3, // Number of elements per attribute
+            this.locations['labVertTexCoord'], // Attribute location
+            2, // Number of elements per attribute
             gl.FLOAT, // Type of elements
             gl.FALSE,
-            3 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+            2 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
             0 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
         );
 
         var mazeIndexBufferObject = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mazeIndexBufferObject);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), gl.STATIC_DRAW);
+
+        
     }
 
     this.loadLabyrinth = function(){
@@ -69,11 +74,27 @@ function Labyrinth(structure, program){
         this.vertices = maze3D[0];
         this.indices = maze3D[1];
         this.colours = maze3D[2];
+        this.normals = maze3D[3];
+        this.uvs = maze3D[4];
+    }
+
+    this.loadImage = function(){
+        const image = new Image();
+        image.src = "resources/assets/textures/lab/labTex.png";
+        image.addEventListener('load', function (){
+            var mazeTexture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, mazeTexture);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+        })
     }
 
     this.loadLocations = function(){
         this.locations['labVertPosition'] = gl.getAttribLocation(this.program, 'labVertPosition');
-        this.locations['labVertColor'] = gl.getAttribLocation(this.program, 'labVertColor');
+        this.locations['labVertTexCoord'] = gl.getAttribLocation(this.program, 'labVertTexCoord');
         this.locations['labProjMatrix'] = gl.getUniformLocation(this.program, 'labProjMatrix');
     };
 
