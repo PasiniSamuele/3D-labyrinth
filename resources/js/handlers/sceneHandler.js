@@ -41,10 +41,16 @@ class SceneHandler {
 		
 		//console.log(this.level.camera.lastRotationY);
 
+		// Camera object idle
 		this.level.camera.idle(deltaTime);
+		
+		// MovementHandler object idle
 		let movementHandlerRet = this.movementHandler.idle(this.level.camera, this.interactionHandler);
 		this.level.camera = movementHandlerRet.camera;
 		this.interactionHandler = movementHandlerRet.interactionHandler;
+		
+		// InteractionHandler onject idle
+		this.interactionHandler.idle();
 
 
 		// Perspective, World Matrix

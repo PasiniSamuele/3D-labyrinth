@@ -4,22 +4,21 @@
 
 /**
  * Object to manage camera and its movements
- * 
- * @param { object } settings array containing all settings and parameters relative to the camera
  */
 class Camera {
-
-	/*******************
+	
+	/**
 	 * Constructor
-	 ******************/
-
+	 * 
+	 * @param { object } settings array containing all settings and parameters relative to the camera
+	 */
 	constructor(settings) {
 
 		/*******************
 		 * Attributes
 		 ******************/
 
-		// Movement parameters
+		// Camera settings
 		this.settings = settings;
 
 		// Attributes
@@ -56,18 +55,59 @@ class Camera {
 	 * Methods
 	 ******************/
 
+	/**
+	 * Move the camera right
+	 */
 	moveRight() { this.acceleration.x = this.settings.acceleration.x.max; };
+
+	/**
+	 * Move the camera left
+	 */
 	moveLeft() { this.acceleration.x = -this.settings.acceleration.x.max; };
+
+	/**
+	 * Move the camera up
+	 */
 	moveUp() { this.acceleration.y = this.settings.acceleration.y.max; };
+
+	/**
+	 * Move the camera down
+	 */
 	moveDown() { this.acceleration.y = -this.settings.acceleration.y.max; };
+
+	/**
+	 * Move the camera forward
+	 */
 	moveForward() { this.acceleration.z = -this.settings.acceleration.z.max; };
+
+	/**
+	 * Move the camera backward
+	 */
 	moveBackward() { this.acceleration.z = this.settings.acceleration.z.max; };
 
+	/**
+	 * Rotate the camera right
+	 */
 	rotateRight() { this.acceleration.angle = this.settings.acceleration.angle.max; };
+	
+	/**
+	 * Rotate the camera left
+	 */
 	rotateLeft() { this.acceleration.angle = -this.settings.acceleration.angle.max; };
+	
+	/**
+	 * Rotate the camera up
+	 */
 	rotateUp() { this.acceleration.elevation = this.settings.acceleration.elevation.max; };
+	
+	/**
+	 * Rotate the camera down
+	 */
 	rotateDown() { this.acceleration.elevation = -this.settings.acceleration.elevation.max; };
 
+	/**
+	 * Set an arbitrary camera rotation (x-axis)
+	 */
 	setRotationX(value) {
 		// Smoothness
 		if (this.lastRotationX.length > this.settings.position.angle.mouseSmoothness)
@@ -80,6 +120,9 @@ class Camera {
 		this.position.angle += ((lastRotationSum + value) / this.lastRotationX.length) * this.settings.position.angle.mouseReactivity;
 	}
 
+	/**
+	 * Set an arbitrary camera rotation (y-axis)
+	 */
 	setRotationY(value) {
 		// Limit control
 		if ((this.position.elevation < this.settings.position.elevation.max || value > 0) && (this.position.elevation > this.settings.position.elevation.min || value < 0)) {
@@ -92,6 +135,7 @@ class Camera {
 				lastRotationSum += this.lastRotationY[i];
 			// New value
 			this.position.elevation -= ((lastRotationSum + value) / this.lastRotationY.length) * this.settings.position.elevation.mouseReactivity;
+			// Clamp
 			if (this.position.elevation > this.settings.position.elevation.max)
 				this.position.elevation = this.settings.position.elevation.max;
 			else if (this.position.elevation < this.settings.position.elevation.min)

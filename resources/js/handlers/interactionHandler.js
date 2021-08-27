@@ -7,10 +7,9 @@
  */
 class InteractionHandler {
 
-	/*******************
+	/**
 	 * Constructor
-	 ******************/
-
+	 */
 	constructor() {
 
 		// Interaction attributes
@@ -50,6 +49,7 @@ class InteractionHandler {
 		document.addEventListener('pointerlockchange', (e) => this.lockChangeAlert(e), true);
 		document.addEventListener('mozpointerlockchange', (e) => this.lockChangeAlert(e), true);
 
+		// Function needed to get an asynchronous, non-anonymous function call that can read the attributes of the class
 		this.onMouseMoveHandler;
 	}
 
@@ -57,7 +57,11 @@ class InteractionHandler {
 	 * Methods
 	 ******************/
 
-	resetMouse() {
+	/**
+	 * Function to be called every program cycle
+	 */
+	idle() {
+		// Reset mouse movements
 		this.mouse.x = 0;
 		this.mouse.y = 0;
 	}
