@@ -52,7 +52,6 @@ class SceneHandler {
 		// InteractionHandler onject idle
 		this.interactionHandler.idle();
 
-
 		// Perspective, World Matrix
 		let perspectiveMatrix = this.level.camera.perspectiveMatrix;
 		let viewMatrix = this.level.camera.viewMatrix;
