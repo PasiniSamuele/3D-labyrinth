@@ -160,10 +160,6 @@ class Camera {
 		this.viewMatrix = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.elevation, this.position.angle);
 		this.viewMatrixNoElevation = utils.MakeView(this.position.x, this.position.y, this.position.z, 0.0, this.position.angle);
 
-		console.log(this.position.x, this.position.y, this.position.z, this.position.elevation, this.position.angle);
-		console.log(this.viewMatrix);
-		console.log(this.viewMatrixNoElevation);
-
 		// Reset all accelerations
 		this.resetAccelerations();
 	}
