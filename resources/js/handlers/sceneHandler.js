@@ -36,10 +36,6 @@ class SceneHandler {
 		gl.enable(gl.CULL_FACE);
 		gl.frontFace(gl.CCW);
 		gl.cullFace(gl.BACK);
-
-		// TODO: MAXIMUM CALL STACK EXCEEDED NON ATTRIBUIBILE AD ALCUNA DELLE FUNZIONI CHIAMATE, BENSI' AL LOOP CHIAMANTE
-		
-		//console.log(this.level.camera.lastRotationY);
 		
 		// MovementHandler object idle
 		let movementHandlerRet = this.movementHandler.idle(this.level.camera, this.interactionHandler);
@@ -56,9 +52,7 @@ class SceneHandler {
 		let perspectiveMatrix = this.level.camera.perspectiveMatrix;
 		let viewMatrix = this.level.camera.viewMatrix;
 
-		/*console.log(perspectiveMatrix);
-		console.log(viewMatrix);*/
-
+		// Draw
 		this.level.skybox.draw(now, perspectiveMatrix, viewMatrix);
 		this.level.labyrinth.draw(perspectiveMatrix, viewMatrix);
 
