@@ -4,22 +4,21 @@
 
 /**
  * Object to manage camera and its movements
- * 
- * @param { object } settings array containing all settings and parameters relative to the camera
  */
 class Camera {
 
-	/*******************
+	/**
 	 * Constructor
-	 ******************/
-
+	 * 
+	 * @param { object } settings array containing all settings and parameters relative to the camera
+	 */
 	constructor(settings) {
 
 		/*******************
 		 * Attributes
 		 ******************/
 
-		// Movement parameters
+		// Camera settings
 		this.settings = settings;
 
 		// Attributes
@@ -56,18 +55,59 @@ class Camera {
 	 * Methods
 	 ******************/
 
+	/**
+	 * Move the camera right
+	 */
 	moveRight() { this.acceleration.x = this.settings.acceleration.x.max; };
-	moveLeft() { this.acceleration.x = -this.settings.acceleration.x.max; };
-	moveUp() { this.acceleration.y = this.settings.acceleration.y.max; };
-	moveDown() { this.acceleration.y = -this.settings.acceleration.y.max; };
-	moveForward() { this.acceleration.z = -this.settings.acceleration.z.max; };
-	moveBackward() { this.acceleration.z = this.settings.acceleration.z.max; };
 
+	/**
+	 * Move the camera left
+	 */
+	moveLeft() { this.acceleration.x = -this.settings.acceleration.x.max; };
+
+	/**
+	 * Move the camera up
+	 */
+	moveUp() { this.acceleration.y = this.settings.acceleration.y.max; };
+
+	/**
+	 * Move the camera down
+	 */
+	moveDown() { this.acceleration.y = -this.settings.acceleration.y.max; };
+
+	/**
+	 * Move the camera forward
+	 */
+	moveForward() { this.acceleration.z = (this.speed.z > 0 && this.acceleration.z != 0) ? 0.0 : -this.settings.acceleration.z.max; };
+
+	/**
+	 * Move the camera backward
+	 */
+	moveBackward() { this.acceleration.z = (this.speed.z < 0 && this.acceleration.z != 0) ? 0.0 : this.settings.acceleration.z.max; };
+
+	/**
+	 * Rotate the camera right
+	 */
 	rotateRight() { this.acceleration.angle = this.settings.acceleration.angle.max; };
+
+	/**
+	 * Rotate the camera left
+	 */
 	rotateLeft() { this.acceleration.angle = -this.settings.acceleration.angle.max; };
+
+	/**
+	 * Rotate the camera up
+	 */
 	rotateUp() { this.acceleration.elevation = this.settings.acceleration.elevation.max; };
+
+	/**
+	 * Rotate the camera down
+	 */
 	rotateDown() { this.acceleration.elevation = -this.settings.acceleration.elevation.max; };
 
+	/**
+	 * Set an arbitrary camera rotation (x-axis)
+	 */
 	setRotationX(value) {
 		// Smoothness
 		if (this.lastRotationX.length > this.settings.position.angle.mouseSmoothness)
@@ -80,6 +120,9 @@ class Camera {
 		this.position.angle += ((lastRotationSum + value) / this.lastRotationX.length) * this.settings.position.angle.mouseReactivity;
 	}
 
+	/**
+	 * Set an arbitrary camera rotation (y-axis)
+	 */
 	setRotationY(value) {
 		// Limit control
 		if ((this.position.elevation < this.settings.position.elevation.max || value > 0) && (this.position.elevation > this.settings.position.elevation.min || value < 0)) {
@@ -92,6 +135,7 @@ class Camera {
 				lastRotationSum += this.lastRotationY[i];
 			// New value
 			this.position.elevation -= ((lastRotationSum + value) / this.lastRotationY.length) * this.settings.position.elevation.mouseReactivity;
+			// Clamp
 			if (this.position.elevation > this.settings.position.elevation.max)
 				this.position.elevation = this.settings.position.elevation.max;
 			else if (this.position.elevation < this.settings.position.elevation.min)
@@ -115,6 +159,10 @@ class Camera {
 		this.perspectiveMatrix = utils.MakePerspective(this.settings.fovy, gl.canvas.width / gl.canvas.height, this.settings.near, this.settings.far);
 		this.viewMatrix = utils.MakeView(this.position.x, this.position.y, this.position.z, this.position.elevation, this.position.angle);
 		this.viewMatrixNoElevation = utils.MakeView(this.position.x, this.position.y, this.position.z, 0.0, this.position.angle);
+
+		console.log(this.position.x, this.position.y, this.position.z, this.position.elevation, this.position.angle);
+		console.log(this.viewMatrix);
+		console.log(this.viewMatrixNoElevation);
 
 		// Reset all accelerations
 		this.resetAccelerations();
@@ -154,7 +202,7 @@ class Camera {
 		if (speed > maxSpeed || speed < -maxSpeed)
 			speed = maxSpeed * Math.sign(speed);
 		// Deceleration
-		if (acceleration == 0)
+		if (acceleration == 0 || Math.sign(acceleration) != Math.sign(speed))
 			if (Math.abs(speed) > minSpeed)
 				if (Math.abs(speed) > Math.abs(deltaTime * Math.pow(speed, 2) * Math.sign(speed) * deceleration))
 					speed -= deltaTime * Math.pow(speed, 2) * Math.sign(speed) * deceleration;

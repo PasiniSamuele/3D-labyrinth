@@ -98,14 +98,14 @@
                 "min":false,
                 "max":false,
                 "mouseReactivity":0.5,
-                "mouseSmoothness":0.0
+                "mouseSmoothness":5.0
             },
             "elevation":{
                 "default":0.0,
                 "min":-45.0,
                 "max":45.0,
                 "mouseReactivity":0.5,
-                "mouseSmoothness":0.0
+                "mouseSmoothness":10.0
             }
         },
         "speed":{
@@ -125,7 +125,7 @@
                 "max":2.0
             },
             "angle":{
-                "default":180.0,
+                "default":0.0,
                 "min":0.1,
                 "max":180.0
             },
@@ -152,7 +152,7 @@
                 "decelerationCoefficient":10.0
             },
             "angle":{
-                "default":180.0,
+                "default":0.0,
                 "max":180.0,
                 "decelerationCoefficient":10.0
             },

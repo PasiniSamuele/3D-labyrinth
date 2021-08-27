@@ -7,10 +7,9 @@
  */
 class InteractionHandler {
 
-	/*******************
+	/**
 	 * Constructor
-	 ******************/
-
+	 */
 	constructor() {
 
 		// Interaction attributes
@@ -41,14 +40,16 @@ class InteractionHandler {
 		// Init pointer lock
 		this.pointerLockBool = false;
 		gl.canvas.requestPointerLock = gl.canvas.requestPointerLock || gl.canvas.mozRequestPointerLock;
-		document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
+		gl.canvas.exitPointerLock = gl.canvas.exitPointerLock || gl.canvas.mozExitPointerLock;
 		gl.canvas.onclick = function () {
-			//if (!this.pointerLockBool)
+			if (!this.pointerLockBool) {
 				gl.canvas.requestPointerLock();
+			}
 		};
-		document.addEventListener('pointerlockchange', () => this.lockChangeAlert(), false);
-		document.addEventListener('mozpointerlockchange', () => this.lockChangeAlert(), false);
+		document.addEventListener('pointerlockchange', (e) => this.lockChangeAlert(e), true);
+		document.addEventListener('mozpointerlockchange', (e) => this.lockChangeAlert(e), true);
 
+		// Function needed to get an asynchronous, non-anonymous function call that can read the attributes of the class
 		this.onMouseMoveHandler;
 	}
 
@@ -56,7 +57,11 @@ class InteractionHandler {
 	 * Methods
 	 ******************/
 
-	resetMouse() {
+	/**
+	 * Function to be called every program cycle
+	 */
+	idle() {
+		// Reset mouse movements
 		this.mouse.x = 0;
 		this.mouse.y = 0;
 	}
@@ -78,13 +83,15 @@ class InteractionHandler {
 	}
 
 	// Init pointer lock
-	lockChangeAlert() {
+	lockChangeAlert(e) {
 		if (document.pointerLockElement === gl.canvas ||
 			document.mozPointerLockElement === gl.canvas) {
-			this.pointerLockBool = true;
-			window.addEventListener('mousemove', this.onMouseMoveHandler = ((e) => { this.onMouseMove(e); }), false);
+			if (!this.pointerLockBool) {
+				this.pointerLockBool = true;
+				window.addEventListener('mousemove', this.onMouseMoveHandler = ((e) => { this.onMouseMove(e); }), false);
+			}
 		} else {
-			this.pointerLockBool = true;
+			this.pointerLockBool = false;
 			window.removeEventListener("mousemove", this.onMouseMoveHandler, false);
 		}
 	}
