@@ -1,166 +1,165 @@
 {
-    "structure":{
-        "url":"resources/assets/labyrinths/lab1.json",
-        "shaders":{
-            "vertex":"resources/assets/shaders/labShader1/labShader.vs.glsl",
-            "fragment":"resources/assets/shaders/labShader1/labShader.fs.glsl"
-        }
-    },
-    "skybox":{
-        "shaders":{
-            "vertex":"resources/assets/shaders/envDayNightShader/envmap.vs.glsl",
-            "fragment":"resources/assets/shaders/envDayNightShader/envmap.fs.glsl"
-        },
-        "skyboxes":[
-                [
-                    {
-                        "target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
-                        "url": "resources/assets/env/miramar/right.jpg"
-                    },
-                    {
-                        "target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_X",
-                        "url": "resources/assets/env/miramar/left.jpg"
-                    },
-                    {
-                        "target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Y",
-                        "url": "resources/assets/env/miramar/top.jpg"
-                    },
-                    {
-                        "target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y",
-                        "url": "resources/assets/env/miramar/bottom.jpg"
-                    },
-                    {
-                        "target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Z",
-                        "url": "resources/assets/env/miramar/back.jpg"
-                    },
-                    {
-                        "target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
-                        "url": "resources/assets/env/miramar/front.jpg"
-                    }
-                ],
-                [
-                    {
-                        "target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
-                        "url": "resources/assets/env/grimmnight/right.jpg"
-                    },
-                    {
-                        "target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_X",
-                        "url": "resources/assets/env/grimmnight/left.jpg"
-                    },
-                    {
-                        "target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Y",
-                        "url": "resources/assets/env/grimmnight/top.jpg"
-                    },
-                    {
-                        "target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y",
-                        "url": "resources/assets/env/grimmnight/bottom.jpg"
-                    },
-                    {
-                        "target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Z",
-                        "url": "resources/assets/env/grimmnight/back.jpg"
-                    },
-                    {
-                        "target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
-                        "url": "resources/assets/env/grimmnight/front.jpg"
-                    }
-                ]
-            ]
-        
-    },
-    "camera":{
-        "near":0.1,
-        "far":100.0,
-        "fovy":90.0,
-        "position":{
-            "x":{
-                "default":0.5,
-                "min":false,
-                "max":false,
-                "mouseReactivity":false,
-                "mouseSmoothness":false
-            },
-            "y":{
-                "default":1.0,
-                "min":false,
-                "max":false,
-                "mouseReactivity":false,
-                "mouseSmoothness":false
-            },
-            "z":{
-                "default":0.5,
-                "min":false,
-                "max":false,
-                "mouseReactivity":false,
-                "mouseSmoothness":false
-            },
-            "angle":{
-                "default":180.0,
-                "min":false,
-                "max":false,
-                "mouseReactivity":0.5,
-                "mouseSmoothness":5.0
-            },
-            "elevation":{
-                "default":0.0,
-                "min":-45.0,
-                "max":45.0,
-                "mouseReactivity":0.5,
-                "mouseSmoothness":10.0
-            }
-        },
-        "speed":{
-            "x":{
-                "default":0.0,
-                "min":0.1,
-                "max":2.0
-            },
-            "y":{
-                "default":0.0,
-                "min":0.1,
-                "max":2.0
-            },
-            "z":{
-                "default":0.0,
-                "min":0.1,
-                "max":2.0
-            },
-            "angle":{
-                "default":0.0,
-                "min":0.1,
-                "max":180.0
-            },
-            "elevation":{
-                "default":0.0,
-                "min":0.1,
-                "max":180.0
-            }
-        },
-        "acceleration":{
-            "x":{
-                "default":0.0,
-                "max":2.0,
-                "decelerationCoefficient":20.0
-            },
-            "y":{
-                "default":0.0,
-                "max":2.0,
-                "decelerationCoefficient":20.0
-            },
-            "z":{
-                "default":0.0,
-                "max":2.0,
-                "decelerationCoefficient":10.0
-            },
-            "angle":{
-                "default":0.0,
-                "max":360.0,
-                "decelerationCoefficient":10.0
-            },
-            "elevation":{
-                "default":0.0,
-                "max":180.0,
-                "decelerationCoefficient":10.0
-            }
-        }
-    }
+	"structure": {
+		"url": "resources/assets/labyrinths/lab1.json",
+		"shaders": {
+			"vertex": "resources/assets/shaders/labShader1/labShader.vs.glsl",
+			"fragment": "resources/assets/shaders/labShader1/labShader.fs.glsl"
+		}
+	},
+	"skybox": {
+		"shaders": {
+			"vertex": "resources/assets/shaders/envDayNightShader/envmap.vs.glsl",
+			"fragment": "resources/assets/shaders/envDayNightShader/envmap.fs.glsl"
+		},
+		"skyboxes": [
+			[
+				{
+					"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
+					"url": "resources/assets/env/miramar/right.jpg"
+				},
+				{
+					"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_X",
+					"url": "resources/assets/env/miramar/left.jpg"
+				},
+				{
+					"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Y",
+					"url": "resources/assets/env/miramar/top.jpg"
+				},
+				{
+					"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y",
+					"url": "resources/assets/env/miramar/bottom.jpg"
+				},
+				{
+					"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Z",
+					"url": "resources/assets/env/miramar/back.jpg"
+				},
+				{
+					"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
+					"url": "resources/assets/env/miramar/front.jpg"
+				}
+			],
+			[
+				{
+					"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
+					"url": "resources/assets/env/grimmnight/right.jpg"
+				},
+				{
+					"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_X",
+					"url": "resources/assets/env/grimmnight/left.jpg"
+				},
+				{
+					"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Y",
+					"url": "resources/assets/env/grimmnight/top.jpg"
+				},
+				{
+					"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y",
+					"url": "resources/assets/env/grimmnight/bottom.jpg"
+				},
+				{
+					"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Z",
+					"url": "resources/assets/env/grimmnight/back.jpg"
+				},
+				{
+					"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
+					"url": "resources/assets/env/grimmnight/front.jpg"
+				}
+			]
+		]
+	},
+	"camera": {
+		"near": 0.1,
+		"far": 100.0,
+		"fovy": 90.0,
+		"position": {
+			"x": {
+				"default": 0.5,
+				"min": false,
+				"max": false,
+				"mouseReactivity": false,
+				"mouseSmoothness": false
+			},
+			"y": {
+				"default": 1.0,
+				"min": false,
+				"max": false,
+				"mouseReactivity": false,
+				"mouseSmoothness": false
+			},
+			"z": {
+				"default": 0.5,
+				"min": false,
+				"max": false,
+				"mouseReactivity": false,
+				"mouseSmoothness": false
+			},
+			"angle": {
+				"default": 180.0,
+				"min": false,
+				"max": false,
+				"mouseReactivity": 0.5,
+				"mouseSmoothness": 5.0
+			},
+			"elevation": {
+				"default": 0.0,
+				"min": -45.0,
+				"max": 45.0,
+				"mouseReactivity": 0.5,
+				"mouseSmoothness": 10.0
+			}
+		},
+		"speed": {
+			"x": {
+				"default": 0.0,
+				"min": 0.1,
+				"max": 2.0
+			},
+			"y": {
+				"default": 0.0,
+				"min": 0.1,
+				"max": 2.0
+			},
+			"z": {
+				"default": 0.0,
+				"min": 0.1,
+				"max": 2.0
+			},
+			"angle": {
+				"default": 0.0,
+				"min": 0.1,
+				"max": 180.0
+			},
+			"elevation": {
+				"default": 0.0,
+				"min": 0.1,
+				"max": 180.0
+			}
+		},
+		"acceleration": {
+			"x": {
+				"default": 0.0,
+				"max": 2.0,
+				"decelerationCoefficient": 20.0
+			},
+			"y": {
+				"default": 0.0,
+				"max": 2.0,
+				"decelerationCoefficient": 20.0
+			},
+			"z": {
+				"default": 0.0,
+				"max": 2.0,
+				"decelerationCoefficient": 10.0
+			},
+			"angle": {
+				"default": 0.0,
+				"max": 360.0,
+				"decelerationCoefficient": 10.0
+			},
+			"elevation": {
+				"default": 0.0,
+				"max": 180.0,
+				"decelerationCoefficient": 10.0
+			}
+		}
+	}
 }

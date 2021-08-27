@@ -17,7 +17,7 @@ class MovementHandler {
 	 * @param { object } camera camera object
 	 * @param { object } interactionHandler interactionHandler object
 	 *
-	 * @returns the new camera object
+	 * @returns { object } returns an associative array containing the new "camera" and "interactionHandler" objects
 	 */
 	idle(camera, interactionHandler) {
 		// Keys recognition
