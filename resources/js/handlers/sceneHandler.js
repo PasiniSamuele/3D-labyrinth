@@ -39,7 +39,7 @@ class SceneHandler {
 
 		// TODO: MAXIMUM CALL STACK EXCEEDED NON ATTRIBUIBILE AD ALCUNA DELLE FUNZIONI CHIAMATE, BENSI' AL LOOP CHIAMANTE
 		
-		console.log(this.level.camera.lastRotationY);
+		//console.log(this.level.camera.lastRotationY);
 
 		this.level.camera.idle(deltaTime);
 		let movementHandlerRet = this.movementHandler.idle(this.level.camera, this.interactionHandler);

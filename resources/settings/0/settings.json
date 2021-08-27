@@ -98,14 +98,14 @@
                 "min":false,
                 "max":false,
                 "mouseReactivity":0.5,
-                "mouseSmoothness":0.0
+                "mouseSmoothness":5.0
             },
             "elevation":{
                 "default":0.0,
                 "min":-45.0,
                 "max":45.0,
                 "mouseReactivity":0.5,
-                "mouseSmoothness":0.0
+                "mouseSmoothness":5.0
             }
         },
         "speed":{
