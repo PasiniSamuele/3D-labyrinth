@@ -36,14 +36,8 @@ class Camera {
 			angle: this.settings.speed.angle.default,
 			elevation: this.settings.speed.elevation.default,
 			absolute: {
-				x: 0.0,
-				y: 0.0,
-				z: 0.0,
-				buffer: {
-					x: false,
-					y: false,
-					z: false,
-				}
+				x: 0.0, y: 0.0, z: 0.0,
+				buffer: { x: false, y: false, z: false }
 			}
 		};
 		// Acceleration
@@ -228,18 +222,18 @@ class Camera {
 	/**
 	 * Function that sets absolute speeds to an arbitrary value
 	 * 
-	 * @param {number} x absolute speed to overwrite
-	 * @param {number} y absolute speed to overwrite
-	 * @param {number} z absolute speed to overwrite
+	 * @param {boolean} x absolute speed to overwrite
+	 * @param {boolean} y absolute speed to overwrite
+	 * @param {boolean} z absolute speed to overwrite
 	 */
 	setAbsoluteSpeed(x = false, y = false, z = false) {
 		// Set the new the absolute speeds to an arbitrary value
 		if (x !== false)
-			this.speed.absolute.buffer = x;
+			this.speed.absolute.buffer.x = 0.0;
 		if (y !== false)
-			this.speed.absolute.buffer = y;
+			this.speed.absolute.buffer.y = 0.0;
 		if (z !== false)
-			this.speed.absolute.buffer = z;
+			this.speed.absolute.buffer.z = 0.0;
 	}
 
 	/*******************
@@ -261,15 +255,15 @@ class Camera {
 	}
 
 	deBufferizeAbsoluteSpeed() {
-		if(this.speed.absolute.buffer.x !== false) {
+		if (this.speed.absolute.buffer.x !== false) {
 			this.speed.absolute.x = this.speed.absolute.buffer.x;
 			this.speed.absolute.buffer.x = false;
 		}
-		if(this.speed.absolute.buffer.y !== false) {
+		if (this.speed.absolute.buffer.y !== false) {
 			this.speed.absolute.y = this.speed.absolute.buffer.y;
 			this.speed.absolute.buffer.y = false;
 		}
-		if(this.speed.absolute.buffer.z !== false) {
+		if (this.speed.absolute.buffer.z !== false) {
 			this.speed.absolute.z = this.speed.absolute.buffer.z;
 			this.speed.absolute.buffer.z = false;
 		}
