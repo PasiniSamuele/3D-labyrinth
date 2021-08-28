@@ -29,7 +29,7 @@ function Labyrinth(structure, program){
         gl.useProgram(this.program);
         gl.bindVertexArray(this.vao);
 		gl.uniformMatrix4fv(this.locations['labProjMatrix'], gl.FALSE, utils.transposeMatrix(projectionMatrix));
-        gl.uniform1i(this.locations['labSampler'], gl.TEXTURE0);
+        gl.uniform1i(this.locations['labSampler'], 0);
 		gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
     }
 
