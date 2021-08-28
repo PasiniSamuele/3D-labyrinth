@@ -7,27 +7,33 @@
  */
 class SceneHandler {
 
-	/*******************
+	/**
 	 * Constructor
-	 ******************/
-
+	 *
+	 * @param { object } movementHandler movementHandler object
+	 * @param { object } interactionHandler interactionHandler object
+	 */
 	constructor(movementHandler, interactionHandler) {
-
+		// Attributes
 		this.then = 0;
 		this.level;
 		this.movementHandler = movementHandler;
 		this.interactionHandler = interactionHandler;
-
 	}
 
+	/**
+	 * Function responsible for drawing and calculating input parameters, motion, etc. It calls itself automatically
+	 *
+	 * @param { number } now current timestamp in milliseconds (0, +inf) [milliseconds]
+	 */
 	drawScene(now) {
 
-		// Get current time
-		now *= 0.001; // seconds;
+		// Get deltaTime in seconds
+		now *= 0.001; // Seconds
 		let deltaTime = now - this.then;
 		this.then = now;
 
-
+		// Set gl parameters
 		utils.resizeCanvasToDisplaySize(gl.canvas);
 		gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 		gl.clearColor(1, 1, 1, 0);
@@ -56,20 +62,25 @@ class SceneHandler {
 		this.level.skybox.draw(now, perspectiveMatrix, viewMatrix);
 		this.level.labyrinth.draw(perspectiveMatrix, viewMatrix);
 
-		//this.drawScene(Date.now(), this);
-		//window.requestAnimationFrame(scope.drawScene(Date.now(), this));
+		// Make the next call
 		window.requestAnimationFrame((newNow) => { this.drawScene(newNow); });
 	}
 
+	/**
+	 * Function to set the current level of the game. The "level" object contains all parameters, including movement, camera, objects, etc.
+	 *
+	 * @param { object } level Object layer, which contains the numerous parameters necessary for the operation of the drawing function and the game logic
+	 */
 	setLevel(level) {
 		this.level = level;
 	}
+
+	/**
+	 * Function to start the main loop
+	 */
 	start() {
-		//this.drawScene(Date.now(), this);
-		//window.requestAnimationFrame(this.drawScene(Date.now(), this));
+		// Make the first call
 		window.requestAnimationFrame((newNow) => { this.drawScene(newNow); });
 	}
-
-	// TODO VERIFICARE SE E' SUPERFLUO
-	//this.setLevel(level);
+	
 }

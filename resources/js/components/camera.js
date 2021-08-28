@@ -82,12 +82,12 @@ class Camera {
 	/**
 	 * Move the camera forward
 	 */
-	moveForward() { this.acceleration.z = (this.speed.z > 0 && this.acceleration.z != 0) ? 0.0 : -this.settings.acceleration.z.max; };
+	moveForward() { this.acceleration.z = -this.settings.acceleration.z.max; };
 
 	/**
 	 * Move the camera backward
 	 */
-	moveBackward() { this.acceleration.z = (this.speed.z < 0 && this.acceleration.z != 0) ? 0.0 : this.settings.acceleration.z.max; };
+	moveBackward() { this.acceleration.z = this.settings.acceleration.z.max; };
 
 	/**
 	 * Rotate the camera right
@@ -111,6 +111,8 @@ class Camera {
 
 	/**
 	 * Set an arbitrary camera rotation (x-axis)
+	 * 
+	 * @param { number } value number of pixels equal to the deviation of the mouse from the central point of the x-axis (-inf, +inf) [pixel]
 	 */
 	setRotationX(value) {
 		// Smoothness
@@ -126,6 +128,8 @@ class Camera {
 
 	/**
 	 * Set an arbitrary camera rotation (y-axis)
+	 * 
+	 * @param { number } value number of pixels equal to the deviation of the mouse from the central point of the y-axis (-inf, +inf) [pixel]
 	 */
 	setRotationY(value) {
 		// Limit control
@@ -150,7 +154,7 @@ class Camera {
 	/**
 	 * Function to be called every time the display is updated
 	 *
-	 * @param { number } deltaTime time elapsed since the last idle call
+	 * @param { number } deltaTime time in seconds elapsed since the last idle call (0, +inf) [seconds]
 	 */
 	idle(deltaTime) {
 		// Compute all speeds

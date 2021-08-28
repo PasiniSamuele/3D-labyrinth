@@ -58,7 +58,7 @@ class InteractionHandler {
 	 ******************/
 
 	/**
-	 * Function to be called every program cycle
+	 * Function to be called at each cycle of the program
 	 */
 	idle() {
 		// Reset mouse movements
