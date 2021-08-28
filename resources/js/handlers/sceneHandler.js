@@ -51,7 +51,8 @@ class SceneHandler {
 		// Camera object idle
 		this.level.camera.idle(deltaTime);
 
-		this.level.camera.setAbsoluteSpeed(false, false, 0);
+		// SET HERE TO ZERO THE ABSOLUTE SPEED
+		//this.level.camera.setAbsoluteSpeed(false, false, true);
 		
 		// InteractionHandler onject idle
 		this.interactionHandler.idle();
