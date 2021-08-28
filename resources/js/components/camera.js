@@ -35,6 +35,16 @@ class Camera {
 			z: this.settings.speed.z.default,
 			angle: this.settings.speed.angle.default,
 			elevation: this.settings.speed.elevation.default,
+			absolute: {
+				x: 0.0,
+				y: 0.0,
+				z: 0.0,
+				buffer: {
+					x: false,
+					y: false,
+					z: false,
+				}
+			}
 		};
 		// Acceleration
 		this.acceleration = {
@@ -62,32 +72,66 @@ class Camera {
 	/**
 	 * Move the camera right
 	 */
-	moveRight() { this.acceleration.x = this.settings.acceleration.x.max; };
+	moveRight() {
+		this.acceleration.x = this.settings.acceleration.x.max;
+		/*this.acceleration.x += this.viewMatrixNoElevation[0] * this.settings.acceleration.x.max;
+		this.acceleration.y += this.viewMatrixNoElevation[1] * this.settings.acceleration.x.max;
+		this.acceleration.z += this.viewMatrixNoElevation[2] * this.settings.acceleration.x.max;*/
+	};
 
 	/**
 	 * Move the camera left
 	 */
-	moveLeft() { this.acceleration.x = -this.settings.acceleration.x.max; };
+	moveLeft() {
+		this.acceleration.x = -this.settings.acceleration.x.max;
+		/*this.acceleration.x += this.viewMatrixNoElevation[0] * -this.settings.acceleration.x.max;
+		this.acceleration.y += this.viewMatrixNoElevation[1] * -this.settings.acceleration.x.max;
+		this.acceleration.z += this.viewMatrixNoElevation[2] * -this.settings.acceleration.x.max;*/
+	};
 
 	/**
 	 * Move the camera up
 	 */
-	moveUp() { if (this.DEBUG) this.acceleration.y = this.settings.acceleration.y.max; };
+	moveUp() {
+		if (this.DEBUG) {
+			this.acceleration.y = this.settings.acceleration.y.max;
+			/*this.acceleration.x += this.viewMatrixNoElevation[4] * this.settings.acceleration.y.max;
+			this.acceleration.y += this.viewMatrixNoElevation[5] * this.settings.acceleration.y.max;
+			this.acceleration.z += this.viewMatrixNoElevation[6] * this.settings.acceleration.y.max;*/
+		}
+	};
 
 	/**
 	 * Move the camera down
 	 */
-	moveDown() { if (this.DEBUG) this.acceleration.y = -this.settings.acceleration.y.max; };
+	moveDown() {
+		if (this.DEBUG) {
+			this.acceleration.y = -this.settings.acceleration.y.max;
+			/*this.acceleration.x += this.viewMatrixNoElevation[4] * -this.settings.acceleration.y.max;
+			this.acceleration.y += this.viewMatrixNoElevation[5] * -this.settings.acceleration.y.max;
+			this.acceleration.z += this.viewMatrixNoElevation[6] * -this.settings.acceleration.y.max;*/
+		}
+	};
 
 	/**
 	 * Move the camera forward
 	 */
-	moveForward() { this.acceleration.z = -this.settings.acceleration.z.max; };
+	moveForward() {
+		this.acceleration.z = -this.settings.acceleration.z.max;
+		/*this.acceleration.x += this.viewMatrixNoElevation[8] * -this.settings.acceleration.z.max;
+		this.acceleration.y += this.viewMatrixNoElevation[9] * -this.settings.acceleration.z.max;
+		this.acceleration.z += this.viewMatrixNoElevation[10] * -this.settings.acceleration.z.max;*/
+	};
 
 	/**
 	 * Move the camera backward
 	 */
-	moveBackward() { this.acceleration.z = this.settings.acceleration.z.max; };
+	moveBackward() {
+		this.acceleration.z = this.settings.acceleration.z.max;
+		/*this.acceleration.x += this.viewMatrixNoElevation[8] * this.settings.acceleration.z.max;
+		this.acceleration.y += this.viewMatrixNoElevation[9] * this.settings.acceleration.z.max;
+		this.acceleration.z += this.viewMatrixNoElevation[10] * this.settings.acceleration.z.max;*/
+	};
 
 	/**
 	 * Rotate the camera right
@@ -160,6 +204,15 @@ class Camera {
 		// Compute all speeds
 		this.computeSpeeds(deltaTime);
 
+		// Convert speeds in absolute coordinate
+		this.computeAbsoluteSpeed();
+
+		// If there is an absolute speed in buffer
+		this.deBufferizeAbsoluteSpeed();
+
+		// Convert speeds in absolute coordinate
+		this.computeRelativeSpeed();
+
 		// Compute all positions
 		this.computePositions(deltaTime);
 
@@ -172,6 +225,23 @@ class Camera {
 		this.resetAccelerations();
 	}
 
+	/**
+	 * Function that sets absolute speeds to an arbitrary value
+	 * 
+	 * @param {number} x absolute speed to overwrite
+	 * @param {number} y absolute speed to overwrite
+	 * @param {number} z absolute speed to overwrite
+	 */
+	setAbsoluteSpeed(x = false, y = false, z = false) {
+		// Set the new the absolute speeds to an arbitrary value
+		if (x !== false)
+			this.speed.absolute.buffer = x;
+		if (y !== false)
+			this.speed.absolute.buffer = y;
+		if (z !== false)
+			this.speed.absolute.buffer = z;
+	}
+
 	/*******************
 	 * Private
 	 ******************/
@@ -182,6 +252,34 @@ class Camera {
 		this.acceleration.z = 0.0;
 		this.acceleration.angle = 0.0;
 		this.acceleration.elevation = 0.0;
+	}
+
+	computeAbsoluteSpeed() {
+		this.speed.absolute.x = this.viewMatrixNoElevation[0] * this.speed.x + this.viewMatrixNoElevation[4] * this.speed.y + this.viewMatrixNoElevation[8] * this.speed.z;
+		this.speed.absolute.y = this.viewMatrixNoElevation[1] * this.speed.x + this.viewMatrixNoElevation[5] * this.speed.y + this.viewMatrixNoElevation[9] * this.speed.z;
+		this.speed.absolute.z = this.viewMatrixNoElevation[2] * this.speed.x + this.viewMatrixNoElevation[6] * this.speed.y + this.viewMatrixNoElevation[10] * this.speed.z;
+	}
+
+	deBufferizeAbsoluteSpeed() {
+		if(this.speed.absolute.buffer.x !== false) {
+			this.speed.absolute.x = this.speed.absolute.buffer.x;
+			this.speed.absolute.buffer.x = false;
+		}
+		if(this.speed.absolute.buffer.y !== false) {
+			this.speed.absolute.y = this.speed.absolute.buffer.y;
+			this.speed.absolute.buffer.y = false;
+		}
+		if(this.speed.absolute.buffer.z !== false) {
+			this.speed.absolute.z = this.speed.absolute.buffer.z;
+			this.speed.absolute.buffer.z = false;
+		}
+	}
+
+	computeRelativeSpeed() {
+		let viewMatrixNoElevationT = utils.invertMatrix(this.viewMatrixNoElevation);
+		this.speed.x = viewMatrixNoElevationT[0] * this.speed.absolute.x + viewMatrixNoElevationT[4] * this.speed.absolute.y + viewMatrixNoElevationT[8] * this.speed.absolute.z;
+		this.speed.y = viewMatrixNoElevationT[1] * this.speed.absolute.x + viewMatrixNoElevationT[5] * this.speed.absolute.y + viewMatrixNoElevationT[9] * this.speed.absolute.z;
+		this.speed.z = viewMatrixNoElevationT[2] * this.speed.absolute.x + viewMatrixNoElevationT[6] * this.speed.absolute.y + viewMatrixNoElevationT[10] * this.speed.absolute.z;
 	}
 
 	computeSpeeds(deltaTime) {
@@ -224,6 +322,9 @@ class Camera {
 		this.position.x += (this.viewMatrixNoElevation[0] * this.speed.x + this.viewMatrixNoElevation[4] * this.speed.y + this.viewMatrixNoElevation[8] * this.speed.z) * deltaTime;
 		this.position.y += (this.viewMatrixNoElevation[1] * this.speed.x + this.viewMatrixNoElevation[5] * this.speed.y + this.viewMatrixNoElevation[9] * this.speed.z) * deltaTime;
 		this.position.z += (this.viewMatrixNoElevation[2] * this.speed.x + this.viewMatrixNoElevation[6] * this.speed.y + this.viewMatrixNoElevation[10] * this.speed.z) * deltaTime;
+		/*this.position.x += this.speed.x * deltaTime;
+		this.position.y += this.speed.y * deltaTime;
+		this.position.z += this.speed.z * deltaTime;*/
 		this.position.angle += this.speed.angle * deltaTime;
 		this.position.elevation += this.speed.elevation * deltaTime;
 	}

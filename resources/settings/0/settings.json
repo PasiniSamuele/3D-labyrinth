@@ -152,7 +152,7 @@
 			},
 			"angle": {
 				"default": 0.0,
-				"max": 360.0,
+				"max": 720.0,
 				"decelerationCoefficient": 10.0
 			},
 			"elevation": {
