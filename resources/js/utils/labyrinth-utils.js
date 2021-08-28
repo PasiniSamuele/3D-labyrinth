@@ -1,14 +1,9 @@
 //
 //  CONSTANTS & DEBUG
 //
-
-const CENTERED = 0;                 // true if labyrinth centered, false if using custom offsets
+       
 const CLOCKWISE_INDEXES = 0;         // true -> 2,1,0, 3,2,0    false-> 0,1,2, 0,2,3
 const VERTICES2D = 0;                // true returns a 2D array of vertices, false returns a 1D array
-const MINIMAL_VERTICES = 0;         // true to optimize vertices (bad for meshes), false to make only squares
-
-const ENABLE_NORMALS = 0;
-const ENABLE_UV = 0;
 
 const DEBUG_FRONT = 1;
 const DEBUG_RIGHT = 1;
@@ -18,13 +13,15 @@ const DEBUG_FLOOR = 1;
 const DEBUG_TOP = 0;                
 
 const U_UNIT = 0.5;
-const V_UNIT = 1.0;
+const V_UNIT = 0.5;
 
 const mazeElement = {
     FLOOR: 0,
     WALL: 1, 
+    START_POS: 2,
 
-    BLOCKS: [1]
+    BLOCKS: [1],
+    FLOORS: [0, 2]
 };
 
 const mazeDirection = {
@@ -47,21 +44,14 @@ const vertPosition = {
  * 
  * @param { any } labyrinth a nxm matrix of zeroes and ones (the ones are walls) with n,m > 2
  * 
- * @param { number } bottom height of the floor
- * @param { number } top height of the ceiling
- * 
- * @param { number } offset_x offset on the x axis
- * @param { number } offset_y offset on the y axis
- * @param { number } offset_z offset on the z axis
+ * @param { number } MIN_Y height of the floor
+ * @param { number } MAX_Y height of the ceiling
  * 
  * @param { number } size_multiplier multiplier for all dimensions
  * 
- * @param { any } wall_colours vec3 containing the colours of the walls
- * @param { any } floor_colours vec3 containing the colours of the floor
- * 
  * @returns a vector of size 3 containing respectively vertices, indices and colours
  */
- var compute3DLabyrinth = function(labyrinth, MIN_Y, MAX_Y, offset_x, offset_y, offset_z, size_multiplier){
+ var compute3DLabyrinth = function(labyrinth, MIN_Y, MAX_Y, size_multiplier){
     //
     //  INITIALIZATION
     //
@@ -69,10 +59,15 @@ const vertPosition = {
     let X_SIZE = labyrinth[0].length;
     let Z_SIZE = labyrinth.length;
 
-    if(CENTERED){
-        offset_x = -(X_SIZE)/2;
-        offset_y = -(MAX_Y-MIN_Y)/2;
-        offset_z = -(Z_SIZE)/2;
+    let offset_x, offset_y, offset_z;
+    for(let i = 0; i < Z_SIZE; i++){
+        for(let j = 0; j < X_SIZE; j++){
+            if(labyrinth[i][j] == 2){
+                offset_x = -j-0.5;
+                offset_y = -(MAX_Y-MIN_Y)/2;
+                offset_z = -i-0.5;
+            }
+        }
     }
 
     let vertices = [];
@@ -88,6 +83,8 @@ const vertPosition = {
                 return [0.0, 1.0, 0.0];
             case mazeElement.WALL:
                 return [1.0, 0.0, 0.0];
+            case mazeElement.START_POS:
+                return [0.0, 1.0, 0.0];
         }
     }
 
@@ -100,6 +97,9 @@ const vertPosition = {
                 break;
             case mazeElement.WALL:
                 uv = [0.0, 0.0];
+                break;
+            case mazeElement.START_POS:
+                uv = [0.5, 0.0];
                 break;
             default:
                 uv = [0.0, 0.0];
@@ -277,18 +277,20 @@ var generate2DLabyrinth = function(rows, columns, JOIN_SIDES, join_probability){
     start_row -= (start_row%2 === 0) ? 0 : 1;
     start_col -= (start_col%2 === 0) ? 0 : 1;
 
+    labyrinth[start_row][start_col] = 2;
+
     let iterateLabyrinth = function(matrix, row, col){
 
         //noise termination condition
         if (
-            ((row+1)<matrix.length ? matrix[row+1][col] === 0 : true) && 
-            ((row-1)>=0 ? matrix[row-1][col] === 0 : true) &&
-            ((col+1)<matrix[0].length ? matrix[row][col+1] === 0 : true) && 
-            ((col-1)>=0 ? matrix[row][col-1] === 0 : true)
+            ((row+1)<matrix.length ? mazeElement.FLOORS.includes(matrix[row+1][col]) : true) && 
+            ((row-1)>=0 ? mazeElement.FLOORS.includes(matrix[row-1][col]) : true) &&
+            ((col+1)<matrix[0].length ? mazeElement.FLOORS.includes(matrix[row][col+1]) : true) && 
+            ((col-1)>=0 ? mazeElement.FLOORS.includes(matrix[row][col-1]) : true)
         ) return matrix;
 
         //set cell as visited
-        matrix[row][col] = 0;
+        if(matrix[row][col] !== 2) matrix[row][col] = 0;
 
         //get neighbors
         let neighbors = [];
