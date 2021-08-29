@@ -62,8 +62,7 @@ class SceneHandler {
 		let viewMatrix = this.level.camera.viewMatrix;
 
 		// Draw
-		this.level.skybox.draw(now, perspectiveMatrix, viewMatrix);
-		this.level.labyrinth.draw(perspectiveMatrix, viewMatrix);
+		this.level.draw(now, perspectiveMatrix, viewMatrix);
 
 		// Make the next call
 		window.requestAnimationFrame((newNow) => { this.drawScene(newNow); });

@@ -1,15 +1,32 @@
-function SkyboxTexture(faceInfos, slot){
-    this.faceInfos=faceInfos;
-    this.slot=slot;
-    this.texture;
+/*******************
+ * SkyboxTexture.js
+ ******************/
 
-    this.init=function(){
+/**
+ * Object that represents a Texture (pack) of a Skybox
+ */
+class SkyboxTexture {
+    /**
+     * 
+     * @param { object } faceInfos Images of the faces info
+     * @param { object } slot gl.TEXTURE slot for this Texture
+     */
+    constructor(faceInfos, slot) {
+        this.faceInfos = faceInfos;
+        this.slot = slot;
+        this.init();
+    }
+
+    /**
+     * Function to initialize the Skybox Texture
+     */
+    init() {
         this.texture = gl.createTexture();
-	    gl.activeTexture(slot);
-	    gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
-        let scope=this;
+        gl.activeTexture(slot);
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
+        let scope = this;
         this.faceInfos.forEach((faceInfo) => {
-            
+
             let target = utils.computeTargetFace(faceInfo.target);
             let url = faceInfo.url;
 
@@ -22,7 +39,7 @@ function SkyboxTexture(faceInfos, slot){
             const type = gl.UNSIGNED_BYTE;
             // setup each face so it's immediately renderable
             gl.texImage2D(target, level, internalFormat, width, height, 0, format, type, null);
-    
+
             // Asynchronously load an image
             const image = new Image();
             image.src = url;
@@ -33,12 +50,8 @@ function SkyboxTexture(faceInfos, slot){
                 gl.texImage2D(target, level, internalFormat, format, type, image);
                 gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
             });
-            
-    
         });
         gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-	    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+        gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
     }
-
-    this.init();
 }
