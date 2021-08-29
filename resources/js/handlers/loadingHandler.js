@@ -65,8 +65,8 @@ class LoadingHandler {
 		let camera = new Camera(levelSettings.camera);
 		// Create the skybox
 		let textures = [];
-		levelSettings.skybox.skyboxes.forEach((faceInfos, index) => {
-			textures.push(new SkyboxTexture(faceInfos, gl.TEXTURE0 + index));
+		levelSettings.skybox.skyboxes.forEach((skybox, index) => {
+			textures.push(new SkyboxTexture(skybox.images, skybox.ambientLight, gl.TEXTURE0 + index));
 		});
 		let skybox = new Skybox(textures, program[1]);
 		// Create the labyrinth

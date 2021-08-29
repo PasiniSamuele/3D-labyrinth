@@ -24,7 +24,7 @@ class Skybox {
      */
     init() {
         this.loadLocations();
-        skyboxVertPos = new Float32Array(
+        let skyboxVertPos = new Float32Array(
             [
                 -1, -1, 1.0,
                 1, -1, 1.0,
@@ -72,8 +72,8 @@ class Skybox {
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.textures[1].texture);
         gl.uniform1i(this.locations['env_u_night_texture'], utils.getTextureSlotOffset(gl, this.textures[1].slot));
 
-        var viewProjMat = utils.multiplyMatrices(perspectiveMatrix, viewMatrix);
-        inverseViewProjMatrix = utils.invertMatrix(viewProjMat);
+        let viewProjMat = utils.multiplyMatrices(perspectiveMatrix, viewMatrix);
+        let inverseViewProjMatrix = utils.invertMatrix(viewProjMat);
         gl.uniformMatrix4fv(this.locations['env_inverseViewProjMatrix'], gl.FALSE, utils.transposeMatrix(inverseViewProjMatrix));
         //var time = ((new Date()).getTime()*0.003)%6.28;
         gl.uniform1f(this.locations['radians_over_time'], utils.degToRad(now % 360));

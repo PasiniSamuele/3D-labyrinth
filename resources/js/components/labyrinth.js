@@ -54,7 +54,7 @@ class Labyrinth {
      * function to load the image for the texture
      */
     loadImage() {
-        mazeTexture = gl.createTexture();
+        let mazeTexture = gl.createTexture();
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, mazeTexture);
         // put a 1x1 red pixel in the texture so it's renderable immediately
@@ -78,8 +78,7 @@ class Labyrinth {
      * function to computer the labyrinth structure
      */
     loadLabyrinth() {
-        let maze3D = compute3DLabyrinth(structure, 0.0, 1.0, 1.0);
-        console.log(maze3D);
+        let maze3D = compute3DLabyrinth(this.structure2D, 0.0, 1.0, 1.0);
         this.vertices = maze3D[0];
         this.indices = maze3D[1];
         this.colours = maze3D[2];

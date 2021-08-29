@@ -12,58 +12,74 @@
 			"fragment": "resources/assets/shaders/envDayNightShader/envmap.fs.glsl"
 		},
 		"skyboxes": [
-			[
-				{
-					"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
-					"url": "resources/assets/env/miramar/right.jpg"
+			{
+				"ambientLight":{
+					"red":0.541,
+					"green":0.973,
+					"blue":1
 				},
-				{
-					"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_X",
-					"url": "resources/assets/env/miramar/left.jpg"
+				"images":
+				[
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
+						"url": "resources/assets/env/miramar/right.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_X",
+						"url": "resources/assets/env/miramar/left.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Y",
+						"url": "resources/assets/env/miramar/top.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y",
+						"url": "resources/assets/env/miramar/bottom.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Z",
+						"url": "resources/assets/env/miramar/back.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
+						"url": "resources/assets/env/miramar/front.jpg"
+					}
+				]
+			},
+			{
+				"ambientLight":{
+					"red":0.039,
+					"green":0.106,
+					"blue":0.435
 				},
-				{
-					"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Y",
-					"url": "resources/assets/env/miramar/top.jpg"
-				},
-				{
-					"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y",
-					"url": "resources/assets/env/miramar/bottom.jpg"
-				},
-				{
-					"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Z",
-					"url": "resources/assets/env/miramar/back.jpg"
-				},
-				{
-					"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
-					"url": "resources/assets/env/miramar/front.jpg"
-				}
-			],
-			[
-				{
-					"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
-					"url": "resources/assets/env/grimmnight/right.jpg"
-				},
-				{
-					"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_X",
-					"url": "resources/assets/env/grimmnight/left.jpg"
-				},
-				{
-					"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Y",
-					"url": "resources/assets/env/grimmnight/top.jpg"
-				},
-				{
-					"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y",
-					"url": "resources/assets/env/grimmnight/bottom.jpg"
-				},
-				{
-					"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Z",
-					"url": "resources/assets/env/grimmnight/back.jpg"
-				},
-				{
-					"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
-					"url": "resources/assets/env/grimmnight/front.jpg"
-				}
-			]
+				"images":
+				[
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
+						"url": "resources/assets/env/grimmnight/right.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_X",
+						"url": "resources/assets/env/grimmnight/left.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Y",
+						"url": "resources/assets/env/grimmnight/top.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y",
+						"url": "resources/assets/env/grimmnight/bottom.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Z",
+						"url": "resources/assets/env/grimmnight/back.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
+						"url": "resources/assets/env/grimmnight/front.jpg"
+					}
+				]
+			}
 		]
 	},
 	"camera": {

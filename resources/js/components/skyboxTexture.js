@@ -11,9 +11,10 @@ class SkyboxTexture {
      * @param { object } faceInfos Images of the faces info
      * @param { object } slot gl.TEXTURE slot for this Texture
      */
-    constructor(faceInfos, slot) {
+    constructor(faceInfos, ambientLight,  slot) {
         this.faceInfos = faceInfos;
         this.slot = slot;
+        this.ambientLight = ambientLight;
         this.init();
     }
 
@@ -22,7 +23,7 @@ class SkyboxTexture {
      */
     init() {
         this.texture = gl.createTexture();
-        gl.activeTexture(slot);
+        gl.activeTexture(this.slot);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.texture);
         let scope = this;
         this.faceInfos.forEach((faceInfo) => {
