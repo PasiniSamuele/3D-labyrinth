@@ -45,28 +45,35 @@ class LoadingHandler {
 	async initResources(level) {
 		// Load JSON file
 		let levelSettings = await utils.loadJSONResource(level.level);
+
 		// Asyncronously load the resources
 		const results = await Promise.all([
 			utils.loadJSONResource(levelSettings.structure.url),
-			utils.loadTextResource(levelSettings.structure.shaders.vertex),
-			utils.loadTextResource(levelSettings.structure.shaders.fragment),
+			utils.loadTextResource(levelSettings.structure.shaders.wall.vertex),
+			utils.loadTextResource(levelSettings.structure.shaders.wall.fragment),
+			utils.loadTextResource(levelSettings.structure.shaders.floor.vertex),
+			utils.loadTextResource(levelSettings.structure.shaders.floor.fragment),
 			utils.loadTextResource(levelSettings.skybox.shaders.vertex),
 			utils.loadTextResource(levelSettings.skybox.shaders.fragment), //4:  fragment shader of the skybox
 		]);
-		// Create the shareds
-		let program = [];
-		let labVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[1]);
-		let labFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[2]);
-		let envVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[3]);
-		let envFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[4]);
-		program[0] = utils.createProgram(gl, labVertexShader, labFragmentShader);
+		// Create the shaders
+		let program = [[],];
+		let labWallVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[1]);
+		let labWallFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[2]);
+		let labFloorVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[3]);
+		let labFloorFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[4]);
+		let envVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[5]);
+		let envFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[6]);
+		program[0][0] = utils.createProgram(gl, labWallVertexShader, labWallFragmentShader);
+		program[0][1] = utils.createProgram(gl, labFloorVertexShader, labFloorFragmentShader);
 		program[1] = utils.createProgram(gl, envVertexShader, envFragmentShader);
 		// Create the camera
 		let camera = new Camera(levelSettings.camera);
 		// Create the skybox
 		let textures = [];
-		levelSettings.skybox.skyboxes.forEach((skybox, index) => {
-			textures.push(new SkyboxTexture(skybox.images, skybox.ambientLight, gl.TEXTURE0 + index));
+		let index = 0;	//unique texture index for skybox & labyrinth elements
+		levelSettings.skybox.skyboxes.forEach((skybox) => {
+			textures.push(new SkyboxTexture(skybox.images, skybox.ambientLight, gl.TEXTURE0 + index++));
 		});
 		let skybox = new Skybox(textures, program[1]);
 		// Create the labyrinth
@@ -74,9 +81,9 @@ class LoadingHandler {
 		if (this.RANDOM_GENERATION) {
 			let randomSettings = await utils.loadJSONResource(level.random);
 			let maze2D = generate2DLabyrinth(randomSettings.rows, randomSettings.columns, randomSettings.JOIN_SIDES, randomSettings.join_parameters);
-			labyrinth = new Labyrinth(maze2D, program[0]);
+			labyrinth = new Labyrinth(maze2D, program[0], levelSettings.structure.images, index);
 		}
-		labyrinth = new Labyrinth(results[0], program[0]);
+		labyrinth = new Labyrinth(results[0], program[0], levelSettings.structure.images, index);
 		// Set the actual level
 		let activeLevel = new Level(labyrinth, skybox, camera);
 		// Return the actual level

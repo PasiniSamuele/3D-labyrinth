@@ -9,11 +9,7 @@ const DEBUG_FRONT = 1;
 const DEBUG_RIGHT = 1;
 const DEBUG_BACK = 1;
 const DEBUG_LEFT = 1;
-const DEBUG_FLOOR = 1;
-const DEBUG_TOP = 0;                
-
-const U_UNIT = 0.5;
-const V_UNIT = 0.5;
+const DEBUG_FLOOR = 1;      
 
 const mazeElement = {
     FLOOR: 0,
@@ -39,6 +35,118 @@ const vertPosition = {
     TOP_RIGHT: 3
 };
 
+let computeColor = function(material){
+    switch(material){
+        case mazeElement.FLOOR:
+            return [0.0, 1.0, 0.0];
+        case mazeElement.WALL:
+            return [1.0, 0.0, 0.0];
+        case mazeElement.START_POS:
+            return [0.0, 1.0, 0.0];
+    }
+}
+
+let computeUV = function(position){
+    switch(position){
+        case vertPosition.BOTTOM_LEFT:
+            return [0.0, 0.0];
+        case vertPosition.BOTTOM_RIGHT:
+            return [1.0, 0.0];
+        case vertPosition.TOP_LEFT:
+            return [0.0, 1.0];
+        case vertPosition.TOP_RIGHT:
+            return [1.0, 1.0];
+    }
+}
+
+let computeNormals = function(direction){
+    switch(direction){
+        case mazeDirection.FRONT:
+            return [0.0, 0.0, 1.0];
+        case mazeDirection.RIGHT:
+            return [-1.0, 0.0, 0.0];
+        case mazeDirection.BACK:
+            return [0.0, 0.0, -1.0];
+        case mazeDirection.LEFT:
+            return [1.0, 0.0, 0.0];
+        case mazeDirection.FLOOR:
+            return [0.0, 1.0, 0.0];
+    }
+}
+
+var compute3DFloor = function(labyrinth, MIN_Y, MAX_Y, size_multiplier){
+    let X_SIZE = labyrinth[0].length;
+    let Z_SIZE = labyrinth.length;
+
+    let offset_x, offset_y, offset_z;
+    for(let i = 0; i < Z_SIZE; i++){
+        for(let j = 0; j < X_SIZE; j++){
+            if(labyrinth[i][j] == 2){
+                offset_x = -j-0.5;
+                offset_y = -(MAX_Y-MIN_Y)/2;
+                offset_z = -i-0.5;
+            }
+        }
+    }
+
+    let vertices = [];
+    let indexes = [];
+    let normals = [];
+    let uvs = [];
+    let icount = 0;
+    let colours = [];
+
+    let computeVertex = function(x,y,z,dir,uv,mat){
+
+        colours = colours.concat(computeColor(mat));
+    
+        let vertex = [];
+    
+        vertex.push((x+offset_x)*size_multiplier);
+        vertex.push((y+offset_y)*size_multiplier);
+        vertex.push((z+offset_z)*size_multiplier);
+    
+        normals = normals.concat(computeNormals(dir));
+        uvs = uvs.concat(computeUV(uv));
+    
+        return vertex;
+    }
+
+    let incrementIndexes = function(){
+        if (CLOCKWISE_INDEXES){
+            indexes.push(
+                icount+2, icount+1, icount,
+                icount+3, icount+2, icount
+            );
+        } else {
+            indexes.push(
+                icount, icount+1, icount+2,
+                icount, icount+2, icount+3
+            );
+        }
+        icount+=4;
+    }
+
+    for(let i = 0; i < Z_SIZE; i++){
+        for(let j = 0; j < X_SIZE; j++){
+            if(!mazeElement.BLOCKS.includes(labyrinth[i][j])){
+                if(DEBUG_FLOOR){
+                    vertices.push(
+                        computeVertex(j, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_LEFT, labyrinth[i][j]),
+                        computeVertex(j, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_LEFT, labyrinth[i][j]), 
+                        computeVertex(j+1, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_RIGHT, labyrinth[i][j]),
+                        computeVertex(j+1, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_RIGHT, labyrinth[i][j])
+                    );
+                    incrementIndexes();
+                }
+            }
+        }
+    }
+
+    if(VERTICES2D) return [vertices, [].concat(indexes), colours, normals, uvs];
+    else return [[].concat.apply([],vertices), [].concat(indexes), colours, normals, uvs];
+}
+
 /**
  * Function that returns arrays of 3D coordinates of a given 2D labyrinth
  * 
@@ -51,7 +159,7 @@ const vertPosition = {
  * 
  * @returns a vector of size 3 containing respectively vertices, indices and colours
  */
- var compute3DLabyrinth = function(labyrinth, MIN_Y, MAX_Y, size_multiplier){
+ var compute3DWalls = function(labyrinth, MIN_Y, MAX_Y, size_multiplier){
     //
     //  INITIALIZATION
     //
@@ -77,79 +185,19 @@ const vertPosition = {
     let icount = 0;
     let colours = [];
 
-    let computeColor = function(material){
-        switch(material){
-            case mazeElement.FLOOR:
-                return [0.0, 1.0, 0.0];
-            case mazeElement.WALL:
-                return [1.0, 0.0, 0.0];
-            case mazeElement.START_POS:
-                return [0.0, 1.0, 0.0];
-        }
-    }
-
-    let computeUV = function(position, material){
-        let uv;
-        
-        switch(material){
-            case mazeElement.FLOOR:
-                uv = [0.5, 0.0];
-                break;
-            case mazeElement.WALL:
-                uv = [0.0, 0.0];
-                break;
-            case mazeElement.START_POS:
-                uv = [0.5, 0.0];
-                break;
-            default:
-                uv = [0.0, 0.0];
-                break;
-        }
-
-        switch(position){
-            case vertPosition.BOTTOM_LEFT:
-                return uv;
-            case vertPosition.BOTTOM_RIGHT:
-                uv[0] += U_UNIT;
-                return uv;
-            case vertPosition.TOP_LEFT:
-                uv[1] += V_UNIT;
-                return uv;
-            case vertPosition.TOP_RIGHT:
-                uv[0] += U_UNIT;
-                uv[1] += V_UNIT;
-                return uv;
-        }
-    }
-
-    let computeNormals = function(direction){
-        switch(direction){
-            case mazeDirection.FRONT:
-                return [0.0, 0.0, 1.0];
-            case mazeDirection.RIGHT:
-                return [-1.0, 0.0, 0.0];
-            case mazeDirection.BACK:
-                return [0.0, 0.0, -1.0];
-            case mazeDirection.LEFT:
-                return [1.0, 0.0, 0.0];
-            case mazeDirection.FLOOR:
-                return [0.0, 1.0, 0.0];
-        }
-    }
-
     let computeVertex = function(x,y,z,dir,uv,mat){
 
         colours = colours.concat(computeColor(mat));
-
-		let vertex = [];
-
-		vertex.push((x+offset_x)*size_multiplier);
-		vertex.push((y+offset_y)*size_multiplier);
-		vertex.push((z+offset_z)*size_multiplier);
-
-		normals = normals.concat(computeNormals(dir));
-        uvs = uvs.concat(computeUV(uv,mat));
-
+    
+        let vertex = [];
+    
+        vertex.push((x+offset_x)*size_multiplier);
+        vertex.push((y+offset_y)*size_multiplier);
+        vertex.push((z+offset_z)*size_multiplier);
+    
+        normals = normals.concat(computeNormals(dir));
+        uvs = uvs.concat(computeUV(uv));
+    
         return vertex;
     }
 
@@ -215,17 +263,6 @@ const vertPosition = {
                         computeVertex(j, MIN_Y, i+1, mazeDirection.LEFT, vertPosition.BOTTOM_LEFT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
                         computeVertex(j, MIN_Y, i, mazeDirection.LEFT, vertPosition.BOTTOM_RIGHT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
                         computeVertex(j, MAX_Y, i, mazeDirection.LEFT, vertPosition.TOP_RIGHT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1])
-                    );
-                    incrementIndexes();
-                }
-
-                //FLOOR
-                if(DEBUG_FLOOR){
-                    vertices.push(
-                        computeVertex(j, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_LEFT, labyrinth[i][j]),
-                        computeVertex(j, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_LEFT, labyrinth[i][j]), 
-                        computeVertex(j+1, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_RIGHT, labyrinth[i][j]),
-                        computeVertex(j+1, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_RIGHT, labyrinth[i][j])
                     );
                     incrementIndexes();
                 }

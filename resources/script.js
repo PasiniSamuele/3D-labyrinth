@@ -75,8 +75,6 @@ function main() {
 	var mazeIndices = maze3D[1];
 	var mazeColours = maze3D[2];
 
-	console.log(mazeVertices);
-
 	locations = getLocations();
 
 	LoadEnvironment();

@@ -2,8 +2,18 @@
 	"structure": {
 		"url": "resources/assets/labyrinths/lab1.json",
 		"shaders": {
-			"vertex": "resources/assets/shaders/labShader1/labShader.vs.glsl",
-			"fragment": "resources/assets/shaders/labShader1/labShader.fs.glsl"
+			"wall": {
+				"vertex": "resources/assets/shaders/labShader1/labWallShader.vs.glsl",
+				"fragment": "resources/assets/shaders/labShader1/labWallShader.fs.glsl"
+			},
+			"floor": {
+				"vertex": "resources/assets/shaders/labShader1/labFloorShader.vs.glsl",
+				"fragment": "resources/assets/shaders/labShader1/labFloorShader.fs.glsl"
+			}
+		},
+		"images": {
+			"wall": "resources/assets/textures/lab/handpaintedwall.png",
+			"floor": "resources/assets/textures/lab/grass.png"
 		}
 	},
 	"skybox": {
