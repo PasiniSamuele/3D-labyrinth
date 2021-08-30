@@ -313,11 +313,16 @@ class Camera {
 	}
 
 	computePositions(deltaTime) {
+		let oldx = this.position.x;
+		let oldz = this.position.z;
 		let newx = this.position.x + (this.viewMatrixNoElevation[0] * this.speed.x + this.viewMatrixNoElevation[4] * this.speed.y + this.viewMatrixNoElevation[8] * this.speed.z) * deltaTime;
 		let newz = this.position.z + (this.viewMatrixNoElevation[2] * this.speed.x + this.viewMatrixNoElevation[6] * this.speed.y + this.viewMatrixNoElevation[10] * this.speed.z) * deltaTime;
-		this.position.x = collisionHandler.checkCameraCollisionXAxis(this.position.x, newx, this.position.z);
+
+		let newPositions = collisionHandler.checkCameraCollision(oldx, newx, oldz, newz);
+
+		this.position.x = newPositions.x;
 		this.position.y += (this.viewMatrixNoElevation[1] * this.speed.x + this.viewMatrixNoElevation[5] * this.speed.y + this.viewMatrixNoElevation[9] * this.speed.z) * deltaTime;
-		this.position.z = collisionHandler.checkCameraCollisionZAxis(this.position.z, newz, this.position.x);
+		this.position.z = newPositions.z;
 		/*this.position.x += this.speed.x * deltaTime;
 		this.position.y += this.speed.y * deltaTime;
 		this.position.z += this.speed.z * deltaTime;*/

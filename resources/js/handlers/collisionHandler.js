@@ -3,31 +3,37 @@ class CollisionHandler {
         this.DEBUGCOLLISION = false;
     }
 
-    checkCameraCollisionXAxis(x, newx, z){
-        if(this.DEBUGCOLLISION) return newx;
-        let xvar = newx-x;
-        let xAbsolute = Math.floor(x+this.offset.column);
-        let zAbsolute = Math.floor(z+this.offset.row);
-        let newxAbsolute = Math.floor(newx+this.offset.column+0.2*Math.sign(xvar));
+    checkCameraCollision(x, newx, z, newz){
+        if(!this.DEBUGCOLLISION) {
+            let zvar = newz-z;
+            let xvar = newx-x;
+            let xAbsolute = Math.floor(x+this.offset.column);
+            let zAbsolute = Math.floor(z+this.offset.row);
+            let newxAbsolute = Math.floor(newx+this.offset.column+Math.sign(xvar)*0.25);
+            let newzAbsolute = Math.floor(newz+this.offset.row+Math.sign(zvar)*0.25);
+            let minxAbsolute = Math.floor(newx+this.offset.column-Math.sign(xvar)*0.25);
+            let minzAbsolute = Math.floor(newz+this.offset.row-Math.sign(zvar)*0.25);
+            console.log(labyrinthUtils.isBlock(this.structure, newzAbsolute, newxAbsolute));
 
-        if(xAbsolute != newxAbsolute && labyrinthUtils.isBlock(this.structure, zAbsolute, newxAbsolute)){
-            newx = x;
+            
+            let cond1 = labyrinthUtils.isBlock(this.structure, newzAbsolute, newxAbsolute);
+            let cond2 = labyrinthUtils.isBlock(this.structure, zAbsolute, newxAbsolute);
+            let cond3 = labyrinthUtils.isBlock(this.structure, newzAbsolute, xAbsolute);
+            let cond4 = labyrinthUtils.isBlock(this.structure, newzAbsolute, minxAbsolute);
+            let cond5 = labyrinthUtils.isBlock(this.structure, minzAbsolute, newxAbsolute);
+
+            if(xAbsolute != newxAbsolute && (cond2 || cond1 && !cond2 && !cond3 || !cond1 && cond5)){
+                newx = x;
+            } //else if (xAbsolute != newxAbsolute && labyrinthUtils.isBlock(this.structure, ))
+            if(zAbsolute != newzAbsolute && (cond3 || cond1 && !cond2 && !cond3 || !cond1 && cond4)){
+                newz = z;
+            }
         }
 
-        return newx;
-    }
-
-    checkCameraCollisionZAxis(z, newz, x){
-        if(this.DEBUGCOLLISION) return newz;
-        let zvar = newz-z;
-        let xAbsolute = Math.floor(x+this.offset.column);
-        let zAbsolute = Math.floor(z+Math.sign(zvar)*this.offset.row);
-        let newzAbsolute = Math.floor(newz+this.offset.row+Math.sign(zvar)*0.2);
-
-        if(zAbsolute != newzAbsolute && labyrinthUtils.isBlock(this.structure, newzAbsolute, xAbsolute)){
-            newz = z;
-        }
-        return newz;
+        return {
+            x:newx,
+            z:newz
+        };
     }
 
     setStructure(str){
