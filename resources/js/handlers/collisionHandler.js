@@ -1,7 +1,10 @@
 class CollisionHandler {
-    constructor(){}
+    constructor(){
+        this.DEBUGCOLLISION = false;
+    }
 
     checkCameraCollisionXAxis(x, newx, z){
+        if(this.DEBUGCOLLISION) return newx;
         let xvar = newx-x;
         let xAbsolute = Math.floor(x+this.offset.column);
         let zAbsolute = Math.floor(z+this.offset.row);
@@ -15,11 +18,12 @@ class CollisionHandler {
     }
 
     checkCameraCollisionZAxis(z, newz, x){
+        if(this.DEBUGCOLLISION) return newz;
         let zvar = newz-z;
         let xAbsolute = Math.floor(x+this.offset.column);
         let zAbsolute = Math.floor(z+Math.sign(zvar)*this.offset.row);
         let newzAbsolute = Math.floor(newz+this.offset.row+Math.sign(zvar)*0.2);
-        
+
         if(zAbsolute != newzAbsolute && labyrinthUtils.isBlock(this.structure, newzAbsolute, xAbsolute)){
             newz = z;
         }
@@ -33,7 +37,5 @@ class CollisionHandler {
             row: start[0]+0.5,
             column: start[1]+0.5
         };
-        console.log(this.structure);
-        console.log(this.offset);
     }
 }
