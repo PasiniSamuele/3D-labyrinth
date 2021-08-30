@@ -80,10 +80,13 @@ class LoadingHandler {
 		let labyrinth;
 		if (this.RANDOM_GENERATION) {
 			let randomSettings = await utils.loadJSONResource(level.random);
-			let maze2D = generate2DLabyrinth(randomSettings.rows, randomSettings.columns, randomSettings.JOIN_SIDES, randomSettings.join_parameters);
+			let maze2D = labirinthUtils.generate2DLabyrinth(randomSettings.rows, randomSettings.columns, randomSettings.JOIN_SIDES, randomSettings.join_parameters);
+			collisionHandler.setStructure(maze2D);
 			labyrinth = new Labyrinth(maze2D, program[0], levelSettings.structure.images, index);
-		}
-		labyrinth = new Labyrinth(results[0], program[0], levelSettings.structure.images, index);
+		} else {
+			collisionHandler.setStructure(results[0]);
+			labyrinth = new Labyrinth(results[0], program[0], levelSettings.structure.images, index);
+		} 
 		// Set the actual level
 		let activeLevel = new Level(labyrinth, skybox, camera);
 		// Return the actual level

@@ -41,8 +41,8 @@ async function init() {
 	
 	loadingHandler = new LoadingHandler();
 	movementHandler = new MovementHandler();
-	interactionHandler = new InteractionHandler()
-	//collisionHandler = new CollisionHandler();
+	interactionHandler = new InteractionHandler();
+	collisionHandler = new CollisionHandler();
 	sceneHandler = new SceneHandler(movementHandler, interactionHandler);
 
 	

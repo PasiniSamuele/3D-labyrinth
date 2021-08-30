@@ -83,7 +83,7 @@ class Floor extends LabyrinthElement{
      * function to computer the labyrinth structure
      */
     loadComponent() {
-        let floor3D = compute3DFloor(this.structure, 0.0, 1.0, 1.0);
+        let floor3D = labyrinthUtils.compute3DFloor(this.structure, 0.0, 1.0, 1.0);
         this.vertices = floor3D[0];
         this.indices = floor3D[1];
         this.colours = floor3D[2];

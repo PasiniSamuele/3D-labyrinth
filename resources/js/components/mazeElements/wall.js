@@ -82,7 +82,7 @@ class Wall extends LabyrinthElement{
      * function to computer the labyrinth structure
      */
     loadComponent() {
-        let walls3D = compute3DWalls(this.structure, 0.0, 1.0, 1.0);
+        let walls3D = labyrinthUtils.compute3DWalls(this.structure, 0.0, 1.0, 1.0);
         this.vertices = walls3D[0];
         this.indices = walls3D[1];
         this.colours = walls3D[2];

@@ -1,3 +1,4 @@
+
 //
 //  CONSTANTS & DEBUG
 //
@@ -74,207 +75,7 @@ let computeNormals = function(direction){
     }
 }
 
-var compute3DFloor = function(labyrinth, MIN_Y, MAX_Y, size_multiplier){
-    let X_SIZE = labyrinth[0].length;
-    let Z_SIZE = labyrinth.length;
-
-    let offset_x, offset_y, offset_z;
-    for(let i = 0; i < Z_SIZE; i++){
-        for(let j = 0; j < X_SIZE; j++){
-            if(labyrinth[i][j] == 2){
-                offset_x = -j-0.5;
-                offset_y = -(MAX_Y-MIN_Y)/2;
-                offset_z = -i-0.5;
-            }
-        }
-    }
-
-    let vertices = [];
-    let indexes = [];
-    let normals = [];
-    let uvs = [];
-    let icount = 0;
-    let colours = [];
-
-    let computeVertex = function(x,y,z,dir,uv,mat){
-
-        colours = colours.concat(computeColor(mat));
-    
-        let vertex = [];
-    
-        vertex.push((x+offset_x)*size_multiplier);
-        vertex.push((y+offset_y)*size_multiplier);
-        vertex.push((z+offset_z)*size_multiplier);
-    
-        normals = normals.concat(computeNormals(dir));
-        uvs = uvs.concat(computeUV(uv));
-    
-        return vertex;
-    }
-
-    let incrementIndexes = function(){
-        if (CLOCKWISE_INDEXES){
-            indexes.push(
-                icount+2, icount+1, icount,
-                icount+3, icount+2, icount
-            );
-        } else {
-            indexes.push(
-                icount, icount+1, icount+2,
-                icount, icount+2, icount+3
-            );
-        }
-        icount+=4;
-    }
-
-    for(let i = 0; i < Z_SIZE; i++){
-        for(let j = 0; j < X_SIZE; j++){
-            if(!mazeElement.BLOCKS.includes(labyrinth[i][j])){
-                if(DEBUG_FLOOR){
-                    vertices.push(
-                        computeVertex(j, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_LEFT, labyrinth[i][j]),
-                        computeVertex(j, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_LEFT, labyrinth[i][j]), 
-                        computeVertex(j+1, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_RIGHT, labyrinth[i][j]),
-                        computeVertex(j+1, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_RIGHT, labyrinth[i][j])
-                    );
-                    incrementIndexes();
-                }
-            }
-        }
-    }
-
-    if(VERTICES2D) return [vertices, [].concat(indexes), colours, normals, uvs];
-    else return [[].concat.apply([],vertices), [].concat(indexes), colours, normals, uvs];
-}
-
-/**
- * Function that returns arrays of 3D coordinates of a given 2D labyrinth
- * 
- * @param { any } labyrinth a nxm matrix of zeroes and ones (the ones are walls) with n,m > 2
- * 
- * @param { number } MIN_Y height of the floor
- * @param { number } MAX_Y height of the ceiling
- * 
- * @param { number } size_multiplier multiplier for all dimensions
- * 
- * @returns a vector of size 3 containing respectively vertices, indices and colours
- */
- var compute3DWalls = function(labyrinth, MIN_Y, MAX_Y, size_multiplier){
-    //
-    //  INITIALIZATION
-    //
-
-    let X_SIZE = labyrinth[0].length;
-    let Z_SIZE = labyrinth.length;
-
-    let offset_x, offset_y, offset_z;
-    for(let i = 0; i < Z_SIZE; i++){
-        for(let j = 0; j < X_SIZE; j++){
-            if(labyrinth[i][j] == 2){
-                offset_x = -j-0.5;
-                offset_y = -(MAX_Y-MIN_Y)/2;
-                offset_z = -i-0.5;
-            }
-        }
-    }
-
-    let vertices = [];
-    let indexes = [];
-    let normals = [];
-    let uvs = [];
-    let icount = 0;
-    let colours = [];
-
-    let computeVertex = function(x,y,z,dir,uv,mat){
-
-        colours = colours.concat(computeColor(mat));
-    
-        let vertex = [];
-    
-        vertex.push((x+offset_x)*size_multiplier);
-        vertex.push((y+offset_y)*size_multiplier);
-        vertex.push((z+offset_z)*size_multiplier);
-    
-        normals = normals.concat(computeNormals(dir));
-        uvs = uvs.concat(computeUV(uv));
-    
-        return vertex;
-    }
-
-    let incrementIndexes = function(){
-        if (CLOCKWISE_INDEXES){
-            indexes.push(
-                icount+2, icount+1, icount,
-                icount+3, icount+2, icount
-            );
-        } else {
-            indexes.push(
-                icount, icount+1, icount+2,
-                icount, icount+2, icount+3
-            );
-        }
-        icount+=4;
-    }
-
-    //
-    //  COMPUTE WALLS
-    //
-
-    for(let i = 0; i < Z_SIZE; i++){
-        for(let j = 0; j < X_SIZE; j++){
-            if(!mazeElement.BLOCKS.includes(labyrinth[i][j])){
-                //FRONT
-                if(DEBUG_FRONT && ((i-1 < 0) ? true : mazeElement.BLOCKS.includes(labyrinth[i-1][j]))) {
-                    vertices.push(
-                        computeVertex(j, MAX_Y, i, mazeDirection.FRONT, vertPosition.TOP_LEFT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j]),
-                        computeVertex(j, MIN_Y, i, mazeDirection.FRONT, vertPosition.BOTTOM_LEFT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j]),
-                        computeVertex(j+1, MIN_Y, i, mazeDirection.FRONT, vertPosition.BOTTOM_RIGHT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j]),
-                        computeVertex(j+1, MAX_Y, i, mazeDirection.FRONT, vertPosition.TOP_RIGHT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j])
-                    );
-                    incrementIndexes();
-                }
-
-                //RIGHT
-                if(DEBUG_RIGHT && ((j+1 >= X_SIZE) ? true : mazeElement.BLOCKS.includes(labyrinth[i][j+1]))){
-                    vertices.push(
-                        computeVertex(j+1, MAX_Y, i, mazeDirection.RIGHT, vertPosition.TOP_LEFT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1]),
-                        computeVertex(j+1, MIN_Y, i, mazeDirection.RIGHT, vertPosition.BOTTOM_LEFT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1]),
-                        computeVertex(j+1, MIN_Y, i+1, mazeDirection.RIGHT, vertPosition.BOTTOM_RIGHT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1]),
-                        computeVertex(j+1, MAX_Y, i+1, mazeDirection.RIGHT, vertPosition.TOP_RIGHT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1])
-                    );
-                    incrementIndexes();
-                }
-
-                //BACK
-                if(DEBUG_BACK && ((i+1 >= Z_SIZE) ? true : mazeElement.BLOCKS.includes(labyrinth[i+1][j]))){
-                    vertices.push(
-                        computeVertex(j+1, MAX_Y, i+1, mazeDirection.BACK, vertPosition.TOP_LEFT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j]),
-                        computeVertex(j+1, MIN_Y, i+1, mazeDirection.BACK, vertPosition.BOTTOM_LEFT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j]),
-                        computeVertex(j, MIN_Y, i+1, mazeDirection.BACK, vertPosition.BOTTOM_RIGHT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j]),
-                        computeVertex(j, MAX_Y, i+1, mazeDirection.BACK, vertPosition.TOP_RIGHT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j])
-                    );
-                    incrementIndexes();
-                }
-
-                //LEFT
-                if(DEBUG_LEFT && ((j-1 < 0) ? true : mazeElement.BLOCKS.includes(labyrinth[i][j-1]))){
-                    vertices.push(
-                        computeVertex(j, MAX_Y, i+1, mazeDirection.LEFT, vertPosition.TOP_LEFT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
-                        computeVertex(j, MIN_Y, i+1, mazeDirection.LEFT, vertPosition.BOTTOM_LEFT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
-                        computeVertex(j, MIN_Y, i, mazeDirection.LEFT, vertPosition.BOTTOM_RIGHT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
-                        computeVertex(j, MAX_Y, i, mazeDirection.LEFT, vertPosition.TOP_RIGHT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1])
-                    );
-                    incrementIndexes();
-                }
-            }
-        }
-    }
-
-    if(VERTICES2D) return [vertices, [].concat(indexes), colours, normals, uvs];
-    else return [[].concat.apply([],vertices), [].concat(indexes), colours, normals, uvs];
-}
-
-function shuffle(array) {
+let shuffle = function(array) {
     var currentIndex = array.length,  randomIndex;
   
     // While there remain elements to shuffle...
@@ -292,82 +93,299 @@ function shuffle(array) {
     return array;
 }
 
-/**
- * Function that generates a 2D labyrinth given its rows and columns
- * @param { number } rows number of rows 
- * @param { number } columns number of columns
- * @param { boolean } JOIN_SIDES true if the generation should be noisy
- * @param { float } join_probability probability to add an inconsistent wall (MUST BE SMALL!!!!!!)
- * 
- * @returns a matrix of zeroes and ones where the ones are walls
- */
-var generate2DLabyrinth = function(rows, columns, JOIN_SIDES, join_probability){
+var labyrinthUtils = {
+    isBlock : function(labyrinth, row, column){
+        if (row < 0 || row >= labyrinth.length || column < 0 || column >= labyrinth[0].length) return true;
+        else return mazeElement.BLOCKS.includes(labyrinth[row][column]);
+    },
 
-    if(rows%2 === 0) rows--;
-    if(columns%2 === 0) columns--;
-
-    let labyrinth = Array(rows).fill().map(()=>Array(columns).fill(1));
-    
-    let start_row = Math.floor(Math.random()*rows);
-    let start_col = Math.floor(Math.random()*columns);
-
-    start_row -= (start_row%2 === 0) ? 0 : 1;
-    start_col -= (start_col%2 === 0) ? 0 : 1;
-
-    labyrinth[start_row][start_col] = 2;
-
-    let iterateLabyrinth = function(matrix, row, col){
-
-        //noise termination condition
-        if (
-            ((row+1)<matrix.length ? mazeElement.FLOORS.includes(matrix[row+1][col]) : true) && 
-            ((row-1)>=0 ? mazeElement.FLOORS.includes(matrix[row-1][col]) : true) &&
-            ((col+1)<matrix[0].length ? mazeElement.FLOORS.includes(matrix[row][col+1]) : true) && 
-            ((col-1)>=0 ? mazeElement.FLOORS.includes(matrix[row][col-1]) : true)
-        ) return matrix;
-
-        //set cell as visited
-        if(matrix[row][col] !== 2) matrix[row][col] = 0;
-
-        //get neighbors
-        let neighbors = [];
-        if((row+2) < rows) neighbors.push([row+2, col, 0]);
-        if((row-2) >= 0) neighbors.push([row-2, col, 1]);
-        if((col+2) < columns) neighbors.push([row, col+2, 2]);
-        if((col-2) >= 0) neighbors.push([row, col-2, 3]);
-        
-        //shuffle neighbors
-        let ind = [];
-        for(i = 0; i < neighbors.length; i++) ind.push(i);
-        shuffle(ind);
-
-        //iterate unvisited neighbors
-        ind.forEach(i=>{
-            let noise = JOIN_SIDES && (Math.random() < join_probability);
-            if(matrix[neighbors[i][0]][neighbors[i][1]] === 1 || noise){
-                switch(neighbors[i][2]){
-                    case 0:
-                        matrix[row+1][col] = 0;
-                        break;
-                    case 1:
-                        matrix[row-1][col] = 0;
-                        break;
-                    case 2:
-                        matrix[row][col+1] = 0;
-                        break;
-                    case 3:
-                        matrix[row][col-1] = 0;
-                        break;
-                    default:
-                        return null;
-                }
-
-                iterateLabyrinth(matrix, neighbors[i][0], neighbors[i][1]);
+    computeStartPos : function(labyrinth){
+        for(i = 0; i < labyrinth.length; i++){
+            for(j = 0; j < labyrinth[0].length; j++){
+                if(labyrinth[i][j] == mazeElement.START_POS) return [i, j];
             }
-        });
+        }
+        console.error("labyrinth has no start pos");
+        return [];
+    },
 
-        return matrix;
+    compute3DFloor : function(labyrinth, MIN_Y, MAX_Y, size_multiplier){
+        let X_SIZE = labyrinth[0].length;
+        let Z_SIZE = labyrinth.length;
+
+        let offset_x, offset_y, offset_z;
+        for(let i = 0; i < Z_SIZE; i++){
+            for(let j = 0; j < X_SIZE; j++){
+                if(labyrinth[i][j] == 2){
+                    offset_x = -j-0.5;
+                    offset_y = -(MAX_Y-MIN_Y)/2;
+                    offset_z = -i-0.5;
+                }
+            }
+        }
+
+        let vertices = [];
+        let indexes = [];
+        let normals = [];
+        let uvs = [];
+        let icount = 0;
+        let colours = [];
+
+        let computeVertex = function(x,y,z,dir,uv,mat){
+
+            colours = colours.concat(computeColor(mat));
+        
+            let vertex = [];
+        
+            vertex.push((x+offset_x)*size_multiplier);
+            vertex.push((y+offset_y)*size_multiplier);
+            vertex.push((z+offset_z)*size_multiplier);
+        
+            normals = normals.concat(computeNormals(dir));
+            uvs = uvs.concat(computeUV(uv));
+        
+            return vertex;
+        }
+
+        let incrementIndexes = function(){
+            if (CLOCKWISE_INDEXES){
+                indexes.push(
+                    icount+2, icount+1, icount,
+                    icount+3, icount+2, icount
+                );
+            } else {
+                indexes.push(
+                    icount, icount+1, icount+2,
+                    icount, icount+2, icount+3
+                );
+            }
+            icount+=4;
+        }
+
+        for(let i = 0; i < Z_SIZE; i++){
+            for(let j = 0; j < X_SIZE; j++){
+                if(!mazeElement.BLOCKS.includes(labyrinth[i][j])){
+                    if(DEBUG_FLOOR){
+                        vertices.push(
+                            computeVertex(j, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_LEFT, labyrinth[i][j]),
+                            computeVertex(j, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_LEFT, labyrinth[i][j]), 
+                            computeVertex(j+1, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_RIGHT, labyrinth[i][j]),
+                            computeVertex(j+1, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_RIGHT, labyrinth[i][j])
+                        );
+                        incrementIndexes();
+                    }
+                }
+            }
+        }
+
+        if(VERTICES2D) return [vertices, [].concat(indexes), colours, normals, uvs];
+        else return [[].concat.apply([],vertices), [].concat(indexes), colours, normals, uvs];
+    },
+
+    /**
+     * Function that returns arrays of 3D coordinates of a given 2D labyrinth
+     * 
+     * @param { any } labyrinth a nxm matrix of zeroes and ones (the ones are walls) with n,m > 2
+     * 
+     * @param { number } MIN_Y height of the floor
+     * @param { number } MAX_Y height of the ceiling
+     * 
+     * @param { number } size_multiplier multiplier for all dimensions
+     * 
+     * @returns a vector of size 3 containing respectively vertices, indices and colours
+     */
+    compute3DWalls : function(labyrinth, MIN_Y, MAX_Y, size_multiplier){
+        //
+        //  INITIALIZATION
+        //
+
+        let X_SIZE = labyrinth[0].length;
+        let Z_SIZE = labyrinth.length;
+
+        let offset_x, offset_y, offset_z;
+        for(let i = 0; i < Z_SIZE; i++){
+            for(let j = 0; j < X_SIZE; j++){
+                if(labyrinth[i][j] == 2){
+                    offset_x = -j-0.5;
+                    offset_y = -(MAX_Y-MIN_Y)/2;
+                    offset_z = -i-0.5;
+                }
+            }
+        }
+
+        let vertices = [];
+        let indexes = [];
+        let normals = [];
+        let uvs = [];
+        let icount = 0;
+        let colours = [];
+
+        let computeVertex = function(x,y,z,dir,uv,mat){
+
+            colours = colours.concat(computeColor(mat));
+        
+            let vertex = [];
+        
+            vertex.push((x+offset_x)*size_multiplier);
+            vertex.push((y+offset_y)*size_multiplier);
+            vertex.push((z+offset_z)*size_multiplier);
+        
+            normals = normals.concat(computeNormals(dir));
+            uvs = uvs.concat(computeUV(uv));
+        
+            return vertex;
+        }
+
+        let incrementIndexes = function(){
+            if (CLOCKWISE_INDEXES){
+                indexes.push(
+                    icount+2, icount+1, icount,
+                    icount+3, icount+2, icount
+                );
+            } else {
+                indexes.push(
+                    icount, icount+1, icount+2,
+                    icount, icount+2, icount+3
+                );
+            }
+            icount+=4;
+        }
+
+        //
+        //  COMPUTE WALLS
+        //
+
+        for(let i = 0; i < Z_SIZE; i++){
+            for(let j = 0; j < X_SIZE; j++){
+                if(!mazeElement.BLOCKS.includes(labyrinth[i][j])){
+                    //FRONT
+                    if(DEBUG_FRONT && ((i-1 < 0) ? true : mazeElement.BLOCKS.includes(labyrinth[i-1][j]))) {
+                        vertices.push(
+                            computeVertex(j, MAX_Y, i, mazeDirection.FRONT, vertPosition.TOP_LEFT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j]),
+                            computeVertex(j, MIN_Y, i, mazeDirection.FRONT, vertPosition.BOTTOM_LEFT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j]),
+                            computeVertex(j+1, MIN_Y, i, mazeDirection.FRONT, vertPosition.BOTTOM_RIGHT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j]),
+                            computeVertex(j+1, MAX_Y, i, mazeDirection.FRONT, vertPosition.TOP_RIGHT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j])
+                        );
+                        incrementIndexes();
+                    }
+
+                    //RIGHT
+                    if(DEBUG_RIGHT && ((j+1 >= X_SIZE) ? true : mazeElement.BLOCKS.includes(labyrinth[i][j+1]))){
+                        vertices.push(
+                            computeVertex(j+1, MAX_Y, i, mazeDirection.RIGHT, vertPosition.TOP_LEFT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1]),
+                            computeVertex(j+1, MIN_Y, i, mazeDirection.RIGHT, vertPosition.BOTTOM_LEFT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1]),
+                            computeVertex(j+1, MIN_Y, i+1, mazeDirection.RIGHT, vertPosition.BOTTOM_RIGHT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1]),
+                            computeVertex(j+1, MAX_Y, i+1, mazeDirection.RIGHT, vertPosition.TOP_RIGHT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1])
+                        );
+                        incrementIndexes();
+                    }
+
+                    //BACK
+                    if(DEBUG_BACK && ((i+1 >= Z_SIZE) ? true : mazeElement.BLOCKS.includes(labyrinth[i+1][j]))){
+                        vertices.push(
+                            computeVertex(j+1, MAX_Y, i+1, mazeDirection.BACK, vertPosition.TOP_LEFT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j]),
+                            computeVertex(j+1, MIN_Y, i+1, mazeDirection.BACK, vertPosition.BOTTOM_LEFT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j]),
+                            computeVertex(j, MIN_Y, i+1, mazeDirection.BACK, vertPosition.BOTTOM_RIGHT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j]),
+                            computeVertex(j, MAX_Y, i+1, mazeDirection.BACK, vertPosition.TOP_RIGHT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j])
+                        );
+                        incrementIndexes();
+                    }
+
+                    //LEFT
+                    if(DEBUG_LEFT && ((j-1 < 0) ? true : mazeElement.BLOCKS.includes(labyrinth[i][j-1]))){
+                        vertices.push(
+                            computeVertex(j, MAX_Y, i+1, mazeDirection.LEFT, vertPosition.TOP_LEFT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
+                            computeVertex(j, MIN_Y, i+1, mazeDirection.LEFT, vertPosition.BOTTOM_LEFT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
+                            computeVertex(j, MIN_Y, i, mazeDirection.LEFT, vertPosition.BOTTOM_RIGHT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
+                            computeVertex(j, MAX_Y, i, mazeDirection.LEFT, vertPosition.TOP_RIGHT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1])
+                        );
+                        incrementIndexes();
+                    }
+                }
+            }
+        }
+
+        if(VERTICES2D) return [vertices, [].concat(indexes), colours, normals, uvs];
+        else return [[].concat.apply([],vertices), [].concat(indexes), colours, normals, uvs];
+    },
+
+    /**
+     * Function that generates a 2D labyrinth given its rows and columns
+     * @param { number } rows number of rows 
+     * @param { number } columns number of columns
+     * @param { boolean } JOIN_SIDES true if the generation should be noisy
+     * @param { float } join_probability probability to add an inconsistent wall (MUST BE SMALL!!!!!!)
+     * 
+     * @returns a matrix of zeroes and ones where the ones are walls
+     */
+    generate2DLabyrinth : function(rows, columns, JOIN_SIDES, join_probability){
+
+        if(rows%2 === 0) rows--;
+        if(columns%2 === 0) columns--;
+
+        let labyrinth = Array(rows).fill().map(()=>Array(columns).fill(1));
+        
+        let start_row = Math.floor(Math.random()*rows);
+        let start_col = Math.floor(Math.random()*columns);
+
+        start_row -= (start_row%2 === 0) ? 0 : 1;
+        start_col -= (start_col%2 === 0) ? 0 : 1;
+
+        labyrinth[start_row][start_col] = 2;
+
+        let iterateLabyrinth = function(matrix, row, col){
+
+            //noise termination condition
+            if (
+                ((row+1)<matrix.length ? mazeElement.FLOORS.includes(matrix[row+1][col]) : true) && 
+                ((row-1)>=0 ? mazeElement.FLOORS.includes(matrix[row-1][col]) : true) &&
+                ((col+1)<matrix[0].length ? mazeElement.FLOORS.includes(matrix[row][col+1]) : true) && 
+                ((col-1)>=0 ? mazeElement.FLOORS.includes(matrix[row][col-1]) : true)
+            ) return matrix;
+
+            //set cell as visited
+            if(matrix[row][col] !== 2) matrix[row][col] = 0;
+
+            //get neighbors
+            let neighbors = [];
+            if((row+2) < rows) neighbors.push([row+2, col, 0]);
+            if((row-2) >= 0) neighbors.push([row-2, col, 1]);
+            if((col+2) < columns) neighbors.push([row, col+2, 2]);
+            if((col-2) >= 0) neighbors.push([row, col-2, 3]);
+            
+            //shuffle neighbors
+            let ind = [];
+            for(i = 0; i < neighbors.length; i++) ind.push(i);
+            shuffle(ind);
+
+            //iterate unvisited neighbors
+            ind.forEach(i=>{
+                let noise = JOIN_SIDES && (Math.random() < join_probability);
+                if(matrix[neighbors[i][0]][neighbors[i][1]] === 1 || noise){
+                    switch(neighbors[i][2]){
+                        case 0:
+                            matrix[row+1][col] = 0;
+                            break;
+                        case 1:
+                            matrix[row-1][col] = 0;
+                            break;
+                        case 2:
+                            matrix[row][col+1] = 0;
+                            break;
+                        case 3:
+                            matrix[row][col-1] = 0;
+                            break;
+                        default:
+                            return null;
+                    }
+
+                    iterateLabyrinth(matrix, neighbors[i][0], neighbors[i][1]);
+                }
+            });
+
+            return matrix;
+        }
+
+        return iterateLabyrinth(labyrinth, start_row, start_col);
     }
-
-    return iterateLabyrinth(labyrinth, start_row, start_col);
 }
