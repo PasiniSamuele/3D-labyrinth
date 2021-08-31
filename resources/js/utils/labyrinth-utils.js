@@ -6,11 +6,11 @@
 const CLOCKWISE_INDEXES = 0;         // true -> 2,1,0, 3,2,0    false-> 0,1,2, 0,2,3
 const VERTICES2D = 0;                // true returns a 2D array of vertices, false returns a 1D array
 
-const DEBUG_FRONT = 1;
-const DEBUG_RIGHT = 1;
-const DEBUG_BACK = 1;
-const DEBUG_LEFT = 1;
-const DEBUG_FLOOR = 1;      
+const DEBUG_FRONT = 0;
+const DEBUG_RIGHT = 0;
+const DEBUG_BACK = 0;
+const DEBUG_LEFT = 0;
+const DEBUG_FLOOR = 0;      
 
 const mazeElement = {
     FLOOR: 0,

@@ -95,12 +95,13 @@ class LoadingHandler {
 		}
 		// Create the character
 		let characterWorld = utils.MakeWorld(
-			camera.position.x,
-			camera.position.y,
-			camera.position.z,
-			camera.position.elevation,
+			0.0,
+			camera.position.elevation+0.5,
+			0.0,
+			0.0,
 			camera.position.angle,
-			5.0);
+			0.0,
+			1.0);
 		let character = new Character(results[7], levelSettings.character.offset, characterWorld, program[2]);
 		// Set the actual level
 		let activeLevel = new Level(labyrinth, skybox, character, camera);

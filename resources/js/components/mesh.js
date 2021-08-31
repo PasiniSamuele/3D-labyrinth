@@ -6,7 +6,7 @@ class Mesh {
 
 	constructor(objStr) {
 		
-		this.objModel = new OBJ.Mesh(objStr);
+		this.mesh = new OBJ.Mesh(objStr);
 
 		
 
