@@ -56,7 +56,7 @@ class Camera {
 		this.lastRotationX = [];
 		this.lastRotationY = [];
 		// DEBUG PARAMETERS
-		this.DEBUG = false;
+		this.DEBUG = true;
 	}
 
 	/*******************

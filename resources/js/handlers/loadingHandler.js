@@ -54,7 +54,10 @@ class LoadingHandler {
 			utils.loadTextResource(levelSettings.structure.shaders.floor.vertex),
 			utils.loadTextResource(levelSettings.structure.shaders.floor.fragment),
 			utils.loadTextResource(levelSettings.skybox.shaders.vertex),
-			utils.loadTextResource(levelSettings.skybox.shaders.fragment), //4:  fragment shader of the skybox
+			utils.loadTextResource(levelSettings.skybox.shaders.fragment), //6:  fragment shader of the skybox
+			utils.loadTextResource(levelSettings.character.url),
+			utils.loadTextResource(levelSettings.character.shaders.vertex),
+			utils.loadTextResource(levelSettings.character.shaders.fragment),
 		]);
 		// Create the shaders
 		let program = [[],];
@@ -64,9 +67,12 @@ class LoadingHandler {
 		let labFloorFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[4]);
 		let envVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[5]);
 		let envFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[6]);
+		let chVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[8]);
+		let chFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[9]);
 		program[0][0] = utils.createProgram(gl, labWallVertexShader, labWallFragmentShader);
 		program[0][1] = utils.createProgram(gl, labFloorVertexShader, labFloorFragmentShader);
 		program[1] = utils.createProgram(gl, envVertexShader, envFragmentShader);
+		program[2] = utils.createProgram(gl, chVertexShader, chFragmentShader);
 		// Create the camera
 		let camera = new Camera(levelSettings.camera);
 		// Create the skybox
@@ -86,9 +92,18 @@ class LoadingHandler {
 		} else {
 			collisionHandler.setStructure(results[0]);
 			labyrinth = new Labyrinth(results[0], program[0], levelSettings.structure.images, index);
-		} 
+		}
+		// Create the character
+		let characterWorld = utils.MakeWorld(
+			camera.position.x,
+			camera.position.y,
+			camera.position.z,
+			camera.position.elevation,
+			camera.position.angle,
+			5.0);
+		let character = new Character(results[7], levelSettings.character.offset, characterWorld, program[2]);
 		// Set the actual level
-		let activeLevel = new Level(labyrinth, skybox, camera);
+		let activeLevel = new Level(labyrinth, skybox, character, camera);
 		// Return the actual level
 		return activeLevel;
 	};

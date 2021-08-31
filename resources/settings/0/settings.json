@@ -92,6 +92,18 @@
 			}
 		]
 	},
+	"character": {
+		"url": "resources/assets/models/Flashlight.obj",
+		"shaders": {
+			"vertex": "resources/assets/shaders/flashlightShader/flashlightShader.vs.glsl",
+			"fragment": "resources/assets/shaders/flashlightShader/flashlightShader.fs.glsl"
+		},
+		"offset": {
+			"x": 0.0,
+			"y": 2.0,
+			"z": 0.0
+		}
+	},
 	"camera": {
 		"near": 0.1,
 		"far": 100.0,

@@ -11,11 +11,13 @@ class Level {
      * Constructor
      * @param { Labyrinth } labyrinth 
      * @param { Skybox } skybox 
+     * @param { Character } character 
      * @param { Camera } camera 
      */
-    constructor(labyrinth, skybox, camera) {
+    constructor(labyrinth, skybox, character, camera) {
         this.labyrinth = labyrinth;
         this.skybox = skybox;
+        this.character = character;
         this.camera = camera;
     }
 
@@ -28,5 +30,6 @@ class Level {
     draw(now, perspectiveMatrix, viewMatrix) {
         this.skybox.draw(now, perspectiveMatrix, viewMatrix);
         this.labyrinth.draw(perspectiveMatrix, viewMatrix);
+        this.character.draw(perspectiveMatrix, viewMatrix);
     }
 }
