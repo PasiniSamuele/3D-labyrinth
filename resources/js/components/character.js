@@ -60,7 +60,7 @@ class Character extends Mesh{
             gl.FLOAT,
             gl.FALSE,
             3 * Float32Array.BYTES_PER_ELEMENT,
-            0 // Offset from the beginning of a single vertex to this attribute
+            0 * Float32Array.BYTES_PER_ELEMENT// Offset from the beginning of a single vertex to this attribute
         );
 
         let texCoordBufferObject = gl.createBuffer();
@@ -90,7 +90,6 @@ class Character extends Mesh{
         );
 
         let indices = [].concat.apply([],this.mesh.indicesPerMaterial);
-        console.log(indices)
         var indexBufferObject = gl.createBuffer();
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBufferObject);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
