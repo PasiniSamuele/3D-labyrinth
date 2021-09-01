@@ -1,6 +1,6 @@
-# Blender v2.93.3 OBJ File: 'Flashlight_Idle.blend'
+# Blender v2.93.3 OBJ File: 'flashlight.blend'
 # www.blender.org
-mtllib Flashlight_Idle.mtl
+mtllib flashlight.mtl
 o instance_0.015_ID107
 v -0.256394 1.497675 0.564094
 v -0.255141 1.497909 0.557714
