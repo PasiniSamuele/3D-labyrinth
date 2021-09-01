@@ -109,10 +109,10 @@ class Character extends Mesh{
 
 		let worldMatrix = utils.MakeWorld(
 			camera.position.x + offset.x + Math.sin(utils.degToRad(camera.position.angle)) * offset.angle,
-			camera.position.y + Math.sin(utils.degToRad(camera.position.elevation)) * offset.y,
-			camera.position.z - Math.cos(utils.degToRad(camera.position.angle)) * offset.z - Math.cos(utils.degToRad(camera.position.elevation)) * offset.z,
-			camera.position.angle + offset.angle ,
-			0.0 + offset.elevation,0.0,0.25
+			camera.position.y + offset.y, //+ Math.sin(utils.degToRad(camera.position.elevation)) * offset.elevation,
+			camera.position.z + offset.z- Math.cos(utils.degToRad(camera.position.angle)) * offset.angle, //+ Math.sin(utils.degToRad(camera.position.elevation)) * offset.elevation,
+			camera.position.angle + 180,
+			0.0,0.0,0.25
 		);
 
         let viewWorldMatrix = utils.multiplyMatrices(camera.viewMatrix, worldMatrix);
