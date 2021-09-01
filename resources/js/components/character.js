@@ -4,14 +4,11 @@
 
 class Character extends Mesh{
 
-	constructor(meshString, offset, worldMatrix, program) {
+	constructor(meshString, offset, program) {
 		super(meshString);
-		this.worldMatrix = worldMatrix;
 		this.offset = offset;
 		this.program = program;
-
 		this.init();
-
 	}
 
 	/**
@@ -27,16 +24,12 @@ class Character extends Mesh{
 	 * Load the shader locations
 	 */
     loadLocations(){
-
-
         this.locations = {};
         this.locations['chVertPosition'] = gl.getAttribLocation(this.program, 'chVertPosition');
         this.locations['chTexCoord'] = gl.getAttribLocation(this.program, 'chTexCoord');
         this.locations['chNormal'] = gl.getAttribLocation(this.program, 'chNormal');
         this.locations['chProjMatrix'] = gl.getUniformLocation(this.program, 'chProjMatrix');
         this.locations['chWorldMatrix'] = gl.getUniformLocation(this.program, 'chWorldMatrix');
-
-		//console.log(this.locations);
     }
 
     /**
@@ -45,11 +38,7 @@ class Character extends Mesh{
     loadVAO() {
         this.vao = gl.createVertexArray();
         gl.bindVertexArray(this.vao);
-
-        //OBJ.initMeshBuffers(gl, this.mesh);
-
-        console.log(this.mesh);
-
+		// Load character buffers
         let vertexBufferObject = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBufferObject);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.mesh.vertices), gl.STATIC_DRAW);
@@ -100,28 +89,39 @@ class Character extends Mesh{
      * @param {*} perspectiveMatrix 
      * @param {*} viewMatrix 
      */
-    draw(perspectiveMatrix, viewMatrix) {
-        let viewWorldMatrix = utils.multiplyMatrices(viewMatrix, this.worldMatrix);
+    draw(perspectiveMatrix, camera) {
+
+		// Positioned in 1,-1,2.5. Yaw=-30, Pitch = 45 Roll = -15, Scaled with the following factors: 0.8 (x), 0.75 (y), 1.2 (z)
+	/*let A5T		=	utils.MakeTranslateMatrix(camera.position.x + offset.x,
+		camera.position.y + offset.y,
+		camera.position.z + offset.z);		// Translate matrix in (1, -1, 2.5)
+	let A5Rx	=	utils.MakeRotateXMatrix(offset.elevation);				// Rotate x (Pitch) 45°
+	let A5Ry	=	utils.MakeRotateYMatrix(offset.angle);				// Rotate y (Yaw) -30°
+	let A5Rz	=	utils.MakeRotateZMatrix(0.0);				// Rotate z (Roll) -15°
+	let A5S		=	utils.MakeScaleMatrix(0.25);	// Scaling factor (x, y, z)
+	let worldMatrix		=	utils.multiplyMatrices(A5T,
+						utils.multiplyMatrices(A5Ry,
+							utils.multiplyMatrices(A5Rx,
+								utils.multiplyMatrices(A5Rz, A5S)
+							)
+						)
+					);*/
+
+		let worldMatrix = utils.MakeWorld(
+			camera.position.x + offset.x + Math.sin(utils.degToRad(camera.position.angle)) * offset.angle,
+			camera.position.y + Math.sin(utils.degToRad(camera.position.elevation)) * offset.y,
+			camera.position.z - Math.cos(utils.degToRad(camera.position.angle)) * offset.z - Math.cos(utils.degToRad(camera.position.elevation)) * offset.z,
+			camera.position.angle + offset.angle ,
+			0.0 + offset.elevation,0.0,0.25
+		);
+
+        let viewWorldMatrix = utils.multiplyMatrices(camera.viewMatrix, worldMatrix);
         let projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, viewWorldMatrix);
         gl.useProgram(this.program);
         gl.bindVertexArray(this.vao);
-
-
-		/*OBJ.initMeshBuffers(gl, this.objModel);
-
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.objModel.vertexBuffer);
-		gl.vertexAttribPointer(this.locations['chVertPosition'], this.objModel.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
-	    gl.bindBuffer(gl.ARRAY_BUFFER, this.objModel.textureBuffer);
-	    gl.vertexAttribPointer(this.locations['chTexCoord'], this.objModel.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.objModel.normalBuffer);
-		gl.vertexAttribPointer(this.locations['chNormal'], this.objModel.normalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		 
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.objModel.indexBuffer);*/
-
         let length = [].concat.apply([],this.mesh.indicesPerMaterial).length;
         gl.uniformMatrix4fv(this.locations['chProjMatrix'], gl.FALSE, utils.transposeMatrix(projectionMatrix));
-        gl.uniformMatrix4fv(this.locations['chWorldMatrix'], gl.FALSE, utils.transposeMatrix(this.worldMatrix));
+        gl.uniformMatrix4fv(this.locations['chWorldMatrix'], gl.FALSE, utils.transposeMatrix(worldMatrix));
         //gl.uniform1i(this.locations['labSampler'], utils.getTextureSlotOffset(gl, this.slot));
         gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
     }

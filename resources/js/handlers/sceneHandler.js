@@ -42,7 +42,7 @@ class SceneHandler {
 		//gl.enable(gl.CULL_FACE);
 		gl.frontFace(gl.CCW);
 		//gl.cullFace(gl.BACK);
-		
+
 		// MovementHandler object idle
 		let movementHandlerRet = this.movementHandler.idle(this.level.camera, this.interactionHandler);
 		this.level.camera = movementHandlerRet.camera;
@@ -53,7 +53,7 @@ class SceneHandler {
 
 		// SET HERE TO ZERO THE ABSOLUTE SPEED
 		//this.level.camera.setAbsoluteSpeed(false, false, true);
-		
+
 		// InteractionHandler onject idle
 		this.interactionHandler.idle();
 
@@ -84,5 +84,5 @@ class SceneHandler {
 		// Make the first call
 		window.requestAnimationFrame((newNow) => { this.drawScene(newNow); });
 	}
-	
+
 }
