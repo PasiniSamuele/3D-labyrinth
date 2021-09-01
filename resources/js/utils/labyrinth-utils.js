@@ -10,7 +10,7 @@ const DEBUG_FRONT = 0;
 const DEBUG_RIGHT = 0;
 const DEBUG_BACK = 0;
 const DEBUG_LEFT = 0;
-const DEBUG_FLOOR = 0;      
+const DEBUG_FLOOR = 1;      
 
 const mazeElement = {
     FLOOR: 0,
