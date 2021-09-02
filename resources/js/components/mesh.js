@@ -116,7 +116,7 @@ class Mesh {
 			gl.uniform3fv(this.program.specular, scope.material[element.material].specular);
 			gl.uniform1f(this.program.shininess, scope.material[element.material].shininess);
 			gl.uniform1f(this.program.opacity, scope.material[element.material].opacity);
-			gl.uniform3fv(this.program.lightDirection, [-1, 3, 5]);
+			gl.uniform3fv(this.program.lightDirection, [0.0, 0.0, 0.0]);
 			gl.uniform3fv(this.program.ambientLight, [0.0, 0.0, 0.0]);
 			
 			gl.drawArrays(gl.TRIANGLES, 0, element.data.position.length/3);
