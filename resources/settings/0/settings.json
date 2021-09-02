@@ -107,7 +107,7 @@
 		}
 	},
 	"camera": {
-		"near": 0.01,
+		"near": 0.001,
 		"far": 100.0,
 		"fovy": 90.0,
 		"position": {
@@ -177,17 +177,17 @@
 		"acceleration": {
 			"x": {
 				"default": 0.0,
-				"max": 2.0,
+				"max": 4.0,
 				"decelerationCoefficient": 20.0
 			},
 			"y": {
 				"default": 0.0,
-				"max": 2.0,
+				"max": 4.0,
 				"decelerationCoefficient": 20.0
 			},
 			"z": {
 				"default": 0.0,
-				"max": 2.0,
+				"max": 4.0,
 				"decelerationCoefficient": 10.0
 			},
 			"angle": {
