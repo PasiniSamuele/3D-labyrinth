@@ -136,15 +136,15 @@
 				"default": 0.0,
 				"min": false,
 				"max": false,
-				"mouseReactivity": 0.5,
-				"mouseSmoothness": 5.0
+				"mouseReactivity": 0.125,
+				"mouseSmoothness": 5
 			},
 			"elevation": {
 				"default": 0.0,
 				"min": -30.0,
 				"max": 45.0,
-				"mouseReactivity": 0.5,
-				"mouseSmoothness": 10.0
+				"mouseReactivity": 0.125,
+				"mouseSmoothness": 7
 			}
 		},
 		"speed": {
@@ -177,12 +177,12 @@
 		"acceleration": {
 			"x": {
 				"default": 0.0,
-				"max": 4.0,
+				"max": 2.0,
 				"decelerationCoefficient": 20.0
 			},
 			"y": {
 				"default": 0.0,
-				"max": 4.0,
+				"max": 2.0,
 				"decelerationCoefficient": 20.0
 			},
 			"z": {
