@@ -93,7 +93,10 @@
 		]
 	},
 	"character": {
-		"url": "resources/assets/models/Flashlight.obj",
+		"url": {
+			"obj":"resources/assets/models/Flashlight.obj",
+			"mtl":"resources/assets/models/Flashlight.mtl"
+		},
 		"shaders": {
 			"vertex": "resources/assets/shaders/flashlightShader/flashlightShader.vs.glsl",
 			"fragment": "resources/assets/shaders/flashlightShader/flashlightShader.fs.glsl"

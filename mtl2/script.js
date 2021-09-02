@@ -341,6 +341,8 @@ async function main() {
     };
   });
 
+  console.log(parts);
+
   function getExtents(positions) {
     const min = positions.slice(0, 3);
     const max = positions.slice(0, 3);

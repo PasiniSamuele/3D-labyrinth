@@ -13,8 +13,6 @@ class CollisionHandler {
             let newzAbsolute = Math.floor(newz+this.offset.row+Math.sign(zvar)*0.25);
             let minxAbsolute = Math.floor(newx+this.offset.column-Math.sign(xvar)*0.25);
             let minzAbsolute = Math.floor(newz+this.offset.row-Math.sign(zvar)*0.25);
-            console.log(labyrinthUtils.isBlock(this.structure, newzAbsolute, newxAbsolute));
-
             
             let cond1 = labyrinthUtils.isBlock(this.structure, newzAbsolute, newxAbsolute);
             let cond2 = labyrinthUtils.isBlock(this.structure, zAbsolute, newxAbsolute);
