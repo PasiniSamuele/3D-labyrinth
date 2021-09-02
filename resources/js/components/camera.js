@@ -226,6 +226,7 @@ class Camera {
 	 * @param {boolean} y absolute speed to overwrite
 	 * @param {boolean} z absolute speed to overwrite
 	 */
+	// TODO ELIMINARE LA TRASFORMAZIONE ASSOLUTA -> RELATIVA
 	setAbsoluteSpeed(x = false, y = false, z = false) {
 		// Set the new the absolute speeds to an arbitrary value
 		if (x !== false)
@@ -313,16 +314,15 @@ class Camera {
 	}
 
 	computePositions(deltaTime) {
-		let oldx = this.position.x;
-		let oldz = this.position.z;
+		// Collision parameters
 		let newx = this.position.x + (this.viewMatrixNoElevation[0] * this.speed.x + this.viewMatrixNoElevation[4] * this.speed.y + this.viewMatrixNoElevation[8] * this.speed.z) * deltaTime;
 		let newz = this.position.z + (this.viewMatrixNoElevation[2] * this.speed.x + this.viewMatrixNoElevation[6] * this.speed.y + this.viewMatrixNoElevation[10] * this.speed.z) * deltaTime;
-
-		let newPositions = collisionHandler.checkCameraCollision(oldx, newx, oldz, newz);
-
-		this.position.x = newPositions.x;
+		let collision = collisionHandler.checkCameraCollision(this.position.x, newx, this.position.z, newz);
+		this.setAbsoluteSpeed(collision.collide.x, false, collision.collide.z);
+		// Setting posiiton
+		this.position.x = collision.position.x;
 		this.position.y += (this.viewMatrixNoElevation[1] * this.speed.x + this.viewMatrixNoElevation[5] * this.speed.y + this.viewMatrixNoElevation[9] * this.speed.z) * deltaTime;
-		this.position.z = newPositions.z;
+		this.position.z = collision.position.z;
 		/*this.position.x += this.speed.x * deltaTime;
 		this.position.y += this.speed.y * deltaTime;
 		this.position.z += this.speed.z * deltaTime;*/
