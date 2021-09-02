@@ -16,9 +16,10 @@ const mazeElement = {
     FLOOR: 0,
     WALL: 1, 
     START_POS: 2,
+    FINAL_POS: 3,
 
     BLOCKS: [1],
-    FLOORS: [0, 2]
+    FLOORS: [0, 2, 3]
 };
 
 const mazeDirection = {
@@ -320,18 +321,7 @@ var labyrinthUtils = {
      */
     generate2DLabyrinth : function(rows, columns, JOIN_SIDES, join_probability){
 
-        if(rows%2 === 0) rows--;
-        if(columns%2 === 0) columns--;
-
-        let labyrinth = Array(rows).fill().map(()=>Array(columns).fill(1));
-        
-        let start_row = Math.floor(Math.random()*rows);
-        let start_col = Math.floor(Math.random()*columns);
-
-        start_row -= (start_row%2 === 0) ? 0 : 1;
-        start_col -= (start_col%2 === 0) ? 0 : 1;
-
-        labyrinth[start_row][start_col] = 2;
+        //PRIVATE METHODS
 
         let iterateLabyrinth = function(matrix, row, col){
 
@@ -344,7 +334,7 @@ var labyrinthUtils = {
             ) return matrix;
 
             //set cell as visited
-            if(matrix[row][col] !== 2) matrix[row][col] = 0;
+            if(matrix[row][col] !== mazeElement.START_POS) matrix[row][col] = 0;
 
             //get neighbors
             let neighbors = [];
@@ -361,19 +351,19 @@ var labyrinthUtils = {
             //iterate unvisited neighbors
             ind.forEach(i=>{
                 let noise = JOIN_SIDES && (Math.random() < join_probability);
-                if(matrix[neighbors[i][0]][neighbors[i][1]] === 1 || noise){
+                if(matrix[neighbors[i][0]][neighbors[i][1]] === mazeElement.WALL || noise){
                     switch(neighbors[i][2]){
                         case 0:
-                            matrix[row+1][col] = 0;
+                            matrix[row+1][col] = mazeElement.FLOOR;
                             break;
                         case 1:
-                            matrix[row-1][col] = 0;
+                            matrix[row-1][col] = mazeElement.FLOOR;
                             break;
                         case 2:
-                            matrix[row][col+1] = 0;
+                            matrix[row][col+1] = mazeElement.FLOOR;
                             break;
                         case 3:
-                            matrix[row][col-1] = 0;
+                            matrix[row][col-1] = mazeElement.FLOOR;
                             break;
                         default:
                             return null;
@@ -386,6 +376,105 @@ var labyrinthUtils = {
             return matrix;
         }
 
-        return iterateLabyrinth(labyrinth, start_row, start_col);
+        let computeDistances = function(matrix, row, col, dist){
+            //set distance
+            matrix[row][col] = dist;
+        
+            //initialize
+            let finalPos = {
+                row: row,
+                column: col,
+                dist: dist
+            }, tempPos = {};
+        
+        
+            //iterate all directions depth first
+            if((row+1)<matrix.length ? matrix[row+1][col] !== "X" && matrix[row+1][col] > dist+1 : false){
+                tempPos = computeDistances(matrix, row+1, col, dist+1);
+                if(tempPos.dist > finalPos.dist) {
+                    finalPos.row = tempPos.row;
+                    finalPos.column = tempPos.column;
+                    finalPos.dist = tempPos.dist;
+                }
+            }
+            if((row-1)>=0 ? matrix[row-1][col] !== "X" && matrix[row-1][col] > dist+1 : false){
+                tempPos = computeDistances(matrix, row-1, col, dist+1);
+                if(tempPos.dist > finalPos.dist) {
+                    finalPos.row = tempPos.row;
+                    finalPos.column = tempPos.column;
+                    finalPos.dist = tempPos.dist;
+                }
+            }
+            if((col+1)<matrix[0].length ? matrix[row][col+1] !== "X" && matrix[row][col+1] > dist+1 : false){
+                tempPos = computeDistances(matrix, row, col+1, dist+1);
+                if(tempPos.dist > finalPos.dist) {
+                    finalPos.row = tempPos.row;
+                    finalPos.column = tempPos.column;
+                    finalPos.dist = tempPos.dist;
+                }
+            }
+            if((col-1)>=0 ? matrix[row][col-1] !== "X" && matrix[row][col-1] > dist+1 : false){
+                tempPos = computeDistances(matrix, row, col-1, dist+1);
+                if(tempPos.dist > finalPos.dist) {
+                    finalPos.row = tempPos.row;
+                    finalPos.column = tempPos.column;
+                    finalPos.dist = tempPos.dist;
+                }
+            }
+        
+            //return when no other direction available
+            return finalPos;
+        };
+        
+        let computeFinalPosition = function(maze, srow, scol){
+            //copy by value
+            let matrix = maze.map(function(arr) {return arr.slice()});
+
+            //preprocessing
+            for(i = 0; i < matrix.length; i++){
+                for(j = 0; j < matrix[0].length; j++){
+                    switch(matrix[i][j]){
+                        case mazeElement.FLOOR:
+                            matrix[i][j] = Number.MAX_VALUE;
+                            break;
+                        case mazeElement.WALL:
+                            matrix[i][j] = "X";
+                            break;
+                        case mazeElement.START_POS:
+                            matrix[i][j] = 0;
+                            break;
+                        default:
+                            matrix[i][j] = Number.NaN;
+                            break;
+                    }
+                }
+            }
+        
+            //compute
+            return computeDistances(matrix, srow, scol, 0);
+        };
+
+        //only odd number of rows/columns (for simpler computation)
+        if(rows%2 === 0) rows--;
+        if(columns%2 === 0) columns--;
+
+        //create empty labyrinth
+        let labyrinth = Array(rows).fill().map(()=>Array(columns).fill(1));
+        
+        //generate starting positions
+        let start_row = Math.floor(Math.random()*rows);
+        let start_col = Math.floor(Math.random()*columns);
+        start_row -= (start_row%2 === 0) ? 0 : 1;
+        start_col -= (start_col%2 === 0) ? 0 : 1;
+        labyrinth[start_row][start_col] = mazeElement.START_POS;
+
+        //generate path
+        labyrinth = iterateLabyrinth(labyrinth, start_row, start_col);
+
+        //compute final position (AS THE FURTHEST FROM THE STARTING POINT)
+        let finalPosition = computeFinalPosition(labyrinth, start_row, start_col);
+        labyrinth[finalPosition.row][finalPosition.column] = mazeElement.FINAL_POS;
+
+        return labyrinth;
     }
 }
