@@ -1,0 +1,30 @@
+/**
+ * Body
+ **/
+body {
+	margin: 0;
+	display: flex;
+	background-color: black;
+}
+
+/**
+ * GUI
+ **/
+
+#gui {
+	/* Position */
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+	/* Dimension */
+    width: 640px;
+    height: 480px;
+	/* Colors */
+    background-color: rgba(240, 255, 255, 0.375);
+	/* Borders */
+	border-color: rgb(44, 60, 92);
+    border-style: solid;
+	border-width: 5px;
+	border-radius: 10px;
+}
