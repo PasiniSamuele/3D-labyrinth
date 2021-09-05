@@ -142,8 +142,10 @@
 				"g": 0.957,
 				"b": 0.882
 			},
-			"coneIn": 30,
-			"coneOut": 60,
+			"coneIn": 10,
+			"coneOut": 15,
+			"cutOff":12,
+			"outerCutOff":17,
 			"ignition": {
 				"default": true,
 				"switchTime": 0.5

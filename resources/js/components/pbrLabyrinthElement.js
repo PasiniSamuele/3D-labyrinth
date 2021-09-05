@@ -48,6 +48,7 @@ class PbrLabyrinthElementh {
 
 	draw(perspectiveMatrix, viewMatrix, light, camPos, skybox, now) {
 
+
 		// For each [..]
 		this.children.forEach(child => child.draw(perspectiveMatrix, viewMatrix));
 		let viewWorldMatrix = utils.multiplyMatrices(viewMatrix, this.worldMatrix);
@@ -83,15 +84,16 @@ class PbrLabyrinthElementh {
 		else
 			gl.uniform3f(this.program.lightColor, 0.0, 0.0, 0.0);
 
-		gl.uniform1f(this.program.ConeOut, light.coneOut);
-		gl.uniform1f(this.program.ConeIn, light.coneIn);
+		gl.uniform1f(this.program.cutOff,Math.cos(utils.degToRad(light.cutOff)) );
+		gl.uniform1f(this.program.outerCutOff, Math.cos(utils.degToRad(light.outerCutOff)));
 		gl.uniform1f(this.program.radians_over_time, utils.degToRad(now % 360));
-		gl.uniform3f(this.program.lightDir, light.direction.x, light.direction.y, light.direction.z);
+		gl.uniform3f(this.program.lightDir, utils.degToRad(light.direction.x), utils.degToRad(light.direction.y), utils.degToRad(light.direction.z));
 		gl.uniform3f(this.program.camPos, camPos.x, camPos.y, camPos.z);
 		gl.uniform3f(this.program.ambientLightDay, skybox.textures[0].ambientLight.r, skybox.textures[0].ambientLight.g, skybox.textures[0].ambientLight.b);
 		gl.uniform3f(this.program.ambientLightNight, skybox.textures[1].ambientLight.r, skybox.textures[1].ambientLight.g, skybox.textures[1].ambientLight.b);
 		gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
 	}
+
 
 	loadLocations() {
 
@@ -113,8 +115,8 @@ class PbrLabyrinthElementh {
 		this.program.aoMap = gl.getUniformLocation(this.program, 'aoMap');
 		this.program.lightPosition = gl.getUniformLocation(this.program, 'lightPosition');
 		this.program.lightColor = gl.getUniformLocation(this.program, 'lightColor');
-		this.program.ConeOut = gl.getUniformLocation(this.program, 'ConeOut');
-		this.program.ConeIn = gl.getUniformLocation(this.program, 'ConeIn');
+		this.program.cutOff = gl.getUniformLocation(this.program, 'cutOff');
+		this.program.outerCutOff = gl.getUniformLocation(this.program, 'outerCutOff');
 		this.program.lightDir = gl.getUniformLocation(this.program, 'lightDir');
 		this.program.camPos = gl.getUniformLocation(this.program, 'camPos');
 		this.program.radians_over_time = gl.getUniformLocation(this.program, 'radians_over_time');

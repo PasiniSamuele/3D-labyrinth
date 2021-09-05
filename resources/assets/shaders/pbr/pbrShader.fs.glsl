@@ -23,8 +23,8 @@ uniform sampler2D aoMap;
 uniform vec3 lightPosition;
 uniform vec3 lightColor;
 uniform vec3 lightDir;
-uniform float ConeOut;	
-uniform float ConeIn;	
+uniform float cutOff;	
+uniform float outerCutOff;	
 
 uniform vec3 camPos;
 
@@ -120,11 +120,12 @@ void main(){
     // calculate per-light radiance
     vec3 L = normalize(lightPosition - fragVertPosition);
     vec3 H = normalize(V + L);
-    float CosAlpha = dot(L, lightDir);
-	float CosOut = cos(radians(ConeOut)/2.0);
-	float CosIn = cos(radians(ConeOut)*radians(ConeIn)/2.0);
-    vec3 radiance = lightColor * clamp((CosAlpha - CosOut) / (CosIn - CosOut), 0.0, 1.0);
-
+    float theta     = dot(L, normalize(-lightDir));
+	float epsilon   = cutOff -outerCutOff;
+	float intensity = clamp((theta - outerCutOff) / epsilon, 0.0, 1.0); 
+	
+    vec3 radiance = lightColor * intensity;
+	//vec3 radiance = lightColor;
     // Cook-Torrance BRDF
     float NDFlight = DistributionGGX(N, H, roughness);   
     float Glight    = GeometrySmith(N, V, L, roughness);    
