@@ -86,7 +86,7 @@ class LoadingHandler {
 		program[2] = utils.createProgram(gl, chVertexShader, chFragmentShader);
 		//Define the labyrinth structure
 		let maze2D;
-		if(true) maze2D = labyrinthUtils.generate2DLabyrinth(25, 25, 1, 0.01);
+		if(this.RANDOM_GENERATION) maze2D = labyrinthUtils.generate2DLabyrinth(25, 25, 1, 0.01);
 		else maze2D = results[0];
 		collisionHandler.setStructure(maze2D);
 		// Create the camera

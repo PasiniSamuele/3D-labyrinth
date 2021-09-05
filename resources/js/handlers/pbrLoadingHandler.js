@@ -59,6 +59,12 @@
 			utils.loadTextResource(levelSettings.character.url.mtl),
 			utils.loadTextResource(levelSettings.character.shaders.vertex),
 			utils.loadTextResource(levelSettings.character.shaders.fragment),
+			utils.loadTextResource(levelSettings.structure.shaders.models.vertex),
+			utils.loadTextResource(levelSettings.structure.shaders.models.fragment),
+			utils.loadTextResource(levelSettings.structure.models.suzanne.obj),
+			utils.loadTextResource(levelSettings.structure.models.suzanne.mtl),
+			utils.loadTextResource(levelSettings.structure.models.pedestal.obj), //15
+			utils.loadTextResource(levelSettings.structure.models.pedestal.mtl),
         
         ]);
 
@@ -72,14 +78,23 @@
 		let envFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[6]);
 		let chVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[9]);
 		let chFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[10]);
+		let labModelVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[11]);
+		let labModelFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[12]);
 
 		program[0][0] = utils.createProgram(gl, labWallVertexShader, labWallFragmentShader);
 		program[0][1] = utils.createProgram(gl, labFloorVertexShader, labFloorFragmentShader);
+		program[0][2] = utils.createProgram(gl, labModelVertexShader, labModelFragmentShader);
+		program[0][3] = utils.createProgram(gl, labModelVertexShader, labModelFragmentShader);
 		program[1] = utils.createProgram(gl, envVertexShader, envFragmentShader);
 		program[2] = utils.createProgram(gl, chVertexShader, chFragmentShader);
 
+		//Define the labyrinth structure
+		let maze2D;
+		if(this.RANDOM_GENERATION) maze2D = labyrinthUtils.generate2DLabyrinth(25, 25, 1, 0.01);
+		else maze2D = results[0];
+		collisionHandler.setStructure(maze2D);
 		// Create the camera
-		let camera = new Camera(levelSettings.camera);
+		let camera = new Camera(levelSettings.camera, labyrinthUtils.getStartingAngle(maze2D));
 		// Create the skybox
 		let textures = [];
 		let index = 0;	//unique texture index for skybox & labyrinth elements
@@ -111,8 +126,8 @@
 			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++);
 
-		let labyrinth = new PbrLabyrinth(results[0], program[0], pbrTexture);
-		console.log(camera);
+		let labyrinth = new PbrLabyrinth(maze2D, program[0], pbrTexture);
+		
 		let activeLevel = new Level(labyrinth, skybox, character, camera);
 		// Return the actual level
 		return activeLevel;
