@@ -39,7 +39,7 @@ function loadGl() {
 async function init() {
 	loadGl();
 	
-	loadingHandler = new LoadingHandler();
+	loadingHandler = new PbrLoadingHandler();
 	movementHandler = new MovementHandler();
 	interactionHandler = new InteractionHandler();
 	collisionHandler = new CollisionHandler();

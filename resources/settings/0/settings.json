@@ -3,17 +3,34 @@
 		"url": "resources/assets/labyrinths/lab1.json",
 		"shaders": {
 			"wall": {
-				"vertex": "resources/assets/shaders/labShader1/labWallShader.vs.glsl",
-				"fragment": "resources/assets/shaders/labShader1/labWallShader.fs.glsl"
+				"vertex": "resources/assets/shaders/pbr/pbrShader.vs.glsl",
+				"fragment": "resources/assets/shaders/pbr/pbrShader.fs.glsl"
 			},
 			"floor": {
-				"vertex": "resources/assets/shaders/labShader1/labFloorShader.vs.glsl",
-				"fragment": "resources/assets/shaders/labShader1/labFloorShader.fs.glsl"
+				"vertex": "resources/assets/shaders/pbr/pbrShader.vs.glsl",
+				"fragment": "resources/assets/shaders/pbr/pbrShader.fs.glsl"
 			}
 		},
 		"images": {
 			"wall": "resources/assets/textures/lab/handpaintedwall.png",
 			"floor": "resources/assets/textures/lab/grass.png"
+		},
+		"textures":{
+			"floor":{
+				"albedo":"resources/assets/textures/mossy-mud1-ue/albedo.png",
+				"normal":"resources/assets/textures/mossy-mud1-ue/Normal.png",
+				"ao":"resources/assets/textures/mossy-mud1-ue/ao.png",
+				"metallic":"resources/assets/textures/mossy-mud1-ue/Metallic.png",
+				"roughness":"resources/assets/textures/mossy-mud1-ue/Roughness.png"
+			},
+			"wall":{
+				"albedo":"resources/assets/textures/mossy-mud1-ue/albedo.png",
+				"normal":"resources/assets/textures/mossy-mud1-ue/Normal.png",
+				"ao":"resources/assets/textures/mossy-mud1-ue/ao.png",
+				"metallic":"resources/assets/textures/mossy-mud1-ue/Metallic.png",
+				"roughness":"resources/assets/textures/mossy-mud1-ue/Roughness.png"
+			}
+			
 		}
 	},
 	"skybox": {
@@ -24,9 +41,9 @@
 		"skyboxes": [
 			{
 				"ambientLight":{
-					"red":0.541,
-					"green":0.973,
-					"blue":1
+					"r":0.541,
+					"g":0.973,
+					"b":1
 				},
 				"images":
 				[
@@ -58,9 +75,9 @@
 			},
 			{
 				"ambientLight":{
-					"red":0.039,
-					"green":0.106,
-					"blue":0.435
+					"r":0.012,
+					"g":0.02,
+					"b":0.243
 				},
 				"images":
 				[
@@ -107,7 +124,18 @@
 			"z": 0.0,
 			"angle": 0.0,
 			"elevation": 0.0
-		}
+		},
+		"light":
+                    {
+                        "color":{
+                            "r":1,
+                            "g":0,
+                            "b":0
+                        },
+						"coneIn":30,
+						"coneOut":60
+						
+                    }
 	},
 	"camera": {
 		"near": 0.001,

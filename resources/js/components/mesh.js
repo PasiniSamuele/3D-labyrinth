@@ -94,9 +94,15 @@ class Mesh {
 			camera.position.x + this.offset.x + Math.sin(utils.degToRad(camera.position.angle)) * this.offset.angle,
 			camera.position.y + this.offset.y, //+ Math.sin(utils.degToRad(camera.position.elevation)) * offset.elevation,
 			camera.position.z + this.offset.z- Math.cos(utils.degToRad(camera.position.angle)) * this.offset.angle, //+ Math.sin(utils.degToRad(camera.position.elevation)) * offset.elevation,
-			camera.position.angle + 180,
-			0.0,0.0,0.25
+			camera.position.angle + 180,0.0,0.0,0.25
+			
 		);
+		this.light.position.x=camera.position.x;
+		this.light.position.y=camera.position.y;
+		this.light.position.z=camera.position.z;
+		this.light.direction.x=0;
+		this.light.direction.y=camera.position.angle;
+		this.light.direction.z=0;
 
         gl.useProgram(this.program);
 
