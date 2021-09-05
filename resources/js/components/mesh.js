@@ -89,12 +89,15 @@ class Mesh {
 	draw(perspectiveMatrix, camera) {
 
 		let worldMatrix = utils.MakeWorld(
-			camera.position.x + this.offset.x + Math.sin(utils.degToRad(camera.position.angle)) * this.offset.angle,
-			camera.position.y + this.offset.y, //+ Math.sin(utils.degToRad(camera.position.elevation)) * offset.elevation,
-			camera.position.z + this.offset.z- Math.cos(utils.degToRad(camera.position.angle)) * this.offset.angle, //+ Math.sin(utils.degToRad(camera.position.elevation)) * offset.elevation,
-			camera.position.angle + 180,0.0,0.0,0.25
-			
+			camera.position.x + this.offset.x,
+			camera.position.y + this.offset.y,
+			camera.position.z + this.offset.z,
+			camera.position.angle + 180,
+			camera.position.elevation,
+			0.0,
+			1.0	
 		);
+		
 		this.light.position.x=camera.position.x;
 		this.light.position.y=camera.position.y;
 		this.light.position.z=camera.position.z;

@@ -3,6 +3,7 @@ class Suzanne extends LabyrinthModel{
         super(structure, parent, program, objStr, mtlStr);
 
         this.color = [1,0,0];
+        this.emissive = [0.2, 0.2, 0.2];
     }
 
     init(){

@@ -76,7 +76,6 @@ class PbrLabyrinthElementh{
         gl.uniform1i(this.program.aoMap, utils.getTextureSlotOffset(gl, this.texture.aoSlot));
         gl.uniform3f(this.program.lightPosition, light.position.x, light.position.y, light.position.z);
         gl.uniform3f(this.program.lightColor, light.color.r, light.color.g, light.color.b);
-        console.log(light);
         gl.uniform1f(this.program.ConeOut, light.coneOut);
         gl.uniform1f(this.program.ConeIn, light.coneIn);
         gl.uniform1f(this.program.radians_over_time, utils.degToRad(now % 360));

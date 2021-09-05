@@ -1,6 +1,7 @@
 /**
  * 
  */
+var ofy = 0;
 
 class Character extends Mesh{
 
@@ -18,19 +19,35 @@ class Character extends Mesh{
      */
     draw(perspectiveMatrix, camera) {
 
-		let worldMatrix = utils.MakeWorld(
-			camera.position.x + this.offset.x + Math.sin(utils.degToRad(camera.position.angle)) * this.offset.angle,
+		let worldMatrix = utils.MakeTrueWorld(
+			camera.position.x + this.offset.x,
 			camera.position.y + this.offset.y, //+ Math.sin(utils.degToRad(camera.position.elevation)) * offset.elevation,
-			camera.position.z + this.offset.z- Math.cos(utils.degToRad(camera.position.angle)) * this.offset.angle, //+ Math.sin(utils.degToRad(camera.position.elevation)) * offset.elevation,
-			camera.position.angle + 180,0.0,0.0,0.25
-			
+			camera.position.z + this.offset.z,
+			-camera.position.elevation/1.5,
+			camera.position.angle + 180,
+			0.0,
+			0.25
 		);
+		/*let angle = utils.MakeRotateXMatrix(camera.position.angle + 180);
+		let minuselevation = utils.MakeRotateXMatrix(camera.position.elevation)
+
+		let worldMatrix = utils.MakeWorldFromMatrices(
+			utils.MakeTranslateMatrix(
+				camera.position.x + this.offset.x, 
+				camera.position.y + this.offset.y, 
+				camera.position.z + this.offset.z),
+			utils.multiplyMatrices(utils.multiplyMatrices(minuselevation, angle), utils.invertMatrix(minuselevation)),
+			utils.MakeRotateXMatrix(camera.position.elevation),
+			utils.identityMatrix(),
+			utils.MakeScaleMatrix(0.25)
+		)*/
+
 		this.light.position.x=camera.position.x;
 		this.light.position.y=camera.position.y;
 		this.light.position.z=camera.position.z;
-		this.light.direction.x=0;
-		this.light.direction.y=camera.position.angle;
-		this.light.direction.z=0;
+		this.light.direction.x=Math.cos(utils.degToRad(camera.position.angle))*Math.cos(utils.degToRad(camera.position.elevation));
+		this.light.direction.y=Math.sin(utils.degToRad(camera.position.elevation));
+		this.light.direction.z=Math.sin(utils.degToRad(camera.position.angle))*Math.cos(utils.degToRad(camera.position.elevation));
 
         gl.useProgram(this.program);
 
