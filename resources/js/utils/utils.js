@@ -658,6 +658,33 @@ var utils = {
 		return out;
 	},
 
+	MakeTrueWorld: function (tx, ty, tz, rx, ry, rz, s) {
+		//Creates a world matrix for an object.
+
+		var Rx = this.MakeRotateXMatrix(rx);
+		var Ry = this.MakeRotateYMatrix(ry);
+		var Rz = this.MakeRotateZMatrix(rz);
+		var S = this.MakeScaleMatrix(s);
+		var T = this.MakeTranslateMatrix(tx, ty, tz);
+
+		out = this.multiplyMatrices(Rz, S);
+		out = this.multiplyMatrices(Rx, out);
+		out = this.multiplyMatrices(Ry, out);
+		out = this.multiplyMatrices(T, out);
+
+		return out;
+	},
+
+	MakeWorldFromMatrices: function (T, Rx, Ry, Rz, S) {
+		//Creates a world matrix for an object.
+		out = this.multiplyMatrices(Rz, S);
+		out = this.multiplyMatrices(Ry, out);
+		out = this.multiplyMatrices(Rx, out);
+		out = this.multiplyMatrices(T, out);
+
+		return out;
+	},
+
 
 	//***Projection Matrix operations
 	MakeWorld: function (tx, ty, tz, rx, ry, rz, s) {

@@ -6,7 +6,7 @@ class PbrLabyrinth {
      * @param {*} programs GLSL programs associated with this object
      * @param {*} textures paths of textures for maze elements
      */
-    constructor(structure, programs, textures) {
+    constructor(structure, programs, textures, suzanneStr, pedestalStr) {
 
         //ATTRIBUTES
         this.programs = programs;
@@ -16,16 +16,18 @@ class PbrLabyrinth {
         this.children = [];
 
         //CALLS
-        this.init(textures);
+        this.init(textures, suzanneStr, pedestalStr);
     }
 
     /**
      * function to init the labyrinth
      */
-    init(textures) {
+    init(textures, suzanneStr, pedestalStr) {
        // this.children.push(new Wall(this.structure2D, gl.TEXTURE0+slotOffset++, this, this.programs[0], texturePaths.wall));
         this.children.push(new PbrFloor(this.structure2D, this, this.programs[1], textures.floor));
         this.children.push(new PbrWall(this.structure2D, this, this.programs[1], textures.wall));
+        this.children.push(new Suzanne(this.structure2D, this, this.programs[2], suzanneStr[0], suzanneStr[1]));
+        this.children.push(new Pedestal(this.structure2D, this, this.programs[3], pedestalStr[0], pedestalStr[1]));
 
         this.children.forEach(child => child.init());
     }

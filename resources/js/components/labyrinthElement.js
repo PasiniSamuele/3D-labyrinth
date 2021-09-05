@@ -30,7 +30,7 @@ class LabyrinthElement{
         });
     }
 
-    draw(perspectiveMatrix, camera){
-        this.children.forEach(child => child.draw(perspectiveMatrix, camera));
+    draw(perspectiveMatrix, viewMatrix, light, camPos){
+        this.children.forEach(child => child.draw(perspectiveMatrix, viewMatrix, light, camPos));
     }
 }

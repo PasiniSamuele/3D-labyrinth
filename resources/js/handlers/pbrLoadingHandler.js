@@ -126,7 +126,7 @@
 			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++);
 
-		let labyrinth = new PbrLabyrinth(maze2D, program[0], pbrTexture);
+		let labyrinth = new PbrLabyrinth(maze2D, program[0], pbrTexture, [results[13], results[14]], [results[15], results[16]]);
 		
 		let activeLevel = new Level(labyrinth, skybox, character, camera);
 		// Return the actual level

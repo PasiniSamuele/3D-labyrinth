@@ -30,18 +30,17 @@ class LabyrinthModel extends LabyrinthElement {
     }
 
 	loadVAO() {
-		let scope = this;
 		this.vao = [];
 		this.mesh.geometries.forEach((element, pos) => {
-			scope.vao[pos] = gl.createVertexArray();
-			gl.bindVertexArray(scope.vao[pos]);
+			this.vao[pos] = gl.createVertexArray();
+			gl.bindVertexArray(this.vao[pos]);
 			// Load character buffers
 			let vertexBufferObject = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBufferObject);
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(element.data.position), gl.STATIC_DRAW);
-			gl.enableVertexAttribArray(scope.program.position);
+			gl.enableVertexAttribArray(this.program.position);
 			gl.vertexAttribPointer(
-				scope.program.position,
+				this.program.position,
 				3,
 				gl.FLOAT,
 				gl.FALSE,
@@ -57,9 +56,9 @@ class LabyrinthModel extends LabyrinthElement {
 			let colorBufferObject = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, colorBufferObject);
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colorArray), gl.STATIC_DRAW);
-			gl.enableVertexAttribArray(scope.program.color);
+			gl.enableVertexAttribArray(this.program.color);
 			gl.vertexAttribPointer(
-				scope.program.color,
+				this.program.color,
 				3,
 				gl.FLOAT,
 				gl.FALSE,
@@ -70,9 +69,9 @@ class LabyrinthModel extends LabyrinthElement {
 			let normBufferObject = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, normBufferObject);
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(element.data.normal), gl.STATIC_DRAW);
-			gl.enableVertexAttribArray(scope.program.normal);
+			gl.enableVertexAttribArray(this.program.normal);
 			gl.vertexAttribPointer(
-				scope.program.normal,
+				this.program.normal,
 				3,
 				gl.FLOAT,
 				gl.FALSE,
@@ -82,27 +81,26 @@ class LabyrinthModel extends LabyrinthElement {
 		});
     }
 
-	draw(perspectiveMatrix, camera) {
-		super.draw(perspectiveMatrix, camera);
+	draw(perspectiveMatrix, viewMatrix, light, camPos) {
+		super.draw(perspectiveMatrix, viewMatrix, light, camPos);
 
         gl.useProgram(this.program);
-
-		let scope = this;
+		console.log(light);
 
 		this.mesh.geometries.forEach((element, pos) => {
 			gl.bindVertexArray(this.vao[pos]);
 
-			gl.uniformMatrix4fv(this.program.view, gl.FALSE, utils.transposeMatrix(camera.viewMatrix));
-			gl.uniformMatrix4fv(this.program.world, gl.FALSE, utils.transposeMatrix(scope.worldMatrix));
+			gl.uniformMatrix4fv(this.program.view, gl.FALSE, utils.transposeMatrix(viewMatrix));
+			gl.uniformMatrix4fv(this.program.world, gl.FALSE, utils.transposeMatrix(this.worldMatrix));
 			gl.uniformMatrix4fv(this.program.projection, gl.FALSE, utils.transposeMatrix(perspectiveMatrix));
-			gl.uniform3f(this.program.viewWorldPosition, camera.position.x, camera.position.y, camera.position.z);
-			gl.uniform3fv(this.program.diffuse, scope.material[element.material].diffuse);
-			gl.uniform3fv(this.program.ambient, scope.material[element.material].ambient);
-			gl.uniform3fv(this.program.emissive, [0.2, 0.2, 0.2]); //scope.material[element.material].emissive
-			gl.uniform3fv(this.program.specular, scope.material[element.material].specular);
-			gl.uniform1f(this.program.shininess, scope.material[element.material].shininess);
-			gl.uniform1f(this.program.opacity, scope.material[element.material].opacity);
-			gl.uniform3fv(this.program.lightDirection, [-1.0, 3.0, 5.0]);
+			gl.uniform3f(this.program.viewWorldPosition, camPos.x, camPos.y, camPos.z);
+			gl.uniform3fv(this.program.diffuse, this.material[element.material].diffuse);
+			gl.uniform3fv(this.program.ambient, this.material[element.material].ambient);
+			gl.uniform3fv(this.program.emissive, this.emissive);
+			gl.uniform3fv(this.program.specular, this.material[element.material].specular);
+			gl.uniform1f(this.program.shininess, this.material[element.material].shininess);
+			gl.uniform1f(this.program.opacity, this.material[element.material].opacity);
+			gl.uniform3fv(this.program.lightDirection, [light.direction.x, light.direction.y, light.direction.z]);
 			gl.uniform3fv(this.program.ambientLight, [0.0, 5.0, 0.0]);
 			
 			gl.drawArrays(gl.TRIANGLES, 0, element.data.position.length/3);
