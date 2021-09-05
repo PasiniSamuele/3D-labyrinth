@@ -44,9 +44,10 @@ class SceneHandler {
 		//gl.cullFace(gl.BACK);
 
 		// MovementHandler object idle
-		let movementHandlerRet = this.movementHandler.idle(this.level.camera, this.interactionHandler);
+		let movementHandlerRet = this.movementHandler.idle(this.level.camera, this.interactionHandler, this.level.character.light);
 		this.level.camera = movementHandlerRet.camera;
 		this.interactionHandler = movementHandlerRet.interactionHandler;
+		this.level.character.light = movementHandlerRet.light;
 
 		// Camera object idle
 		this.level.camera.idle(deltaTime);

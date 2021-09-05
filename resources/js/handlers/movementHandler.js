@@ -16,10 +16,11 @@ class MovementHandler {
 	 *
 	 * @param { object } camera camera object
 	 * @param { object } interactionHandler interactionHandler object
+	 * @param { object } light light object
 	 *
 	 * @returns { object } returns an associative array containing the new "camera" and "interactionHandler" objects
 	 */
-	idle(camera, interactionHandler) {
+	idle(camera, interactionHandler, light) {
 		// Keys recognition
 		if (interactionHandler.keys['KeyW']) { camera.moveForward(); }
 		if (interactionHandler.keys['KeyS']) { camera.moveBackward(); }
@@ -31,6 +32,12 @@ class MovementHandler {
 		if (interactionHandler.keys['ArrowLeft']) { camera.rotateLeft(); }
 		if (interactionHandler.keys['ArrowUp']) { camera.rotateUp(); }
 		if (interactionHandler.keys['ArrowDown']) { camera.rotateDown(); }
+		if (interactionHandler.keys['KeyL']) {
+			if (light.ignition.lastTime + light.ignition.switchTime < Date.now() / 1000) {
+				light.ignition.value = !light.ignition.value;
+				light.ignition.lastTime = Date.now() / 1000;
+			}
+		}
 		// Mouse movements recognition
 		if (interactionHandler.mouse.x != 0) {
 			camera.setRotationX(interactionHandler.mouse.x);
@@ -38,8 +45,8 @@ class MovementHandler {
 		if (interactionHandler.mouse.y != 0) {
 			camera.setRotationY(interactionHandler.mouse.y);
 		}
-		// Return camera and interactionHandler
-		return { "camera": camera, "interactionHandler": interactionHandler };
+		// Return camera, interactionHandler, light
+		return { "camera": camera, "interactionHandler": interactionHandler, "light": light };
 	}
 
 }

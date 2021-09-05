@@ -31,6 +31,5 @@ class Level {
         this.skybox.draw(now, perspectiveMatrix, viewMatrix);
         this.character.draw(perspectiveMatrix, this.camera);
         this.labyrinth.draw(perspectiveMatrix, viewMatrix, this.character.light, this.camera.position, this.skybox,  now);
-  
     }
 }
