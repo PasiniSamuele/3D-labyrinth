@@ -25,6 +25,7 @@ class PbrLabyrinth {
     init(textures) {
        // this.children.push(new Wall(this.structure2D, gl.TEXTURE0+slotOffset++, this, this.programs[0], texturePaths.wall));
         this.children.push(new PbrFloor(this.structure2D, this, this.programs[1], textures.floor));
+        this.children.push(new PbrWall(this.structure2D, this, this.programs[1], textures.wall));
 
         this.children.forEach(child => child.init());
     }

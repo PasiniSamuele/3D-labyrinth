@@ -98,7 +98,19 @@
 		// Set the actual level
 		let character = new Character(results[7], results[8], levelSettings.character.offset, program[2], levelSettings.character.light );
 		let pbrTexture={};
-		pbrTexture.floor = new PbrTexture(levelSettings.structure.textures.floor, gl.TEXTURE0 + index++,gl.TEXTURE0 + index++,gl.TEXTURE0 + index++,gl.TEXTURE0 + index++,gl.TEXTURE0 + index++) 
+		pbrTexture.floor = new PbrTexture(levelSettings.structure.textures.floor, 
+			gl.TEXTURE0 + index++,
+			gl.TEXTURE0 + index++,
+			gl.TEXTURE0 + index++,
+			gl.TEXTURE0 + index++,
+			gl.TEXTURE0 + index++) 
+		pbrTexture.wall = new PbrTexture(levelSettings.structure.textures.wall, 
+			gl.TEXTURE0 + index++,
+			gl.TEXTURE0 + index++,
+			gl.TEXTURE0 + index++,
+			gl.TEXTURE0 + index++,
+			gl.TEXTURE0 + index++);
+
 		let labyrinth = new PbrLabyrinth(results[0], program[0], pbrTexture);
 		console.log(camera);
 		let activeLevel = new Level(labyrinth, skybox, character, camera);
