@@ -10,13 +10,6 @@ var collisionHandler;
 var interactionHandler;
 var sceneHandler;
 
-var offset = {
-	x: 0.0,y:-0.45,z:0.0,angle:0.01,elevation:0.1
-};
-var offset2 = {
-	x: 0.01,y:-0.45,z:0.01,angle:180.0,elevation:0.0
-};
-
 //variables
 /** @type {WebGLRenderingContext} */
 var gl;
@@ -46,7 +39,7 @@ function loadGl() {
 async function init() {
 	loadGl();
 	
-	loadingHandler = new LoadingHandler();
+	loadingHandler = new PbrLoadingHandler();
 	movementHandler = new MovementHandler();
 	interactionHandler = new InteractionHandler();
 	collisionHandler = new CollisionHandler();

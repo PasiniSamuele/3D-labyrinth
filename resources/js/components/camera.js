@@ -198,14 +198,16 @@ class Camera {
 		// Compute all speeds
 		this.computeSpeeds(deltaTime);
 
-		// Convert speeds in absolute coordinate
-		this.computeAbsoluteSpeed();
+		if (!this.isBufferAbsoluteSpeedEmpty()) {
+			// Convert speeds in absolute coordinate
+			this.computeAbsoluteSpeed();
 
-		// If there is an absolute speed in buffer
-		this.deBufferizeAbsoluteSpeed();
+			// If there is an absolute speed in buffer
+			this.deBufferizeAbsoluteSpeed();
 
-		// Convert speeds in absolute coordinate
-		this.computeRelativeSpeed();
+			// Convert speeds in absolute coordinate
+			this.computeRelativeSpeed();
+		}
 
 		// Compute all positions
 		this.computePositions(deltaTime);
@@ -268,6 +270,13 @@ class Camera {
 			this.speed.absolute.z = this.speed.absolute.buffer.z;
 			this.speed.absolute.buffer.z = false;
 		}
+	}
+
+	isBufferAbsoluteSpeedEmpty() {
+		if (this.speed.absolute.buffer.x !== false) return false;
+		if (this.speed.absolute.buffer.y !== false) return false;
+		if (this.speed.absolute.buffer.z !== false) return false;
+		return true;
 	}
 
 	computeRelativeSpeed() {

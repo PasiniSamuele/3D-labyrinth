@@ -2,16 +2,25 @@
 <html>
 
 <head>
+	<!-- TITLE -->
 	<title>
 		3D Labyrinth
 	</title>
+	<!-- CSS -->
+	<link rel="stylesheet" type="text/css" href="resources/css/style.css" media="screen" />
 </head>
 
-<body style="margin: 0; display: flex; background-color: black;">
+<body>
+	<!-- CANVAS -->
 	<canvas id="canvas-id" width="800" height="600">
 		Canvas not supported!
 	</canvas>
 
+	<!-- GUI -->
+	<!--<div id="gui">
+	</div>-->
+
+	<!-- SCRIPT -->
 	<script src="resources/js/enums/lights.js"></script>
 
 	<script src="resources/js/utils/acceleration-utils.js"></script>
@@ -22,11 +31,17 @@
 	<script src="resources/js/handlers/collisionHandler.js"></script>
 	<script src="resources/js/handlers/interactionHandler.js"></script>
 	<script src="resources/js/handlers/loadingHandler.js"></script>
+	<script src="resources/js/handlers/pbrLoadingHandler.js"></script>
 	<script src="resources/js/handlers/movementHandler.js"></script>
 	<script src="resources/js/handlers/sceneHandler.js"></script>
 
 	<script src="resources/js/components/labyrinthElement.js"></script>
+	<script src="resources/js/components/pbrLabyrinthElement.js"></script>
+	<script src="resources/js/components/pbrTexture.js"></script>
 	<script src="resources/js/components/mazeElements/floor.js"></script>
+	<script src="resources/js/components/mazeElements/pbrFloor.js"></script>
+	<script src="resources/js/components/mazeElements/pbrWall.js"></script>
+
 	<script src="resources/js/components/mazeElements/wall.js"></script>
 	<script src="resources/js/components/mazeElements/labyrinthModel.js"></script>
 	<script src="resources/js/components/mazeElements/suzanne.js"></script>
@@ -36,6 +51,7 @@
 	<script src="resources/js/components/mesh.js"></script>
 	<script src="resources/js/components/character.js"></script>
 	<script src="resources/js/components/labyrinth.js"></script>
+	<script src="resources/js/components/pbrLabyrinth.js"></script>
 	<script src="resources/js/components/level.js"></script>
 	<script src="resources/js/components/skybox.js"></script>
 	<script src="resources/js/components/skyboxTexture.js"></script>
