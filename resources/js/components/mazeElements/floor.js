@@ -1,18 +1,23 @@
 class Floor extends LabyrinthElement{
     constructor(structure, slot, parent, program, imageUrl){
-        super(structure, slot, parent, program, imageUrl);
+        super(structure, parent, program);
+        
+        this.imageUrl = imageUrl;
+        this.slot = slot;
     }
 
     init(){
-        super.init();
+        this.loadComponent();
+        this.loadLocations();
+        this.loadTexture();
+        this.loadVAO();
     }
 
     loadLocations(){
-        this.locations = {};
-        this.locations['labVertPosition'] = gl.getAttribLocation(this.program, 'labVertPosition');
-        this.locations['labVertTexCoord'] = gl.getAttribLocation(this.program, 'labVertTexCoord');
-        this.locations['labProjMatrix'] = gl.getUniformLocation(this.program, 'labProjMatrix');
-        this.locations['labSampler'] = gl.getUniformLocation(this.program, 'labSampler');
+        this.program.vertPositions = gl.getAttribLocation(this.program, 'labVertPosition');
+        this.program.texCoordinates = gl.getAttribLocation(this.program, 'labVertTexCoord');
+        this.program.projMatrix = gl.getUniformLocation(this.program, 'labProjMatrix');
+        this.program.texSampler = gl.getUniformLocation(this.program, 'labSampler');
     }
 
     /**
@@ -25,9 +30,9 @@ class Floor extends LabyrinthElement{
         var mazeVertexBufferObject = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, mazeVertexBufferObject);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
-        gl.enableVertexAttribArray(this.locations['labVertPosition']);
+        gl.enableVertexAttribArray(this.program.vertPositions);
         gl.vertexAttribPointer(
-            this.locations['labVertPosition'],
+            this.program.vertPositions,
             3,
             gl.FLOAT,
             gl.FALSE,
@@ -38,9 +43,9 @@ class Floor extends LabyrinthElement{
         var mazeTexCoordBufferObject = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, mazeTexCoordBufferObject);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.uvs), gl.STATIC_DRAW);
-        gl.enableVertexAttribArray(this.locations['labVertTexCoord']);
+        gl.enableVertexAttribArray(this.program.texCoordinates);
         gl.vertexAttribPointer(
-            this.locations['labVertTexCoord'],
+            this.program.texCoordinates,
             2,
             gl.FLOAT,
             gl.FALSE,
@@ -91,15 +96,15 @@ class Floor extends LabyrinthElement{
         this.uvs = floor3D[4];
     }
 
-    draw(perspectiveMatrix, viewMatrix){
-        super.draw(perspectiveMatrix, viewMatrix);
+    draw(perspectiveMatrix, camera){
+        super.draw(perspectiveMatrix, camera);
         
-        let viewWorldMatrix = utils.multiplyMatrices(viewMatrix, this.worldMatrix);
+        let viewWorldMatrix = utils.multiplyMatrices(camera.viewMatrix, this.worldMatrix);
         let projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, viewWorldMatrix);
         gl.useProgram(this.program);
         gl.bindVertexArray(this.vao);
-        gl.uniformMatrix4fv(this.locations['labProjMatrix'], gl.FALSE, utils.transposeMatrix(projectionMatrix));
-        gl.uniform1i(this.locations['labSampler'], utils.getTextureSlotOffset(gl, this.slot));
+        gl.uniformMatrix4fv(this.program.projMatrix, gl.FALSE, utils.transposeMatrix(projectionMatrix));
+        gl.uniform1i(this.program.texSampler, utils.getTextureSlotOffset(gl, this.slot));
         gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
     }
 }

@@ -12,7 +12,7 @@ class Camera {
 	 * 
 	 * @param { object } settings array containing all settings and parameters relative to the camera
 	 */
-	constructor(settings) {
+	constructor(settings, startAngle) {
 
 		/*******************
 		 * Attributes
@@ -25,7 +25,7 @@ class Camera {
 			x: this.settings.position.x.default,
 			y: this.settings.position.y.default,
 			z: this.settings.position.z.default,
-			angle: this.settings.position.angle.default,
+			angle: startAngle,
 			elevation: this.settings.position.elevation.default,
 		};
 		// Speed

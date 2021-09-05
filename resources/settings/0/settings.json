@@ -9,11 +9,25 @@
 			"floor": {
 				"vertex": "resources/assets/shaders/labShader1/labFloorShader.vs.glsl",
 				"fragment": "resources/assets/shaders/labShader1/labFloorShader.fs.glsl"
+			},
+			"models": {
+				"vertex": "resources/assets/shaders/flashlightShader/flashlightShader.vs.glsl",
+				"fragment": "resources/assets/shaders/flashlightShader/flashlightShader.fs.glsl"
 			}
 		},
 		"images": {
 			"wall": "resources/assets/textures/lab/handpaintedwall.png",
 			"floor": "resources/assets/textures/lab/grass.png"
+		},
+		"models": {
+			"suzanne": {
+				"obj": "resources/assets/models/suzanne.obj",
+				"mtl": "resources/assets/models/suzanne.mtl"
+			},
+			"pedestal": {
+				"obj": "resources/assets/models/pedestal.obj",
+				"mtl": "resources/assets/models/pedestal.mtl"
+			}
 		}
 	},
 	"skybox": {

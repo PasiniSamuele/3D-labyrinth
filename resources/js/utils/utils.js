@@ -931,6 +931,43 @@ var utils = {
 			handler(parts, unparsedArgs);
 		}
 		return materials;
-	}
+	},
+	
+	getGeometriesExtents: function(geometries) {
+		let getExtents = function (positions) {
+			const min = positions.slice(0, 3);
+			const max = positions.slice(0, 3);
+			for (let i = 3; i < positions.length; i += 3) {
+			  for (let j = 0; j < 3; ++j) {
+				const v = positions[i + j];
+				min[j] = Math.min(v, min[j]);
+				max[j] = Math.max(v, max[j]);
+				}
+			}
+			return {min, max};
+		};
+		return geometries.reduce(({min, max}, {data}) => {
+		  const minMax = getExtents(data.position);
+		  return {
+			min: min.map((min, ndx) => Math.min(minMax.min[ndx], min)),
+			max: max.map((max, ndx) => Math.max(minMax.max[ndx], max)),
+		  };
+		}, {
+		  min: Array(3).fill(Number.POSITIVE_INFINITY),
+		  max: Array(3).fill(Number.NEGATIVE_INFINITY),
+		});
+	  },
+
+	  add3Vectors: function(v1, v2){
+		return [v1[0]+v2[0], v1[1]+v2[1], v1[2]+v2[2]];
+	  },
+
+	  sub3Vectors: function(v1, v2){
+		return [v1[0]-v2[0], v1[1]-v2[1], v1[2]-v2[2]];
+	  },
+
+	  scale3Vector: function(v, s){
+		return [v[0]*s, v[1]*s, v[2]*s];
+	  }
 
 }

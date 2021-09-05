@@ -110,6 +110,44 @@ var labyrinthUtils = {
         return [];
     },
 
+    computeFinalPos : function(labyrinth){
+        for(i = 0; i < labyrinth.length; i++){
+            for(j = 0; j < labyrinth[0].length; j++){
+                if(labyrinth[i][j] == mazeElement.FINAL_POS) return [i, j];
+            }
+        }
+        console.error("labyrinth has no final pos");
+        return [];
+    },
+
+    getStartingAngle(labyrinth){
+        let start = this.computeStartPos(labyrinth);
+        let row = start[0];
+        let col = start[1];
+        if(row-1>=0 ? mazeElement.FLOORS.includes(labyrinth[row-1][col]) : false) return 0;
+        else if (col+1<labyrinth[0].length ? mazeElement.FLOORS.includes(labyrinth[row][col+1]) : false) return 90;
+        else if (row+1<labyrinth.length ? mazeElement.FLOORS.includes(labyrinth[row-1][col]) : false) return 180;
+        else if (col-1>=0 ? mazeElement.FLOORS.includes(labyrinth[row][col-1]) : false) return 270;
+        else {
+            console.error("Labyrinth start not accessible");
+            return null;
+        }
+    },
+
+    getFinalAngle(labyrinth){
+        let final = this.computeFinalPos(labyrinth);
+        let row = final[0];
+        let col = final[1];
+        if(row-1>=0 ? mazeElement.FLOORS.includes(labyrinth[row-1][col]) : false) return 0;
+        else if (col+1<labyrinth[0].length ? mazeElement.FLOORS.includes(labyrinth[row][col+1]) : false) return 90;
+        else if (row+1<labyrinth.length ? mazeElement.FLOORS.includes(labyrinth[row-1][col]) : false) return 180;
+        else if (col-1>=0 ? mazeElement.FLOORS.includes(labyrinth[row][col-1]) : false) return 270;
+        else {
+            console.error("Labyrinth exit not accessible");
+            return null;
+        }
+    },
+
     compute3DFloor : function(labyrinth, MIN_Y, MAX_Y, size_multiplier){
         let X_SIZE = labyrinth[0].length;
         let Z_SIZE = labyrinth.length;

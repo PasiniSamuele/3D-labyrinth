@@ -58,7 +58,13 @@ class LoadingHandler {
 			utils.loadTextResource(levelSettings.character.url.obj),
 			utils.loadTextResource(levelSettings.character.url.mtl),
 			utils.loadTextResource(levelSettings.character.shaders.vertex),
-			utils.loadTextResource(levelSettings.character.shaders.fragment),
+			utils.loadTextResource(levelSettings.character.shaders.fragment), //10
+			utils.loadTextResource(levelSettings.structure.shaders.models.vertex),
+			utils.loadTextResource(levelSettings.structure.shaders.models.fragment),
+			utils.loadTextResource(levelSettings.structure.models.suzanne.obj),
+			utils.loadTextResource(levelSettings.structure.models.suzanne.mtl),
+			utils.loadTextResource(levelSettings.structure.models.pedestal.obj), //15
+			utils.loadTextResource(levelSettings.structure.models.pedestal.mtl),
 		]);
 		// Create the shaders
 		let program = [[],];
@@ -70,12 +76,21 @@ class LoadingHandler {
 		let envFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[6]);
 		let chVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[9]);
 		let chFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[10]);
+		let labModelVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[11]);
+		let labModelFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[12]);
 		program[0][0] = utils.createProgram(gl, labWallVertexShader, labWallFragmentShader);
 		program[0][1] = utils.createProgram(gl, labFloorVertexShader, labFloorFragmentShader);
+		program[0][2] = utils.createProgram(gl, labModelVertexShader, labModelFragmentShader);
+		program[0][3] = utils.createProgram(gl, labModelVertexShader, labModelFragmentShader);
 		program[1] = utils.createProgram(gl, envVertexShader, envFragmentShader);
 		program[2] = utils.createProgram(gl, chVertexShader, chFragmentShader);
+		//Define the labyrinth structure
+		let maze2D;
+		if(true) maze2D = labyrinthUtils.generate2DLabyrinth(25, 25, 1, 0.01);
+		else maze2D = results[0];
+		collisionHandler.setStructure(maze2D);
 		// Create the camera
-		let camera = new Camera(levelSettings.camera);
+		let camera = new Camera(levelSettings.camera, labyrinthUtils.getStartingAngle(maze2D));
 		// Create the skybox
 		let textures = [];
 		let index = 0;	//unique texture index for skybox & labyrinth elements
@@ -84,16 +99,7 @@ class LoadingHandler {
 		});
 		let skybox = new Skybox(textures, program[1]);
 		// Create the labyrinth
-		let labyrinth;
-		if (this.RANDOM_GENERATION) {
-			let randomSettings = await utils.loadJSONResource(level.random);
-			let maze2D = labirinthUtils.generate2DLabyrinth(randomSettings.rows, randomSettings.columns, randomSettings.JOIN_SIDES, randomSettings.join_parameters);
-			collisionHandler.setStructure(maze2D);
-			labyrinth = new Labyrinth(maze2D, program[0], levelSettings.structure.images, index);
-		} else {
-			collisionHandler.setStructure(results[0]);
-			labyrinth = new Labyrinth(results[0], program[0], levelSettings.structure.images, index);
-		}
+		let labyrinth = new Labyrinth(maze2D, program[0], levelSettings.structure.images, index, [results[13], results[14]], [results[15], results[16]]);
 		// Create the character
 		let character = new Character(results[7], results[8], levelSettings.character.offset, program[2]);
 		// Set the actual level
