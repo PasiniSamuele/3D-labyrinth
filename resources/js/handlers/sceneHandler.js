@@ -14,7 +14,6 @@ class SceneHandler {
 	 * @param { object } interactionHandler interactionHandler object
 	 */
 	constructor(movementHandler, interactionHandler) {
-		// Attributes
 		this.then = 0;
 		this.level;
 		this.movementHandler = movementHandler;
@@ -27,7 +26,6 @@ class SceneHandler {
 	 * @param { number } now current timestamp in milliseconds (0, +inf) [milliseconds]
 	 */
 	drawScene(now) {
-
 		// Get deltaTime in seconds
 		now *= 0.001; // Seconds
 		let deltaTime = now - this.then;
@@ -51,9 +49,6 @@ class SceneHandler {
 
 		// Camera object idle
 		this.level.camera.idle(deltaTime);
-
-		// SET HERE TO ZERO THE ABSOLUTE SPEED
-		//this.level.camera.setAbsoluteSpeed(false, false, true);
 
 		// InteractionHandler onject idle
 		this.interactionHandler.idle();
