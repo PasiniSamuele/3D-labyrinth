@@ -18,6 +18,8 @@ class SceneHandler {
 		this.level;
 		this.movementHandler = movementHandler;
 		this.interactionHandler = interactionHandler;
+		gl.enable(gl.CULL_FACE);
+		gl.cullFace(gl.BACK);
 	}
 
 	/**
@@ -37,9 +39,8 @@ class SceneHandler {
 		gl.clearColor(1, 1, 1, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		gl.enable(gl.DEPTH_TEST);
-		//gl.enable(gl.CULL_FACE);
 		gl.frontFace(gl.CCW);
-		//gl.cullFace(gl.BACK);
+		
 
 		// MovementHandler object idle
 		let movementHandlerRet = this.movementHandler.idle(this.level.camera, this.interactionHandler, this.level.character.light);

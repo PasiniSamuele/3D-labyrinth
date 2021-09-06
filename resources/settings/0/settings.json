@@ -143,10 +143,13 @@
 				"g": 0.957,
 				"b": 0.882
 			},
+			"constDecay":1,
+			"linDecay":0.4,
+			"quadDecay":0.08,
 			"cutOff":25,
 			"outerCutOff":35,
 			"ignition": {
-				"default": true,
+				"default": false,
 				"switchTime": 0.5
 			},
 			"offset":{

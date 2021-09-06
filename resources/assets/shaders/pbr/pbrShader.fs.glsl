@@ -19,12 +19,15 @@ uniform sampler2D metallicMap;
 uniform sampler2D roughnessMap;
 uniform sampler2D aoMap;
 
-//point light
+//flashlight
 uniform vec3 lightPosition;
 uniform vec3 lightColor;
 uniform vec3 lightDir;
 uniform float cutOff;	
-uniform float outerCutOff;	
+uniform float outerCutOff;
+uniform float constDecay;
+uniform float linDecay;
+uniform float quadDecay;	
 
 uniform vec3 camPos;
 
@@ -125,6 +128,11 @@ void main(){
 	float intensity = clamp((theta - outerCutOff) / epsilon, 0.0, 1.0); 
 	
     vec3 radiance = lightColor * intensity;
+    float d = length(lightPosition - fragVertPosition);
+    float attenuation = 1.0 / (constDecay + linDecay * d + quadDecay * (d * d));    
+
+    radiance*=attenuation;
+
 	//vec3 radiance = lightColor;
     // Cook-Torrance BRDF
     float NDFlight = DistributionGGX(N, H, roughness);   

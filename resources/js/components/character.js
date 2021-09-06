@@ -6,7 +6,7 @@
  * Class that represents the main character
  */
 
-var DEBUGLIGHT = true;
+var DEBUGLIGHT = false;
 
 var lightOffset = {
 	angle: 0.0,
@@ -48,7 +48,7 @@ class Character extends Mesh {
 
 		let worldMatrix = utils.MakeTrueWorld(
 			camera.position.x + this.offset.x,
-			camera.position.y + this.offset.y, //+ Math.sin(utils.degToRad(camera.position.elevation)) * offset.elevation,
+			camera.position.y + this.offset.y, 
 			camera.position.z + this.offset.z,
 			-camera.position.elevation/1.5,
 			camera.position.angle + 180,
@@ -56,74 +56,9 @@ class Character extends Mesh {
 			this.offset.scale
 		);
 
-		/*let angle = utils.MakeRotateXMatrix(camera.position.angle + 180);
-		let minuselevation = utils.MakeRotateXMatrix(camera.position.elevation)
-
-		let worldMatrix = utils.MakeWorldFromMatrices(
-			utils.MakeTranslateMatrix(
-				camera.position.x + this.offset.x, 
-				camera.position.y + this.offset.y, 
-				camera.position.z + this.offset.z),
-			utils.multiplyMatrices(utils.multiplyMatrices(minuselevation, angle), utils.invertMatrix(minuselevation)),
-			utils.MakeRotateXMatrix(camera.position.elevation),
-			utils.identityMatrix(),
-			utils.MakeScaleMatrix(0.25)
-		)*/
-		if(DEBUGLIGHT){
-
-			let x = this.light.offset.x*0.25;
-			let y = this.light.offset.y*0.25;
-			let z = this.light.offset.z*0.25;
-
-			//console.log(Math.sqrt(x*x+z*z))
-			//console.log(Math.sqrt(y*y+z*z))
-			
-			//console.log(z/Math.sqrt(x*x+z*z));
-			//console.log(Math.sqrt(y*y+z*z)/z);
-
-			let angle = Math.acos(z/Math.sqrt(x*x+z*z));
-			let elevation = Math.acos(z/Math.sqrt(y*y+z*z));
-
-			let a = utils.degToRad(-camera.position.angle) + angle;
-			let b = utils.degToRad(-camera.position.elevation/1.5-90) - elevation;
-			let r = Math.sqrt(x*x+y*y+z*z)-0.01;
-			
-			this.light.position.x = r*Math.sin(b)*Math.sin(a) + camera.position.x;
-			this.light.position.y = r*Math.cos(b) + camera.position.y;
-			this.light.position.z = r*Math.sin(b)*Math.cos(a) + camera.position.z;
-
-			console.log(this.light.position.y );
-			
-
-			/*this.light.position.x = camera.position.x +  
-									this.light.offset.x*0.25*Math.cos(utils.degToRad(camera.position.angle))-
-									this.light.offset.z*0.25*Math.sin(utils.degToRad(camera.position.angle));
-
-			this.light.position.y = camera.position.y +  
-									this.light.offset.y*0.25;
-			
-
-			this.light.position.z = camera.position.z +  
-									this.light.offset.z*0.25*Math.cos(utils.degToRad(camera.position.angle))+
-									this.light.offset.x*0.25*Math.sin(utils.degToRad(camera.position.angle));*/
-
-			
-			this.light.direction.x=Math.sin(utils.degToRad(camera.position.elevation/1.5-90+lightOffset.elevation))*Math.sin(utils.degToRad(-camera.position.angle+lightOffset.angle));
-			this.light.direction.y=Math.cos(utils.degToRad(camera.position.elevation/1.5-90+lightOffset.elevation));
-			this.light.direction.z=Math.sin(utils.degToRad(camera.position.elevation/1.5-90+lightOffset.elevation))*Math.cos(utils.degToRad(-camera.position.angle+lightOffset.angle));
-
-			//this.light.direction.x=Math.sin(utils.degToRad(-camera.position.elevation + this.light.offset.rotx))*Math.sin(utils.degToRad(-camera.position.angle + this.light.offset.rotz));
-			//this.light.direction.y=Math.cos(utils.degToRad(-camera.position.elevation + this.light.offset.rotx));
-			//this.light.direction.z=Math.sin(utils.degToRad(-camera.position.elevation + this.light.offset.rotx))*Math.cos(utils.degToRad(-camera.position.angle + this.light.offset.rotz));
-
-			//console.log(camera.position.angle + " " + camera.position.elevation)
-			
-			//console.log(camera.position)
-			let lightVector = utils.normalize([this.light.direction.x,this.light.direction.y,this.light.direction.z]);
-			this.light.direction.x = lightVector[0];
-			this.light.direction.y = lightVector[1];
-			this.light.direction.z = lightVector[2];
-		}
+		if(!DEBUGLIGHT)
+			this.computeLight(camera);
+		
 		// GL stuffs
 		gl.useProgram(this.program);
 
@@ -147,6 +82,34 @@ class Character extends Mesh {
 			gl.drawArrays(gl.TRIANGLES, 0, element.data.position.length / 3);
 		});
 
+	}
+
+	computeLight(camera){
+			let x = this.light.offset.x*0.25;
+			let y = this.light.offset.y*0.25;
+			let z = this.light.offset.z*0.25;
+			
+			let angle = Math.acos(z/Math.sqrt(x*x+z*z));
+			let elevation = Math.acos(z/Math.sqrt(y*y+z*z));
+
+			let a = utils.degToRad(-camera.position.angle) + angle;
+			let b = utils.degToRad(-camera.position.elevation/1.5-90) - elevation;
+			let r = Math.sqrt(x*x+y*y+z*z)-0.01;
+			
+			this.light.position.x = r*Math.sin(b)*Math.sin(a) + camera.position.x;
+			this.light.position.y = r*Math.cos(b) + camera.position.y;
+			this.light.position.z = r*Math.sin(b)*Math.cos(a) + camera.position.z;
+						
+			
+			this.light.direction.x=Math.sin(utils.degToRad(camera.position.elevation/1.5-90+lightOffset.elevation))*Math.sin(utils.degToRad(-camera.position.angle+lightOffset.angle));
+			this.light.direction.y=Math.cos(utils.degToRad(camera.position.elevation/1.5-90+lightOffset.elevation));
+			this.light.direction.z=Math.sin(utils.degToRad(camera.position.elevation/1.5-90+lightOffset.elevation))*Math.cos(utils.degToRad(-camera.position.angle+lightOffset.angle));
+
+			
+			let lightVector = utils.normalize([this.light.direction.x,this.light.direction.y,this.light.direction.z]);
+			this.light.direction.x = lightVector[0];
+			this.light.direction.y = lightVector[1];
+			this.light.direction.z = lightVector[2];
 	}
 
 }
