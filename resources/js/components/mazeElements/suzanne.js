@@ -1,37 +1,51 @@
-class Suzanne extends LabyrinthModel{
-    constructor(structure, parent, program, objStr, mtlStr){
-        super(structure, parent, program, objStr, mtlStr);
+/*******************
+ * Suzanne.js
+ ******************/
 
-        this.color = [1,0,0];
-        this.emissive = [0.2, 0.2, 0.2];
-    }
+/**
+ * Suzanne object
+ */
+class Suzanne extends LabyrinthModel {
+	constructor(structure, parent, program, objStr, mtlStr) {
+		super(structure, parent, program, objStr, mtlStr);
+		// Color settings (radioattiva)
+		this.color = [1, 0, 0];
+		this.emissive = [0.2, 0.2, 0.2];
+	}
 
-    init(){
-        this.positionModel();
-        super.init();
-    }
+	/**
+	 * Init function
+	 */
+	init() {
+		this.positionModel();
+		super.init();
+	}
 
-    positionModel(){
-        let extents = utils.getGeometriesExtents(this.mesh.geometries);
-        const range = utils.sub3Vectors(extents.max, extents.min);
+	/**
+	 * positionModel function
+	 */
+	positionModel() {
+		let extents = utils.getGeometriesExtents(this.mesh.geometries);
+		const range = utils.sub3Vectors(extents.max, extents.min);
 
-        let extentsOffset = utils.scale3Vector(
-            utils.add3Vectors(
-                extents.min,
-                utils.scale3Vector(range, 0.5)
-            ),
-            -1
-        );
+		let extentsOffset = utils.scale3Vector(
+			utils.add3Vectors(
+				extents.min,
+				utils.scale3Vector(range, 0.5)
+			),
+			-1
+		);
 
-        let final = labyrinthUtils.computeFinalPos(this.structure);
-        let initial = labyrinthUtils.computeStartPos(this.structure);
-        let labOffset = [
-            final[0] - initial[0],
-            final[1] - initial[1]
-        ];
+		let final = labyrinthUtils.computeFinalPos(this.structure);
+		let initial = labyrinthUtils.computeStartPos(this.structure);
+		let labOffset = [
+			final[0] - initial[0],
+			final[1] - initial[1]
+		];
 
-        let finalAngle = labyrinthUtils.getFinalAngle(this.structure);
+		let finalAngle = labyrinthUtils.getFinalAngle(this.structure);
 
-        this.localMatrix = utils.MakeWorld(extentsOffset[0] + labOffset[1], extentsOffset[1]-0.4, extentsOffset[2] + labOffset[0], finalAngle, 0, 0, 4.0);
-    }
+		this.localMatrix = utils.MakeWorld(extentsOffset[0] + labOffset[1], extentsOffset[1] - 0.4, extentsOffset[2] + labOffset[0], finalAngle, 0, 0, 4.0);
+	}
+	
 }

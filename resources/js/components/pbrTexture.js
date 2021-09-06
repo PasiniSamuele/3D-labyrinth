@@ -1,8 +1,21 @@
 /*******************
  * PbrTexture.js
  ******************/
+
+/**
+ * PbrTexture object
+ */
  class PbrTexture {
 
+	/**
+	 * Constructor
+	 * @param {*} imageUrls 
+	 * @param {*} albedoSlot 
+	 * @param {*} normalSlot 
+	 * @param {*} metallicSlot 
+	 * @param {*} roughnessSlot 
+	 * @param {*} aoSlot 
+	 */
     constructor(imageUrls, albedoSlot, normalSlot, metallicSlot, roughnessSlot, aoSlot){
         this.imageUrls = imageUrls;
         this.albedoSlot = albedoSlot;
@@ -12,8 +25,10 @@
         this.aoSlot = aoSlot;
     }
 
+	/**
+	 * Init function
+	 */
     init(){
-        //console.log(this);
         this.albedo = this.loadTexture(this.albedoSlot, this.imageUrls.albedo);
         this.normal =this.loadTexture(this.normalSlot, this.imageUrls.normal);
         this.metallic =this.loadTexture(this.metallicSlot, this.imageUrls.metallic);
@@ -21,6 +36,12 @@
         this.ao =this.loadTexture(this.aoSlot, this.imageUrls.ao);
     }
 
+	/**
+	 * loadTexture function
+	 * @param {*} slot 
+	 * @param {*} url 
+	 * @returns 
+	 */
     loadTexture(slot, url) {
         let texture = gl.createTexture();
         gl.activeTexture(slot);

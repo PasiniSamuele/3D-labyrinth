@@ -1,16 +1,39 @@
-class LabyrinthModel extends LabyrinthElement {
-    constructor(structure, parent, program, objStr, mtlStr){
-        super(structure, parent, program);
+/*******************
+ * LabyrinthModel.js
+ ******************/
 
+/**
+ * Object that extends LabyrinthElement
+ */
+class LabyrinthModel extends LabyrinthElement {
+
+	/**
+	 * Constructor
+	 * @param {*} structure 
+	 * @param {*} parent 
+	 * @param {*} program 
+	 * @param {*} objStr 
+	 * @param {*} mtlStr 
+	 */
+    constructor(structure, parent, program, objStr, mtlStr){
+		// Calls the parent constructor
+        super(structure, parent, program);
+		// Initialize mesh and material
         this.mesh = utils.ParseOBJ(objStr);
         this.material = utils.ParseMTL(mtlStr);
     }
 
+	/**
+	 * Init function
+	 */
     init() {
         this.loadLocations();
         this.loadVAO();
 	}
 
+	/**
+	 * Load shader locations
+	 */
 	loadLocations(){
         this.program.position = gl.getAttribLocation(this.program, 'a_position');
         this.program.normal = gl.getAttribLocation(this.program, 'a_normal');
@@ -29,6 +52,9 @@ class LabyrinthModel extends LabyrinthElement {
         this.program.ambientLight = gl.getUniformLocation(this.program, 'u_ambientLight');
     }
 
+	/**
+	 * Loads Vertex Array Objects
+	 */
 	loadVAO() {
 		this.vao = [];
 		this.mesh.geometries.forEach((element, pos) => {
@@ -81,12 +107,19 @@ class LabyrinthModel extends LabyrinthElement {
 		});
     }
 
+	/**
+	 * Draw function
+	 * @param {*} perspectiveMatrix 
+	 * @param {*} viewMatrix 
+	 * @param {*} light 
+	 * @param {*} camPos 
+	 */
 	draw(perspectiveMatrix, viewMatrix, light, camPos) {
+		// Calls the parent draw
 		super.draw(perspectiveMatrix, viewMatrix, light, camPos);
-
+		// GL stuffs
         gl.useProgram(this.program);
-		//console.log(light);
-
+		// For each geometry in mesh
 		this.mesh.geometries.forEach((element, pos) => {
 			gl.bindVertexArray(this.vao[pos]);
 
@@ -106,4 +139,5 @@ class LabyrinthModel extends LabyrinthElement {
 			gl.drawArrays(gl.TRIANGLES, 0, element.data.position.length/3);
 		});
     }
+	
 }

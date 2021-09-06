@@ -1,4 +1,19 @@
-class PbrLabyrinthElementh {
+/*******************
+ * PbrLabyrinthElement.js
+ ******************/
+
+/**
+ * Object to store a PbrLabyrinthElement
+ */
+class PbrLabyrinthElement {
+
+	/**
+	 * 
+	 * @param {*} structure 
+	 * @param {*} parent 
+	 * @param {*} program 
+	 * @param {*} texture 
+	 */
 	constructor(structure, parent, program, texture) {
 		this.program = program;
 		this.parent = parent;
@@ -12,6 +27,9 @@ class PbrLabyrinthElementh {
 		this.vao = null;
 	}
 
+	/**
+	 * Init function
+	 */
 	init() {
 		this.loadLocations();
 		this.loadComponent();
@@ -21,6 +39,7 @@ class PbrLabyrinthElementh {
 		this.children.forEach(child => child.init());
 	}
 
+	// TODO
 	loadLocations() {
 
 	}
@@ -54,6 +73,7 @@ class PbrLabyrinthElementh {
 		let viewWorldMatrix = utils.multiplyMatrices(viewMatrix, this.worldMatrix);
 		let projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, viewWorldMatrix);
 		gl.useProgram(this.program);
+
 		gl.bindVertexArray(this.vao);
 		//skybox.bindMaps(this.program);
 		gl.uniformMatrix4fv(this.program.projMatrix, gl.FALSE, utils.transposeMatrix(projectionMatrix));
@@ -84,7 +104,7 @@ class PbrLabyrinthElementh {
 		else
 			gl.uniform3f(this.program.lightColor, 0.0, 0.0, 0.0);
 
-		gl.uniform1f(this.program.cutOff,Math.cos(utils.degToRad(light.cutOff)) );
+		gl.uniform1f(this.program.cutOff, Math.cos(utils.degToRad(light.cutOff)));
 		gl.uniform1f(this.program.outerCutOff, Math.cos(utils.degToRad(light.outerCutOff)));
 		gl.uniform1f(this.program.radians_over_time, utils.degToRad(now % 360));
 		gl.uniform3f(this.program.lightDir, light.direction.x, light.direction.y, light.direction.z);
@@ -121,4 +141,5 @@ class PbrLabyrinthElementh {
 		this.program.camPos = gl.getUniformLocation(this.program, 'camPos');
 		this.program.radians_over_time = gl.getUniformLocation(this.program, 'radians_over_time');
 	}
+
 }
