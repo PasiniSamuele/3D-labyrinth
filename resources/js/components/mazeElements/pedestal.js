@@ -30,7 +30,7 @@ class Pedestal extends LabyrinthModel{
             final[1] - initial[1]
         ];
 
-        console.log(this.structure);
+        //console.log(this.structure);
 
         this.localMatrix = utils.MakeWorld(extentsOffset[0] + labOffset[1], extentsOffset[1]-0.45, extentsOffset[2] + labOffset[0], 0, 0, 0, 4.0);
     }

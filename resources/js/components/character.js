@@ -5,6 +5,16 @@
 /**
  * Class that represents the main character
  */
+
+var DEBUGLIGHT = true;
+
+var lightOffset = {
+	angle: 0.0,
+	elevation: 0.0
+}
+
+var radOffset = 0.0;
+
 class Character extends Mesh {
 
 	/**
@@ -23,6 +33,9 @@ class Character extends Mesh {
 		this.light.direction = {};
 		this.light.ignition.value = light.ignition.default;
 		this.light.ignition.lastTime = 0.0;
+
+		console.log(utils.getGeometriesExtents(this.mesh.geometries));
+	
 	}
 
 	/**
@@ -40,8 +53,9 @@ class Character extends Mesh {
 			-camera.position.elevation/1.5,
 			camera.position.angle + 180,
 			0.0,
-			0.25
+			this.offset.scale
 		);
+
 		/*let angle = utils.MakeRotateXMatrix(camera.position.angle + 180);
 		let minuselevation = utils.MakeRotateXMatrix(camera.position.elevation)
 
@@ -55,24 +69,61 @@ class Character extends Mesh {
 			utils.identityMatrix(),
 			utils.MakeScaleMatrix(0.25)
 		)*/
+		if(DEBUGLIGHT){
 
-		this.light.position.x=camera.position.x;
-		this.light.position.y=camera.position.y;
-		this.light.position.z=camera.position.z;
-		this.light.direction.x=Math.cos(utils.degToRad(camera.position.angle))*Math.cos(utils.degToRad(camera.position.elevation));
-		this.light.direction.y=Math.sin(utils.degToRad(camera.position.elevation));
-		this.light.direction.z=Math.sin(utils.degToRad(camera.position.angle))*Math.cos(utils.degToRad(camera.position.elevation));
+			let x = this.light.offset.x*0.25;
+			let y = this.light.offset.y*0.25;
+			let z = this.light.offset.z*0.25;
 
-        gl.useProgram(this.program);
+			//console.log(Math.sqrt(x*x+z*z))
+			//console.log(Math.sqrt(y*y+z*z))
+			
+			//console.log(z/Math.sqrt(x*x+z*z));
+			//console.log(Math.sqrt(y*y+z*z)/z);
 
-		// Light positional parameters
-		this.light.position.x = camera.position.x;
-		this.light.position.y = camera.position.y;
-		this.light.position.z = camera.position.z;
-		this.light.direction.x = 0;
-		this.light.direction.y = camera.position.angle;
-		this.light.direction.z = 0;
-		
+			let angle = Math.acos(z/Math.sqrt(x*x+z*z));
+			let elevation = Math.acos(z/Math.sqrt(y*y+z*z));
+
+			let a = utils.degToRad(-camera.position.angle) + angle;
+			let b = utils.degToRad(-camera.position.elevation/1.5-90) - elevation;
+			let r = Math.sqrt(x*x+y*y+z*z)-0.01;
+			
+			this.light.position.x = r*Math.sin(b)*Math.sin(a) + camera.position.x;
+			this.light.position.y = r*Math.cos(b) + camera.position.y;
+			this.light.position.z = r*Math.sin(b)*Math.cos(a) + camera.position.z;
+
+			console.log(this.light.position.y );
+			
+
+			/*this.light.position.x = camera.position.x +  
+									this.light.offset.x*0.25*Math.cos(utils.degToRad(camera.position.angle))-
+									this.light.offset.z*0.25*Math.sin(utils.degToRad(camera.position.angle));
+
+			this.light.position.y = camera.position.y +  
+									this.light.offset.y*0.25;
+			
+
+			this.light.position.z = camera.position.z +  
+									this.light.offset.z*0.25*Math.cos(utils.degToRad(camera.position.angle))+
+									this.light.offset.x*0.25*Math.sin(utils.degToRad(camera.position.angle));*/
+
+			
+			this.light.direction.x=Math.sin(utils.degToRad(camera.position.elevation/1.5-90+lightOffset.elevation))*Math.sin(utils.degToRad(-camera.position.angle+lightOffset.angle));
+			this.light.direction.y=Math.cos(utils.degToRad(camera.position.elevation/1.5-90+lightOffset.elevation));
+			this.light.direction.z=Math.sin(utils.degToRad(camera.position.elevation/1.5-90+lightOffset.elevation))*Math.cos(utils.degToRad(-camera.position.angle+lightOffset.angle));
+
+			//this.light.direction.x=Math.sin(utils.degToRad(-camera.position.elevation + this.light.offset.rotx))*Math.sin(utils.degToRad(-camera.position.angle + this.light.offset.rotz));
+			//this.light.direction.y=Math.cos(utils.degToRad(-camera.position.elevation + this.light.offset.rotx));
+			//this.light.direction.z=Math.sin(utils.degToRad(-camera.position.elevation + this.light.offset.rotx))*Math.cos(utils.degToRad(-camera.position.angle + this.light.offset.rotz));
+
+			//console.log(camera.position.angle + " " + camera.position.elevation)
+			
+			//console.log(camera.position)
+			let lightVector = utils.normalize([this.light.direction.x,this.light.direction.y,this.light.direction.z]);
+			this.light.direction.x = lightVector[0];
+			this.light.direction.y = lightVector[1];
+			this.light.direction.z = lightVector[2];
+		}
 		// GL stuffs
 		gl.useProgram(this.program);
 

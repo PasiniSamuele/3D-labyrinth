@@ -87,7 +87,7 @@ class PbrLabyrinthElementh {
 		gl.uniform1f(this.program.cutOff,Math.cos(utils.degToRad(light.cutOff)) );
 		gl.uniform1f(this.program.outerCutOff, Math.cos(utils.degToRad(light.outerCutOff)));
 		gl.uniform1f(this.program.radians_over_time, utils.degToRad(now % 360));
-		gl.uniform3f(this.program.lightDir, utils.degToRad(light.direction.x), utils.degToRad(light.direction.y), utils.degToRad(light.direction.z));
+		gl.uniform3f(this.program.lightDir, light.direction.x, light.direction.y, light.direction.z);
 		gl.uniform3f(this.program.camPos, camPos.x, camPos.y, camPos.z);
 		gl.uniform3f(this.program.ambientLightDay, skybox.textures[0].ambientLight.r, skybox.textures[0].ambientLight.g, skybox.textures[0].ambientLight.b);
 		gl.uniform3f(this.program.ambientLightNight, skybox.textures[1].ambientLight.r, skybox.textures[1].ambientLight.g, skybox.textures[1].ambientLight.b);

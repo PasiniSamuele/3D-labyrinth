@@ -1,6 +1,6 @@
 class CollisionHandler {
 	constructor() {
-		this.DEBUGCOLLISION = true;
+		this.DEBUGCOLLISION = false;
 	}
 
 	checkCameraCollision(x, newx, z, newz) {
@@ -13,10 +13,10 @@ class CollisionHandler {
 			let xAbsolute = Math.floor(x + this.offset.column);
 			let zAbsolute = Math.floor(z + this.offset.row);
 			//TODO: AGGIUNGERE PARAMETRI IN SETTINGS
-			let newxAbsolute = Math.floor(newx + this.offset.column + Math.sign(xvar) * 0.175);
-			let newzAbsolute = Math.floor(newz + this.offset.row + Math.sign(zvar) * 0.175);
-			let minxAbsolute = Math.floor(newx + this.offset.column - Math.sign(xvar) * 0.175);
-			let minzAbsolute = Math.floor(newz + this.offset.row - Math.sign(zvar) * 0.175);
+			let newxAbsolute = Math.floor(newx + this.offset.column + Math.sign(xvar) * 0.2);
+			let newzAbsolute = Math.floor(newz + this.offset.row + Math.sign(zvar) * 0.2);
+			let minxAbsolute = Math.floor(newx + this.offset.column - Math.sign(xvar) * 0.2);
+			let minzAbsolute = Math.floor(newz + this.offset.row - Math.sign(zvar) * 0.2);
 
 			let cond1 = labyrinthUtils.isBlock(this.structure, newzAbsolute, newxAbsolute);
 			let cond2 = labyrinthUtils.isBlock(this.structure, zAbsolute, newxAbsolute);

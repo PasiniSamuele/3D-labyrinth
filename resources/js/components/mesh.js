@@ -45,6 +45,15 @@ class Mesh {
 			scope.vao[pos] = gl.createVertexArray();
 			gl.bindVertexArray(scope.vao[pos]);
 			// Load character buffers
+			for(let i = 2; i < element.data.position.length; i+=3){
+				if(element.data.position[i]>=0.675935)
+				{
+					console.log(element.data.position[i-2]);
+					console.log(element.data.position[i-1]);
+					console.log(element.data.position[i]);
+				}
+			}
+
 			let vertexBufferObject = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, vertexBufferObject);
 			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(element.data.position), gl.STATIC_DRAW);

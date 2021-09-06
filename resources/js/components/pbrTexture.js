@@ -13,7 +13,7 @@
     }
 
     init(){
-        console.log(this);
+        //console.log(this);
         this.albedo = this.loadTexture(this.albedoSlot, this.imageUrls.albedo);
         this.normal =this.loadTexture(this.normalSlot, this.imageUrls.normal);
         this.metallic =this.loadTexture(this.metallicSlot, this.imageUrls.metallic);

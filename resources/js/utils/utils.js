@@ -387,6 +387,17 @@ var utils = {
 		return out;
 	},
 
+	multiplyMatrix4Vector4: function (m, a) {
+
+		out = [];
+		var x = a[0], y = a[1], z = a[2], w = a[3];
+		out[0] = x * m[0] + y * m[1] + z * m[2] + w * m[3];
+		out[1] = x * m[4] + y * m[5] + z * m[6] + w * m[7];
+		out[2] = x * m[8] + y * m[9] + z * m[10] + w * m[11];
+		out[3] = x * m[12] + y * m[13] + z * m[14] + w * m[15];
+		return out;
+	},
+
 	//Transpose the values of a mat3
 
 	transposeMatrix3: function (a) {
@@ -742,6 +753,11 @@ var utils = {
 		perspective[15] = 0.0;
 
 		return perspective;
+	},
+
+	normalize: function(v){
+		let norm = Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);
+		return [v[0]/norm, v[1]/norm, v[2]/norm];
 	},
 
 

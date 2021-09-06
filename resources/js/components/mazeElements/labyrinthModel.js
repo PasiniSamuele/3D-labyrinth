@@ -85,7 +85,7 @@ class LabyrinthModel extends LabyrinthElement {
 		super.draw(perspectiveMatrix, viewMatrix, light, camPos);
 
         gl.useProgram(this.program);
-		console.log(light);
+		//console.log(light);
 
 		this.mesh.geometries.forEach((element, pos) => {
 			gl.bindVertexArray(this.vao[pos]);

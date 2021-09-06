@@ -134,7 +134,8 @@
 			"y": 0.01,
 			"z": 0.0,
 			"angle": 0.0,
-			"elevation": 0.0
+			"elevation": 0.0,
+			"scale": 0.25
 		},
 		"light": {
 			"color": {
@@ -142,13 +143,22 @@
 				"g": 0.957,
 				"b": 0.882
 			},
-			"coneIn": 10,
-			"coneOut": 15,
-			"cutOff":12,
-			"outerCutOff":17,
+			"cutOff":25,
+			"outerCutOff":35,
 			"ignition": {
 				"default": true,
 				"switchTime": 0.5
+			},
+			"offset":{
+				"x": 0.236288,
+				"y": -0.214945,
+				"z": -0.675935,
+				"oldrotx": 108,
+				"oldroty": -25.1,
+				"oldrotz": 0.0,
+				"rotx": 0,
+				"roty": 0,
+				"rotz": 180
 			}
 		}
 	},
