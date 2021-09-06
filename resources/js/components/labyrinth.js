@@ -1,19 +1,19 @@
 /*******************
- * PbrLabyrinth.js
+ * Labyrinth.js
  ******************/
 
 /**
- * Object to store a PbrLabyrinth
+ * Class that represents a level
  */
-class PbrLabyrinth {
+class Labyrinth {
 
 	/**
 	 * Constructor
 	 * @param {*} structure structure of the labyrinth
 	 * @param {*} programs GLSL programs associated with this object
-	 * @param {*} textures paths of textures for maze elements
+	 * @param {*} texturePaths paths of textures for maze elements
 	 */
-	constructor(structure, programs, textures, suzanneStr, pedestalStr) {
+	constructor(structure, programs, texturePaths, slotOffset, suzanneStr, pedestalStr) {
 
 		//ATTRIBUTES
 		this.programs = programs;
@@ -23,16 +23,15 @@ class PbrLabyrinth {
 		this.children = [];
 
 		//CALLS
-		this.init(textures, suzanneStr, pedestalStr);
+		this.init(texturePaths, slotOffset, suzanneStr, pedestalStr);
 	}
 
 	/**
 	 * function to init the labyrinth
 	 */
-	init(textures, suzanneStr, pedestalStr) {
-		// this.children.push(new Wall(this.structure2D, gl.TEXTURE0+slotOffset++, this, this.programs[0], texturePaths.wall));
-		this.children.push(new PbrFloor(this.structure2D, this, this.programs[1], textures.floor));
-		this.children.push(new PbrWall(this.structure2D, this, this.programs[1], textures.wall));
+	init(texturePaths, slotOffset, suzanneStr, pedestalStr) {
+		this.children.push(new Wall(this.structure2D, gl.TEXTURE0 + slotOffset++, this, this.programs[0], texturePaths.wall));
+		this.children.push(new Floor(this.structure2D, gl.TEXTURE0 + slotOffset++, this, this.programs[1], texturePaths.floor));
 		this.children.push(new Suzanne(this.structure2D, this, this.programs[2], suzanneStr[0], suzanneStr[1]));
 		this.children.push(new Pedestal(this.structure2D, this, this.programs[3], pedestalStr[0], pedestalStr[1]));
 
@@ -44,11 +43,11 @@ class PbrLabyrinth {
 	 * @param {*} perspectiveMatrix 
 	 * @param {*} viewMatrix 
 	 */
-	draw(perspectiveMatrix, viewMatrix, light, camPos, skybox, now) {
+	draw(perspectiveMatrix, camera) {
 		let worldMatrix = utils.MakeWorld(0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 1.0);
 		this.children.forEach(child => {
 			child.updateWorld(worldMatrix);
-			child.draw(perspectiveMatrix, viewMatrix, light, camPos, skybox, now);
+			child.draw(perspectiveMatrix, camera);
 		});
 	}
 
