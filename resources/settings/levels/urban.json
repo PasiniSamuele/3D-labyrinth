@@ -98,7 +98,7 @@
 				"ambientLight": {
 					"r": 0.012,
 					"g": 0.02,
-					"b": 0.243,
+					"b": 0.103,
 					"strength": 1
 				},
 				"images": [

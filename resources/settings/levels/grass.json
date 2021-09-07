@@ -97,34 +97,34 @@
 			{
 				"ambientLight": {
 					"r": 0.012,
-					"g": 0.02,
+					"g": 0.1,
 					"b": 0.243,
 					"strength": 0.2
 				},
 				"images": [
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
-						"url": "resources/assets/env/grimmnight/right.jpg"
+						"url": "resources/assets/env/interstellar/interstellar_rt.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_X",
-						"url": "resources/assets/env/grimmnight/left.jpg"
+						"url": "resources/assets/env/interstellar/interstellar_lf.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Y",
-						"url": "resources/assets/env/grimmnight/top.jpg"
+						"url": "resources/assets/env/interstellar/interstellar_up.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y",
-						"url": "resources/assets/env/grimmnight/bottom.jpg"
+						"url": "resources/assets/env/interstellar/interstellar_dn.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Z",
-						"url": "resources/assets/env/grimmnight/back.jpg"
+						"url": "resources/assets/env/interstellar/interstellar_bk.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
-						"url": "resources/assets/env/grimmnight/front.jpg"
+						"url": "resources/assets/env/interstellar/interstellar_ft.jpg"
 					}
 				]
 			}

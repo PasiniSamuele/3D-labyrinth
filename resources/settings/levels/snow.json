@@ -31,11 +31,11 @@
 		},
 		"textures": {
 			"floor": {
-				"albedo": "resources/assets/textures/snow-packed12-UE/albedo.png",
-				"normal": "resources/assets/textures/snow-packed12-UE/Normal.png",
-				"ao": "resources/assets/textures/snow-packed12-UE/ao.png",
-				"metallic": "resources/assets/textures/snow-packed12-UE/metallic.png",
-				"roughness": "resources/assets/textures/snow-packed12-UE/roughness.png"
+				"albedo": "resources/assets/textures/snowcoveredpath_ue/albedo.png",
+				"normal": "resources/assets/textures/snowcoveredpath_ue/Normal.png",
+				"ao": "resources/assets/textures/snowcoveredpath_ue/ao.png",
+				"metallic": "resources/assets/textures/snowcoveredpath_ue/metallic.png",
+				"roughness": "resources/assets/textures/snowcoveredpath_ue/roughness.png"
 			},
 			"wall": {
 				"albedo": "resources/assets/textures/rock-snow-ice1-2k-ue/albedo.png",
@@ -70,27 +70,27 @@
 				"images": [
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
-						"url": "resources/assets/env/miramar/right.jpg"
+						"url": "resources/assets/env/winter-day/posx.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_X",
-						"url": "resources/assets/env/miramar/left.jpg"
+						"url": "resources/assets/env/winter-day/negx.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Y",
-						"url": "resources/assets/env/miramar/top.jpg"
+						"url": "resources/assets/env/winter-day/posy.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y",
-						"url": "resources/assets/env/miramar/bottom.jpg"
+						"url": "resources/assets/env/winter-day/negy.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Z",
-						"url": "resources/assets/env/miramar/back.jpg"
+						"url": "resources/assets/env/winter-day/posz.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
-						"url": "resources/assets/env/miramar/front.jpg"
+						"url": "resources/assets/env/winter-day/negz.jpg"
 					}
 				]
 			},
@@ -98,33 +98,33 @@
 				"ambientLight": {
 					"r": 0.012,
 					"g": 0.02,
-					"b": 0.243,
+					"b": 0.043,
 					"strength": 0.2
 				},
 				"images": [
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
-						"url": "resources/assets/env/grimmnight/right.jpg"
+						"url": "resources/assets/env/winter-night/posx.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_X",
-						"url": "resources/assets/env/grimmnight/left.jpg"
+						"url": "resources/assets/env/winter-night/negx.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Y",
-						"url": "resources/assets/env/grimmnight/top.jpg"
+						"url": "resources/assets/env/winter-night/posy.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y",
-						"url": "resources/assets/env/grimmnight/bottom.jpg"
+						"url": "resources/assets/env/winter-night/negy.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Z",
-						"url": "resources/assets/env/grimmnight/back.jpg"
+						"url": "resources/assets/env/winter-night/posz.jpg"
 					},
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
-						"url": "resources/assets/env/grimmnight/front.jpg"
+						"url": "resources/assets/env/winter-night/negz.jpg"
 					}
 				]
 			}
@@ -246,7 +246,7 @@
 		"acceleration": {
 			"x": {
 				"default": 0.0,
-				"max": 1.0,
+				"max": 0.75,
 				"decelerationCoefficient": 2.5
 			},
 			"y": {
@@ -256,7 +256,7 @@
 			},
 			"z": {
 				"default": 0.0,
-				"max": 2.0,
+				"max": 1.0,
 				"decelerationCoefficient": 5.0
 			},
 			"angle": {
