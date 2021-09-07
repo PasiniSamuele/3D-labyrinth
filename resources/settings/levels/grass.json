@@ -15,9 +15,9 @@
 				"fragment": "resources/assets/shaders/flashlightShader/flashlightShader.fs.glsl"
 			}
 		},
-		"images": {
-			"wall": "resources/assets/textures/lab/handpaintedwall.png",
-			"floor": "resources/assets/textures/lab/grass.png"
+		"collision": {
+			"x": 0.2,
+			"z": 0.2
 		},
 		"models": {
 			"suzanne": {

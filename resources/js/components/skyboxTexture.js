@@ -6,6 +6,7 @@
  * Object that represents a Texture (pack) of a Skybox
  */
 class SkyboxTexture {
+	
     /**
      * 
      * @param { object } faceInfos Images of the faces info

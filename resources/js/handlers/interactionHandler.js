@@ -1,6 +1,8 @@
-/*******************
+/********************************
+ * 
  * InteractionHandler.js
- ******************/
+ * 
+ *******************************/
 
 /**
  * Object to manage all the interaction with inputs
@@ -11,7 +13,6 @@ class InteractionHandler {
 	 * Constructor
 	 */
 	constructor() {
-
 		// Interaction attributes
 		this.keys = {};
 		this.mouse = {
@@ -58,10 +59,6 @@ class InteractionHandler {
 		// Function needed to get an asynchronous, non-anonymous function call that can read the attributes of the class
 		this.onMouseMoveHandler;
 	}
-
-	/*******************
-	 * Methods
-	 ******************/
 
 	/**
 	 * Function to be called at each cycle of the program
