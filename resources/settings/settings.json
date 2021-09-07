@@ -1,14 +1,18 @@
 {
-	"RANDOM_GENERATION": false,
+	"randomGeneration": false,
 	"settings": {
 		"levels": [
 			{
-				"level": "resources/settings/0/settings.json",
-				"random": "resources/settings/0/random.json"
+				"level": "resources/settings/levels/urban.json"
 			},
 			{
-				"level": "resources/settings/0/settings.json",
-				"random": "resources/settings/0/random.json"
+				"level": "resources/settings/levels/grass.json"
+			},
+			{
+				"level": "resources/settings/levels/snow.json"
+			},
+			{
+				"level": "resources/settings/levels/old-wild-west.json"
 			}
 		]
 	}

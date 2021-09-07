@@ -5,7 +5,7 @@
 /**
  * Object that loads the program
  */
- class PbrLoadingHandler {
+class PbrLoadingHandler {
 
 	/**
 	 * Constructor
@@ -14,7 +14,7 @@
 		// Attributes
 		this.levels = [];
 		this.actualLevel = 0;
-		this.RANDOM_GENERATION = false;
+		this.randomGeneration = false;
 	}
 
 	/**
@@ -27,7 +27,7 @@
 	async init(settingsUrl) {
 		// Load JSON file
 		let settings = await utils.loadJSONResource(settingsUrl);
-		this.RANDOM_GENERATION = settings.RANDOM_GENERATION;
+		this.randomGeneration = settings.randomGeneration;
 		this.levels = settings.settings.levels;
 		// Init level resources
 		let actualLevel = await this.initResources(this.levels[this.actualLevel]);
@@ -48,13 +48,13 @@
 
 		// Asyncronously load the resources
 		const results = await Promise.all([
-			utils.loadJSONResource(levelSettings.structure.url),    //0 lab JSON structure
-			utils.loadTextResource(levelSettings.structure.shaders.wall.vertex),    //1 vertex sh of the wall
-			utils.loadTextResource(levelSettings.structure.shaders.wall.fragment),  //2 fragment sh of the wall
-			utils.loadTextResource(levelSettings.structure.shaders.floor.vertex),   //3 vertex sh of the floor
-			utils.loadTextResource(levelSettings.structure.shaders.floor.fragment), //4 fragment sh of the floor
-            utils.loadTextResource(levelSettings.skybox.shaders.vertex),    //5 vertex sh of the skybox
-            utils.loadTextResource(levelSettings.skybox.shaders.fragment),  //6 fragment sh of the skybox
+			utils.loadJSONResource(levelSettings.structure.url),					// 0 lab JSON structure
+			utils.loadTextResource(levelSettings.structure.shaders.wall.vertex),    // 1 vertex sh of the wall
+			utils.loadTextResource(levelSettings.structure.shaders.wall.fragment),  // 2 fragment sh of the wall
+			utils.loadTextResource(levelSettings.structure.shaders.floor.vertex),   // 3 vertex sh of the floor
+			utils.loadTextResource(levelSettings.structure.shaders.floor.fragment), // 4 fragment sh of the floor
+			utils.loadTextResource(levelSettings.skybox.shaders.vertex),			// 5 vertex sh of the skybox
+			utils.loadTextResource(levelSettings.skybox.shaders.fragment),			// 6 fragment sh of the skybox
 			utils.loadTextResource(levelSettings.character.url.obj),
 			utils.loadTextResource(levelSettings.character.url.mtl),
 			utils.loadTextResource(levelSettings.character.shaders.vertex),
@@ -65,8 +65,7 @@
 			utils.loadTextResource(levelSettings.structure.models.suzanne.mtl),
 			utils.loadTextResource(levelSettings.structure.models.pedestal.obj), //15
 			utils.loadTextResource(levelSettings.structure.models.pedestal.mtl),
-        
-        ]);
+		]);
 
 		// Create the shaders
 		let program = [[],];
@@ -90,11 +89,14 @@
 
 		//Define the labyrinth structure
 		let maze2D;
-		if(this.RANDOM_GENERATION){
-			let randomSettings = await utils.loadJSONResource(level.random);
-			maze2D = labyrinthUtils.generate2DLabyrinth(randomSettings.rows, randomSettings.columns, randomSettings.JOIN_SIDES, randomSettings.join_parameters);
-		}
-		else maze2D = results[0];
+		if (this.randomGeneration)
+			maze2D = labyrinthUtils.generate2DLabyrinth(
+				levelSettings.structure.labyrinth.random.rows,
+				levelSettings.structure.labyrinth.random.columns,
+				levelSettings.structure.labyrinth.random.joinSides,
+				levelSettings.structure.labyrinth.random.join_parameters);
+		else
+			maze2D = results[0];
 		collisionHandler.setStructure(maze2D);
 		// Create the camera
 		let camera = new Camera(levelSettings.camera, labyrinthUtils.getStartingAngle(maze2D));
@@ -107,22 +109,22 @@
 		let skybox = new Skybox(textures, program[1]);
 		// Create the labyrinth
 		//let labyrinth;
-		/*if (this.RANDOM_GENERATION) {
+		/*if (this.randomGeneration) {
 			let randomSettings = await utils.loadJSONResource(level.random);
-			let maze2D = generate2DLabyrinth(randomSettings.rows, randomSettings.columns, randomSettings.JOIN_SIDES, randomSettings.join_parameters);
+			let maze2D = generate2DLabyrinth(randomSettings.rows, randomSettings.columns, randomSettings.joinSides, randomSettings.join_parameters);
 			labyrinth = new Labyrinth(maze2D, program[0], levelSettings.structure.images, index);
 		}*/
 		//labyrinth = new Labyrinth(results[0], program[0], levelSettings.structure.images, index);
 		// Set the actual level
-		let character = new Character(results[7], results[8], levelSettings.character.offset, program[2], levelSettings.character.light );
-		let pbrTexture={};
-		pbrTexture.floor = new PbrTexture(levelSettings.structure.textures.floor, 
+		let character = new Character(results[7], results[8], levelSettings.character.offset, program[2], levelSettings.character.light);
+		let pbrTexture = {};
+		pbrTexture.floor = new PbrTexture(levelSettings.structure.textures.floor,
 			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++,
-			gl.TEXTURE0 + index++) 
-		pbrTexture.wall = new PbrTexture(levelSettings.structure.textures.wall, 
+			gl.TEXTURE0 + index++)
+		pbrTexture.wall = new PbrTexture(levelSettings.structure.textures.wall,
 			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++,
@@ -130,7 +132,7 @@
 			gl.TEXTURE0 + index++);
 
 		let labyrinth = new PbrLabyrinth(maze2D, program[0], pbrTexture, [results[13], results[14]], [results[15], results[16]]);
-		
+
 		let activeLevel = new Level(labyrinth, skybox, character, camera);
 		// Return the actual level
 		return activeLevel;

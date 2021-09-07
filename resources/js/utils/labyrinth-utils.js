@@ -372,12 +372,12 @@ var labyrinthUtils = {
      * Function that generates a 2D labyrinth given its rows and columns
      * @param { number } rows number of rows 
      * @param { number } columns number of columns
-     * @param { boolean } JOIN_SIDES true if the generation should be noisy
-     * @param { float } join_probability probability to add an inconsistent wall (MUST BE SMALL!!!!!!)
+     * @param { boolean } joinSides true if the generation should be noisy
+     * @param { float } joinProbability probability to add an inconsistent wall (MUST BE SMALL!!!!!!)
      * 
      * @returns a matrix of zeroes and ones where the ones are walls
      */
-    generate2DLabyrinth : function(rows, columns, JOIN_SIDES, join_probability){
+    generate2DLabyrinth : function(rows, columns, joinSides, joinProbability){
 
         //PRIVATE METHODS
 
@@ -408,7 +408,7 @@ var labyrinthUtils = {
 
             //iterate unvisited neighbors
             ind.forEach(i=>{
-                let noise = JOIN_SIDES && (Math.random() < join_probability);
+                let noise = joinSides && (Math.random() < joinProbability);
                 if(matrix[neighbors[i][0]][neighbors[i][1]] === mazeElement.WALL || noise){
                     switch(neighbors[i][2]){
                         case 0:
