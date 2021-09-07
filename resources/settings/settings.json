@@ -3,7 +3,7 @@
 	"settings": {
 		"levels": [
 			{
-				"level": "resources/settings/levels/snow.json"
+				"level": "resources/settings/levels/urban.json"
 			},
 			{
 				"level": "resources/settings/levels/snow.json"
