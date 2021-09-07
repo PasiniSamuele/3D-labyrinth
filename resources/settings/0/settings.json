@@ -46,6 +46,14 @@
 			}
 		}
 	},
+	"labyrinth": {
+		"random": {
+			"rows": 15,
+			"columns": 15,
+			"joinSides": true,
+			"joinProbabilities": 0.01
+		}
+	},
 	"skybox": {
 		"shaders": {
 			"vertex": "resources/assets/shaders/envDayNightShader/envmap.vs.glsl",
@@ -143,16 +151,16 @@
 				"g": 0.957,
 				"b": 0.882
 			},
-			"constDecay":1,
-			"linDecay":0.4,
-			"quadDecay":0.08,
-			"cutOff":25,
-			"outerCutOff":35,
+			"constDecay": 1,
+			"linDecay": 0.4,
+			"quadDecay": 0.08,
+			"cutOff": 25,
+			"outerCutOff": 35,
 			"ignition": {
 				"default": false,
 				"switchTime": 0.5
 			},
-			"offset":{
+			"offset": {
 				"x": 0.236288,
 				"y": -0.214945,
 				"z": -0.675935,

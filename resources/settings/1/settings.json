@@ -46,6 +46,14 @@
 			}
 		}
 	},
+	"labyrinth": {
+		"random": {
+			"rows": 20,
+			"columns": 20,
+			"joinSides": true,
+			"joinProbabilities": 0.05
+		}
+	},
 	"skybox": {
 		"shaders": {
 			"vertex": "resources/assets/shaders/envDayNightShader/envmap.vs.glsl",
