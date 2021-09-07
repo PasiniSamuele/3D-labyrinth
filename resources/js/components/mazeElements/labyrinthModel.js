@@ -60,6 +60,8 @@ class LabyrinthModel extends PbrLabyrinthElement {
         this.program.ambientLightDay = gl.getUniformLocation(this.program, 'u_ambientLightDay');
 		this.program.ambientLightNight = gl.getUniformLocation(this.program, 'u_ambientLightNight');
 		this.program.radians_over_time = gl.getUniformLocation(this.program, 'u_radians_over_time');
+		this.program.ambientStrengthDay = gl.getUniformLocation(this.program, 'u_ambientStrengthDay');
+		this.program.ambientStrengthNight = gl.getUniformLocation(this.program, 'u_ambientStrengthNight');
     }
 
 	/**
@@ -128,6 +130,7 @@ class LabyrinthModel extends PbrLabyrinthElement {
 	draw(perspectiveMatrix, viewMatrix, light, camPos, skybox, now) {
 		// Calls the parent draw
 		this.children.forEach(child => child.draw(perspectiveMatrix, viewMatrix, light, camPos));
+		
 		// GL stuffs
         gl.useProgram(this.program);
 		// For each geometry in mesh
@@ -143,7 +146,7 @@ class LabyrinthModel extends PbrLabyrinthElement {
 			gl.uniform3fv(this.program.ambient, this.material[element.material].ambient);
 			gl.uniform3fv(this.program.emissive, this.emissive);
 			gl.uniform3fv(this.program.specular, this.material[element.material].specular);
-			gl.uniform1f(this.program.shininess, this.material[element.material].shininess);
+			gl.uniform1f(this.program.shininess, 100);//this.material[element.material].shininess);
 			gl.uniform1f(this.program.opacity, this.material[element.material].opacity);
 
 			gl.uniform3f(this.program.lightPosition, light.position.x, light.position.y, light.position.z);
@@ -153,6 +156,7 @@ class LabyrinthModel extends PbrLabyrinthElement {
 			gl.uniform1f(this.program.constDecay, light.constDecay);
 			gl.uniform1f(this.program.linDecay, light.linDecay);
 			gl.uniform1f(this.program.quadDecay, light.quadDecay);
+
 			if (light.ignition.value)
 				gl.uniform3f(this.program.lightColor, light.color.r, light.color.g, light.color.b);
 			else
@@ -161,8 +165,8 @@ class LabyrinthModel extends PbrLabyrinthElement {
 			gl.uniform3f(this.program.ambientLightDay, skybox.textures[0].ambientLight.r, skybox.textures[0].ambientLight.g, skybox.textures[0].ambientLight.b);
 			gl.uniform3f(this.program.ambientLightNight, skybox.textures[1].ambientLight.r, skybox.textures[1].ambientLight.g, skybox.textures[1].ambientLight.b);
 			gl.uniform1f(this.program.radians_over_time, utils.degToRad(now % 360));
-
-			
+			gl.uniform1f(this.program.ambientStrengthDay, skybox.textures[0].ambientLight.strength);
+			gl.uniform1f(this.program.ambientStrengthNight, skybox.textures[1].ambientLight.strength);
 			
 			gl.drawArrays(gl.TRIANGLES, 0, element.data.position.length/3);
 		});

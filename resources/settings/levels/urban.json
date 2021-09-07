@@ -65,7 +65,7 @@
 					"r": 0.541,
 					"g": 0.973,
 					"b": 1,
-					"strength": 0.3
+					"strength": 1
 				},
 				"images": [
 					{
@@ -99,7 +99,7 @@
 					"r": 0.012,
 					"g": 0.02,
 					"b": 0.243,
-					"strength": 0.2
+					"strength": 1
 				},
 				"images": [
 					{
@@ -136,8 +136,8 @@
 			"mtl": "resources/assets/models/Flashlight.mtl"
 		},
 		"shaders": {
-			"vertex": "resources/assets/shaders/flashlightShader/flashlightShader.vs.glsl",
-			"fragment": "resources/assets/shaders/flashlightShader/flashlightShader.fs.glsl"
+			"vertex": "resources/assets/shaders/flashlightShader/modelShader.vs.glsl",
+			"fragment": "resources/assets/shaders/flashlightShader/modelShader.fs.glsl"
 		},
 		"offset": {
 			"x": 0.0,

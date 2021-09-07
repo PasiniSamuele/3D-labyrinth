@@ -1,5 +1,5 @@
 # version 300 es
-precision highp float;
+precision mediump float;
 
 in vec3 v_normal;
 in vec3 v_surfaceToView;
@@ -23,8 +23,8 @@ uniform float u_quadDecay;
 
 uniform vec3 u_ambientLightDay;
 uniform vec3 u_ambientLightNight;
-uniform float ambientStrengthDay;
-uniform float ambientStrengthNight;
+uniform float u_ambientStrengthDay;
+uniform float u_ambientStrengthNight;
 uniform float radians_over_time;
 
 out vec4 outColor;
@@ -56,7 +56,7 @@ void main () {
     float effectiveOpacity = opacity * v_color.a;
 
     //  ambient
-    float ambientStrength = mix(ambientStrengthDay,ambientStrengthNight,(cos(radians_over_time)+1.0)/2.0);
+    float ambientStrength = mix(u_ambientStrengthDay,u_ambientStrengthNight,(cos(radians_over_time)+1.0)/2.0);
     vec3 ambient = mix(u_ambientLightDay,u_ambientLightNight,(cos(radians_over_time)+1.0)/2.0) * ambientStrength;
 
     outColor = vec4(
