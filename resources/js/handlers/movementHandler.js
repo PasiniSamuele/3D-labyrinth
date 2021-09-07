@@ -7,6 +7,9 @@
  */
 class MovementHandler {
 
+	constructor(){
+		this.blocked=false;
+	}
 	/*******************
 	 * Methods
 	 ******************/
@@ -22,28 +25,32 @@ class MovementHandler {
 	 */
 	idle(camera, interactionHandler, light) {
 		// Keys recognition
-		if (interactionHandler.keys['KeyW']) { camera.moveForward(); }
-		if (interactionHandler.keys['KeyS']) { camera.moveBackward(); }
-		if (interactionHandler.keys['KeyD']) { camera.moveRight(); }
-		if (interactionHandler.keys['KeyA']) { camera.moveLeft(); }
-		if (interactionHandler.keys['KeyQ']) { camera.moveUp(); }
-		if (interactionHandler.keys['KeyE']) { camera.moveDown(); }
-		if (interactionHandler.keys['ArrowRight']) { camera.rotateRight(); }
-		if (interactionHandler.keys['ArrowLeft']) { camera.rotateLeft(); }
-		if (interactionHandler.keys['ArrowUp']) { camera.rotateUp(); }
-		if (interactionHandler.keys['ArrowDown']) { camera.rotateDown(); }
-		if (interactionHandler.keys['KeyL']) {
-			if (light.ignition.lastTime + light.ignition.switchTime < Date.now() / 1000) {
-				light.ignition.value = !light.ignition.value;
-				light.ignition.lastTime = Date.now() / 1000;
+		if(!this.blocked){
+			if (interactionHandler.keys['KeyW']) { camera.moveForward(); }
+			if (interactionHandler.keys['KeyS']) { camera.moveBackward(); }
+			if (interactionHandler.keys['KeyD']) { camera.moveRight(); }
+			if (interactionHandler.keys['KeyA']) { camera.moveLeft(); }
+			if (interactionHandler.keys['KeyQ']) { camera.moveUp(); }
+			if (interactionHandler.keys['KeyE']) { camera.moveDown(); }
+			if (interactionHandler.keys['ArrowRight']) { camera.rotateRight(); }
+			if (interactionHandler.keys['ArrowLeft']) { camera.rotateLeft(); }
+			if (interactionHandler.keys['ArrowUp']) { camera.rotateUp(); }
+			if (interactionHandler.keys['ArrowDown']) { camera.rotateDown(); }
+			if (interactionHandler.keys['KeyL']) {
+				if (light.ignition.lastTime + light.ignition.switchTime < Date.now() / 1000) {
+					light.ignition.value = !light.ignition.value;
+					light.ignition.lastTime = Date.now() / 1000;
+				}
 			}
 		}
 		// Mouse movements recognition
 		if (interactionHandler.mouse.x != 0) {
-			camera.setRotationX(interactionHandler.mouse.x);
+			if(!this.blocked)
+				camera.setRotationX(interactionHandler.mouse.x);
 		}
 		if (interactionHandler.mouse.y != 0) {
-			camera.setRotationY(interactionHandler.mouse.y);
+			if(!this.blocked)
+				camera.setRotationY(interactionHandler.mouse.y);
 		}
 		// Return camera, interactionHandler, light
 		return { "camera": camera, "interactionHandler": interactionHandler, "light": light };

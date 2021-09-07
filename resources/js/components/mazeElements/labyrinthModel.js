@@ -5,7 +5,7 @@
 /**
  * Object that extends LabyrinthElement
  */
-class LabyrinthModel extends LabyrinthElement {
+class LabyrinthModel extends PbrLabyrinthElement {
 
 	/**
 	 * Constructor
@@ -49,7 +49,9 @@ class LabyrinthModel extends LabyrinthElement {
         this.program.shininess = gl.getUniformLocation(this.program, 'shininess');
         this.program.opacity = gl.getUniformLocation(this.program, 'opacity');
         this.program.lightDirection = gl.getUniformLocation(this.program, 'u_lightDirection');
-        this.program.ambientLight = gl.getUniformLocation(this.program, 'u_ambientLight');
+        this.program.ambientLightDay = gl.getUniformLocation(this.program, 'u_ambientLightDay');
+		this.program.ambientLightNight = gl.getUniformLocation(this.program, 'u_ambientLightNight');
+		this.program.radians_over_time = gl.getUniformLocation(this.program, 'u_radians_over_time');
     }
 
 	/**
@@ -114,9 +116,9 @@ class LabyrinthModel extends LabyrinthElement {
 	 * @param {*} light 
 	 * @param {*} camPos 
 	 */
-	draw(perspectiveMatrix, viewMatrix, light, camPos) {
+	draw(perspectiveMatrix, viewMatrix, light, camPos, skybox, now) {
 		// Calls the parent draw
-		super.draw(perspectiveMatrix, viewMatrix, light, camPos);
+		this.children.forEach(child => child.draw(perspectiveMatrix, viewMatrix, light, camPos));
 		// GL stuffs
         gl.useProgram(this.program);
 		// For each geometry in mesh
@@ -134,7 +136,9 @@ class LabyrinthModel extends LabyrinthElement {
 			gl.uniform1f(this.program.shininess, this.material[element.material].shininess);
 			gl.uniform1f(this.program.opacity, this.material[element.material].opacity);
 			gl.uniform3fv(this.program.lightDirection, [light.direction.x, light.direction.y, light.direction.z]);
-			gl.uniform3fv(this.program.ambientLight, [0.0, 5.0, 0.0]);
+			gl.uniform3f(this.program.ambientLightDay, skybox.textures[0].ambientLight.r, skybox.textures[0].ambientLight.g, skybox.textures[0].ambientLight.b);
+			gl.uniform3f(this.program.ambientLightNight, skybox.textures[1].ambientLight.r, skybox.textures[1].ambientLight.g, skybox.textures[1].ambientLight.b);
+			gl.uniform1f(this.program.radians_over_time, utils.degToRad(now % 360));
 			
 			gl.drawArrays(gl.TRIANGLES, 0, element.data.position.length/3);
 		});

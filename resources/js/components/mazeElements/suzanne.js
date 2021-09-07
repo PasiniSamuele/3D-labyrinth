@@ -9,8 +9,8 @@ class Suzanne extends LabyrinthModel {
 	constructor(structure, parent, program, objStr, mtlStr) {
 		super(structure, parent, program, objStr, mtlStr);
 		// Color settings (radioattiva)
-		this.color = [1, 0, 0];
-		this.emissive = [0, 0, 0];
+		this.color = [1, 0.75, 0];
+		this.emissive = [1, 1, 0];
 	}
 
 	/**
@@ -45,7 +45,27 @@ class Suzanne extends LabyrinthModel {
 
 		let finalAngle = labyrinthUtils.getFinalAngle(this.structure);
 
-		this.localMatrix = utils.MakeWorld(extentsOffset[0] + labOffset[1], extentsOffset[1] - 0.4, extentsOffset[2] + labOffset[0], finalAngle, 0, 0, 4.0);
+		this.startParams = {
+			x: extentsOffset[0] + labOffset[1],
+			y: extentsOffset[1] - 0.4,
+			z: extentsOffset[2] + labOffset[0],
+			angle: finalAngle,
+			size: 4.0
+		}
+
+		this.localMatrix = utils.MakeWorld(this.startParams.x, this.startParams.y, this.startParams.z, this.startParams.angle, 0, 0, this.startParams.size);
+	}
+
+	animateModel(newx, newy, newz, percentage){
+		this.localMatrix = utils.MakeWorld(
+			utils.lerp(this.startParams.x, newx, percentage),
+			this.startParams.y,
+			utils.lerp(this.startParams.z, newz, percentage),
+			this.startParams.angle,
+			0,
+			0,
+			this.startParams.size
+		);
 	}
 	
 }

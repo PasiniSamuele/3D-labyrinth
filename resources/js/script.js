@@ -9,17 +9,18 @@ var movementHandler;
 var collisionHandler;
 var interactionHandler;
 var sceneHandler;
+var levelHandler;
 
 //variables
 /** @type {WebGLRenderingContext} */
 var gl;
 
-var activeLevel;
-
-
-function main() {
+function main(activeLevel) {
 	utils.resizeCanvasToDisplaySize(gl.canvas);
+	interactionHandler.resetKeys();
 	sceneHandler.setLevel(activeLevel);
+	levelHandler.setLevel(activeLevel);
+	movementHandler.blocked=false;
 	sceneHandler.start();
 }
 
@@ -43,14 +44,13 @@ async function init() {
 	movementHandler = new MovementHandler();
 	interactionHandler = new InteractionHandler();
 	collisionHandler = new CollisionHandler();
-	sceneHandler = new SceneHandler(movementHandler, interactionHandler);
-
-	
+	levelHandler = new LevelHandler();
+	sceneHandler = new SceneHandler(movementHandler, interactionHandler, levelHandler);
 
 	var settings = "resources/settings/settings.json"
-	activeLevel = await loadingHandler.init(settings);
+	let activeLevel = await loadingHandler.init(settings);
 
-	main();
+	main(activeLevel);
 }
 
 window.onload = init;

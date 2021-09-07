@@ -170,7 +170,7 @@ void main(){
 
 
 
-    vec3 ambient =  mix(ambientLightDay,ambientLightNight,(cos(radians_over_time)+1.0)/2.0)* albedo * ao;
+    vec3 ambient =  mix(ambientLightNight,ambientLightDay,(cos(radians_over_time)+1.0)/2.0)* albedo * ao;
     
     vec3 color = ambient + Lo;
 

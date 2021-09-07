@@ -90,7 +90,10 @@
 
 		//Define the labyrinth structure
 		let maze2D;
-		if(this.RANDOM_GENERATION) maze2D = labyrinthUtils.generate2DLabyrinth(25, 25, 1, 0.01);
+		if(this.RANDOM_GENERATION){
+			let randomSettings = await utils.loadJSONResource(level.random);
+			maze2D = labyrinthUtils.generate2DLabyrinth(randomSettings.rows, randomSettings.columns, randomSettings.JOIN_SIDES, randomSettings.join_parameters);
+		}
 		else maze2D = results[0];
 		collisionHandler.setStructure(maze2D);
 		// Create the camera
@@ -144,8 +147,10 @@
 		// Load recources and return
 		if (this.actualLevel >= this.levels.length)
 			return null;
-		else
-			return initResources(this.levels[actualLevel]);
+		else {
+			let activeLevel = await this.initResources(this.levels[this.actualLevel]);
+			return activeLevel;
+		}
 	};
 
 }

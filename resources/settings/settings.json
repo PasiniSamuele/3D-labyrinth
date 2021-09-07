@@ -5,6 +5,10 @@
 			{
 				"level": "resources/settings/0/settings.json",
 				"random": "resources/settings/0/random.json"
+			},
+			{
+				"level": "resources/settings/0/settings.json",
+				"random": "resources/settings/0/random.json"
 			}
 		]
 	}

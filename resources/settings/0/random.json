@@ -2,5 +2,5 @@
     "rows":15,
     "columns":15,
     "JOIN_SIDES":true,
-    "join_probability":0.05
+    "join_probability":0.01
 }

@@ -126,7 +126,7 @@ var labyrinthUtils = {
         let col = start[1];
         if(row-1>=0 ? mazeElement.FLOORS.includes(labyrinth[row-1][col]) : false) return 0;
         else if (col+1<labyrinth[0].length ? mazeElement.FLOORS.includes(labyrinth[row][col+1]) : false) return 90;
-        else if (row+1<labyrinth.length ? mazeElement.FLOORS.includes(labyrinth[row-1][col]) : false) return 180;
+        else if (row+1<labyrinth.length ? mazeElement.FLOORS.includes(labyrinth[row+1][col]) : false) return 180;
         else if (col-1>=0 ? mazeElement.FLOORS.includes(labyrinth[row][col-1]) : false) return 270;
         else {
             console.error("Labyrinth start not accessible");
@@ -140,10 +140,30 @@ var labyrinthUtils = {
         let col = final[1];
         if(row-1>=0 ? mazeElement.FLOORS.includes(labyrinth[row-1][col]) : false) return 0;
         else if (col+1<labyrinth[0].length ? mazeElement.FLOORS.includes(labyrinth[row][col+1]) : false) return 90;
-        else if (row+1<labyrinth.length ? mazeElement.FLOORS.includes(labyrinth[row-1][col]) : false) return 180;
+        else if (row+1<labyrinth.length ? mazeElement.FLOORS.includes(labyrinth[row+1][col]) : false) return 180;
         else if (col-1>=0 ? mazeElement.FLOORS.includes(labyrinth[row][col-1]) : false) return 270;
         else {
             console.error("Labyrinth exit not accessible");
+            return null;
+        }
+    },
+
+    getEndingPosition(labyrinth){
+        let start = this.computeStartPos(labyrinth);
+        let finish = this.computeFinalPos(labyrinth);
+        return [finish[0]-start[0], finish[1]-start[1]];
+    },
+
+    getEndingPositionWithOffset(labyrinth, offset){
+        let start = this.computeStartPos(labyrinth);
+        let finish = this.computeFinalPos(labyrinth);
+        let finalAngle = this.getFinalAngle(labyrinth);
+        if (finalAngle === 0) return [finish[0]-start[0]-offset, finish[1]-start[1]];
+        else if(finalAngle === 90) return [finish[0]-start[0], finish[1]-start[1]+offset];
+        else if(finalAngle === 180) return [finish[0]-start[0]+offset, finish[1]-start[1]];
+        else if(finalAngle === 270) return [finish[0]-start[0], finish[1]-start[1]-offset];
+        else {
+            console.error("Labyrinth exit not available");
             return null;
         }
     },
@@ -413,58 +433,42 @@ var labyrinthUtils = {
 
             return matrix;
         }
+        
+        let computeFinalPosition = function(matrix, unvisited){
 
-        let computeDistances = function(matrix, row, col, dist){
-            //set distance
-            matrix[row][col] = dist;
-        
-            //initialize
-            let finalPos = {
-                row: row,
-                column: col,
-                dist: dist
-            }, tempPos = {};
-        
-        
-            //iterate all directions depth first
-            if((row+1)<matrix.length ? matrix[row+1][col] !== "X" && matrix[row+1][col] > dist+1 : false){
-                tempPos = computeDistances(matrix, row+1, col, dist+1);
-                if(tempPos.dist > finalPos.dist) {
-                    finalPos.row = tempPos.row;
-                    finalPos.column = tempPos.column;
-                    finalPos.dist = tempPos.dist;
-                }
+            let row = unvisited.shift();
+            let col = unvisited.shift();
+
+            matrix[row][col] = "X";
+
+            if((row+1)<matrix.length ? !mazeElement.BLOCKS.includes(matrix[row+1][col]) : false){
+                if(matrix[row+1][col] !== "X"){
+                    unvisited.push(row+1, col);
+                } 
             }
-            if((row-1)>=0 ? matrix[row-1][col] !== "X" && matrix[row-1][col] > dist+1 : false){
-                tempPos = computeDistances(matrix, row-1, col, dist+1);
-                if(tempPos.dist > finalPos.dist) {
-                    finalPos.row = tempPos.row;
-                    finalPos.column = tempPos.column;
-                    finalPos.dist = tempPos.dist;
-                }
+            if((row-1)>=0 ? !mazeElement.BLOCKS.includes(matrix[row-1][col]) : false){
+                if(matrix[row-1][col] !== "X"){
+                    unvisited.push(row-1, col);
+                } 
             }
-            if((col+1)<matrix[0].length ? matrix[row][col+1] !== "X" && matrix[row][col+1] > dist+1 : false){
-                tempPos = computeDistances(matrix, row, col+1, dist+1);
-                if(tempPos.dist > finalPos.dist) {
-                    finalPos.row = tempPos.row;
-                    finalPos.column = tempPos.column;
-                    finalPos.dist = tempPos.dist;
-                }
+            if((col+1)<matrix[0].length ? !mazeElement.BLOCKS.includes(matrix[row][col+1]) : false){
+                if(matrix[row][col+1] !== "X"){
+                    unvisited.push(row, col+1);
+                } 
             }
-            if((col-1)>=0 ? matrix[row][col-1] !== "X" && matrix[row][col-1] > dist+1 : false){
-                tempPos = computeDistances(matrix, row, col-1, dist+1);
-                if(tempPos.dist > finalPos.dist) {
-                    finalPos.row = tempPos.row;
-                    finalPos.column = tempPos.column;
-                    finalPos.dist = tempPos.dist;
-                }
+            if((col-1)>=0 ? !mazeElement.BLOCKS.includes(matrix[row][col-1]) : false){
+                if(matrix[row][col-1] !== "X"){
+                    unvisited.push(row, col-1);
+                } 
             }
-        
-            //return when no other direction available
-            return finalPos;
-        };
-        
-        let computeFinalPosition = function(maze, srow, scol){
+
+            if(unvisited.length === 0){
+                return{ row: row, column: col};
+            } 
+            else return computeFinalPosition(matrix, unvisited)
+
+
+            /*
             //copy by value
             let matrix = maze.map(function(arr) {return arr.slice()});
 
@@ -490,6 +494,7 @@ var labyrinthUtils = {
         
             //compute
             return computeDistances(matrix, srow, scol, 0);
+            */
         };
 
         //only odd number of rows/columns (for simpler computation)
@@ -510,7 +515,8 @@ var labyrinthUtils = {
         labyrinth = iterateLabyrinth(labyrinth, start_row, start_col);
 
         //compute final position (AS THE FURTHEST FROM THE STARTING POINT)
-        let finalPosition = computeFinalPosition(labyrinth, start_row, start_col);
+        let maze = labyrinth.map(function(arr) {return arr.slice()});
+        let finalPosition = computeFinalPosition(maze, [start_row, start_col]);
         labyrinth[finalPosition.row][finalPosition.column] = mazeElement.FINAL_POS;
 
         return labyrinth;

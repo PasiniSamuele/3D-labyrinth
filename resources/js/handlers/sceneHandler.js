@@ -18,6 +18,23 @@ class SceneHandler {
 		this.level;
 		this.movementHandler = movementHandler;
 		this.interactionHandler = interactionHandler;
+		this.levelHandler = levelHandler;
+		this.animate = false;
+		this.animations = {
+			cameraToMonkey:{
+				startTime: 0,
+				startPosition: {},
+				endPosition: [],
+				duration: 0,
+				endAngle: 0
+			},
+			takeMonkey:{
+				startTime: 0,
+				startPosition: [],
+				endPosition: [],
+				duration: 0
+			}
+		};
 		gl.enable(gl.CULL_FACE);
 		gl.cullFace(gl.BACK);
 	}
@@ -41,12 +58,16 @@ class SceneHandler {
 		gl.enable(gl.DEPTH_TEST);
 		gl.frontFace(gl.CCW);
 		
-
-		// MovementHandler object idle
-		let movementHandlerRet = this.movementHandler.idle(this.level.camera, this.interactionHandler, this.level.character.light);
-		this.level.camera = movementHandlerRet.camera;
-		this.interactionHandler = movementHandlerRet.interactionHandler;
-		this.level.character.light = movementHandlerRet.light;
+		if(this.animate){
+			this.activeAnimation();
+			if(!this.animate) return;
+		} else {
+			// MovementHandler object idle
+			let movementHandlerRet = this.movementHandler.idle(this.level.camera, this.interactionHandler, this.level.character.light);
+			this.level.camera = movementHandlerRet.camera;
+			this.interactionHandler = movementHandlerRet.interactionHandler;
+			this.level.character.light = movementHandlerRet.light;
+		}
 
 		// Camera object idle
 		this.level.camera.idle(deltaTime);
@@ -62,7 +83,69 @@ class SceneHandler {
 		this.level.draw(now, perspectiveMatrix, viewMatrix);
 
 		// Make the next call
+		if(!this.animate && this.levelHandler.finished()){
+			this.animate = true;
+			this.setupCameraToMonkey();
+			this.activeAnimation = this.cameraToMonkey;
+		}
+
 		window.requestAnimationFrame((newNow) => { this.drawScene(newNow); });
+	}
+
+	setupCameraToMonkey(){
+		this.level.camera.blocked=true;
+		this.movementHandler.blocked=false;
+		this.animations.cameraToMonkey.startTime = this.then;
+		this.animations.cameraToMonkey.startPosition = this.level.camera.position;
+		let angle = this.animations.cameraToMonkey.startPosition.angle;
+		this.animations.cameraToMonkey.startPosition.angle = (angle < 0) ? -(-angle)%360+360 : angle%360;
+		this.animations.cameraToMonkey.endPosition = labyrinthUtils.getEndingPositionWithOffset(this.level.labyrinth.structure2D, 0.3);
+		this.animations.cameraToMonkey.endAngle = labyrinthUtils.getFinalAngle(this.level.labyrinth.structure2D)+180;
+		if(this.animations.cameraToMonkey.endAngle - this.animations.cameraToMonkey.startPosition.angle > 180)
+			this.animations.cameraToMonkey.endAngle -=360;
+		this.animations.cameraToMonkey.duration = 4.0;
+	}
+
+	cameraToMonkey(){
+		let percentage = utils.getAnimationPercentage(this.animations.cameraToMonkey.duration, this.animations.cameraToMonkey.startTime, this.then);
+
+		if(percentage > 1.0){
+			this.setupTakeMonkey();
+			this.activeAnimation = this.takeMonkey;
+			return;
+		}
+		this.level.camera.position.x = utils.lerp(this.animations.cameraToMonkey.startPosition.x, this.animations.cameraToMonkey.endPosition[1], percentage/10);
+		this.level.camera.position.y = utils.lerp(this.animations.cameraToMonkey.startPosition.y, 0.5, percentage/10);
+		this.level.camera.position.z = utils.lerp(this.animations.cameraToMonkey.startPosition.z, this.animations.cameraToMonkey.endPosition[0], percentage/10);
+		this.level.camera.position.angle = utils.lerp(this.animations.cameraToMonkey.startPosition.angle, this.animations.cameraToMonkey.endAngle, percentage/10);
+		this.level.camera.position.elevation = utils.lerp(this.animations.cameraToMonkey.startPosition.elevation, 0.0, percentage/10);
+	}
+
+	setupTakeMonkey(){
+		this.animations.takeMonkey.startTime = this.then;
+		this.animations.takeMonkey.endPosition = labyrinthUtils.getEndingPositionWithOffset(this.level.labyrinth.structure2D, 0.5);
+		this.animations.takeMonkey.duration = 1.0;
+	}
+
+	async takeMonkey(){
+		let percentage = utils.getAnimationPercentage(this.animations.takeMonkey.duration, this.animations.takeMonkey.startTime, this.then);
+
+		if(percentage > 1.0){
+			this.animate = false;
+			this.activeAnimation = false;
+			//alert("YOU WIN");
+			let level = await loadingHandler.loadNextLevel();
+			this.animate = false;
+			main(level);
+			return;
+		}
+
+		this.level.labyrinth.children[2].animateModel(
+			this.animations.takeMonkey.endPosition[1], 
+			0.5, 
+			this.animations.takeMonkey.endPosition[0], 
+			percentage
+		);
 	}
 
 	/**

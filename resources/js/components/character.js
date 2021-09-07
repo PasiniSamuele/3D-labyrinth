@@ -33,9 +33,6 @@ class Character extends Mesh {
 		this.light.direction = {};
 		this.light.ignition.value = light.ignition.default;
 		this.light.ignition.lastTime = 0.0;
-
-		console.log(utils.getGeometriesExtents(this.mesh.geometries));
-	
 	}
 
 	/**
