@@ -31,11 +31,11 @@
 		},
 		"textures": {
 			"floor": {
-				"albedo": "resources/assets/textures/leafy-grass2-ue/albedo.png",
-				"normal": "resources/assets/textures/leafy-grass2-ue/Normal.png",
-				"ao": "resources/assets/textures/leafy-grass2-ue/ao.png",
-				"metallic": "resources/assets/textures/leafy-grass2-ue/Metallic.png",
-				"roughness": "resources/assets/textures/leafy-grass2-ue/Roughness.png"
+				"albedo": "resources/assets/textures/gravel/albedo.png",
+				"normal": "resources/assets/textures/gravel/Normal.png",
+				"ao": "resources/assets/textures/gravel/ao.png",
+				"metallic": "resources/assets/textures/gravel/Metallic.png",
+				"roughness": "resources/assets/textures/gravel/Roughness.png"
 			},
 			"wall": {
 				"albedo": "resources/assets/textures/red-bricks2-bl/albedo.png",
@@ -143,10 +143,13 @@
 				"g": 0.957,
 				"b": 0.882
 			},
+			"constDecay":1,
+			"linDecay":0.4,
+			"quadDecay":0.08,
 			"cutOff":25,
 			"outerCutOff":35,
 			"ignition": {
-				"default": true,
+				"default": false,
 				"switchTime": 0.5
 			},
 			"offset":{

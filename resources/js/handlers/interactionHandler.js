@@ -102,4 +102,9 @@ class InteractionHandler {
 		}
 	}
 
+	// Reset keypresses
+	resetKeys(){
+		this.keys = {};
+	}
+
 }

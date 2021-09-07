@@ -21,5 +21,5 @@ void main() {
     vec4 rgbaNight = texture(env_u_night_texture, normalize(p.xyz / p.w));
     vec4 night = vec4(rgbaNight.rgb, 1.0);
     
-    outColor = mix(day,night,(cos(radians_over_time)+1.0)/2.0);
+    outColor = mix(night,day,(cos(radians_over_time)+1.0)/2.0);
 }

@@ -107,6 +107,9 @@ class PbrLabyrinthElement {
 		gl.uniform1f(this.program.cutOff, Math.cos(utils.degToRad(light.cutOff)));
 		gl.uniform1f(this.program.outerCutOff, Math.cos(utils.degToRad(light.outerCutOff)));
 		gl.uniform1f(this.program.radians_over_time, utils.degToRad(now % 360));
+		gl.uniform1f(this.program.constDecay, light.constDecay);
+		gl.uniform1f(this.program.linDecay, light.linDecay);
+		gl.uniform1f(this.program.quadDecay, light.quadDecay);
 		gl.uniform3f(this.program.lightDir, light.direction.x, light.direction.y, light.direction.z);
 		gl.uniform3f(this.program.camPos, camPos.x, camPos.y, camPos.z);
 		gl.uniform3f(this.program.ambientLightDay, skybox.textures[0].ambientLight.r, skybox.textures[0].ambientLight.g, skybox.textures[0].ambientLight.b);
@@ -139,6 +142,9 @@ class PbrLabyrinthElement {
 		this.program.outerCutOff = gl.getUniformLocation(this.program, 'outerCutOff');
 		this.program.lightDir = gl.getUniformLocation(this.program, 'lightDir');
 		this.program.camPos = gl.getUniformLocation(this.program, 'camPos');
+		this.program.linDecay = gl.getUniformLocation(this.program, 'linDecay');
+		this.program.constDecay = gl.getUniformLocation(this.program, 'constDecay');
+		this.program.quadDecay = gl.getUniformLocation(this.program, 'quadDecay');
 		this.program.radians_over_time = gl.getUniformLocation(this.program, 'radians_over_time');
 	}
 

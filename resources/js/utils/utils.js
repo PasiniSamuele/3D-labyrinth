@@ -4,6 +4,14 @@
 //Includes initInteraction() function
 
 var utils = {
+	lerp: function(from, to, percentage){
+		return from*(1-percentage) + to*percentage;
+	},
+
+	getAnimationPercentage: function(duration, startTime, timeNow){
+		let delta = timeNow - startTime;
+		return delta / duration;
+	},
 
 	computeTargetFace: function (targetString) {
 		switch (targetString) {
