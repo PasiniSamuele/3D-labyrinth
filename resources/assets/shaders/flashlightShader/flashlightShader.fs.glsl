@@ -33,7 +33,7 @@ vec3 ambient =  mix(u_ambientLightNight,u_ambientLightDay,(cos(radians_over_time
 
 outColor = vec4(
     emissive +
-    ambient * u_ambientLight +
+    ambient +
     effectiveDiffuse * fakeLight +
     specular * pow(specularLight, shininess),
     effectiveOpacity);

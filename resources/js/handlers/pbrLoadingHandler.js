@@ -65,7 +65,6 @@ class PbrLoadingHandler {
 			utils.loadTextResource(levelSettings.structure.models.suzanne.mtl),
 			utils.loadTextResource(levelSettings.structure.models.pedestal.obj), //15
 			utils.loadTextResource(levelSettings.structure.models.pedestal.mtl),
-			utils.loadJSONResource(levelSettings.structure.labyrinth.random),
 		]);
 
 		// Create the shaders
@@ -91,7 +90,11 @@ class PbrLoadingHandler {
 		//Define the labyrinth structure
 		let maze2D;
 		if (this.randomGeneration)
-			maze2D = labyrinthUtils.generate2DLabyrinth(results[17].rows, results[17].columns, results[17].joinSides, results[17].join_parameters);
+			maze2D = labyrinthUtils.generate2DLabyrinth(
+				levelSettings.structure.labyrinth.random.rows,
+				levelSettings.structure.labyrinth.random.columns,
+				levelSettings.structure.labyrinth.random.joinSides,
+				levelSettings.structure.labyrinth.random.join_parameters);
 		else
 			maze2D = results[0];
 		collisionHandler.setStructure(maze2D);

@@ -1,7 +1,8 @@
-//directories
-// TODO: non può essere globale
-//var settings = "resources/settings/settings.json"
-
+/********************************
+ * 
+ * Script.js
+ * 
+ *******************************/
 
 // Handlers
 var loadingHandler;
@@ -11,12 +12,18 @@ var interactionHandler;
 var sceneHandler;
 var levelHandler;
 
-//variables
+// Global variable GL
 /** @type {WebGLRenderingContext} */
 var gl;
 
+/**
+ * Main function
+ * @param {*} activeLevel 
+ */
 function main(activeLevel) {
+	// Canvas resizing
 	utils.resizeCanvasToDisplaySize(gl.canvas);
+	// Handler settings
 	interactionHandler.resetKeys();
 	sceneHandler.setLevel(activeLevel);
 	levelHandler.setLevel(activeLevel);
@@ -24,6 +31,9 @@ function main(activeLevel) {
 	sceneHandler.start();
 }
 
+/**
+ * Link canvas and GL context
+ */
 function loadGl() {
 	let canvas = document.getElementById("canvas-id");
 	gl = canvas.getContext("webgl2");
@@ -37,21 +47,26 @@ function loadGl() {
 	}
 }
 
+/**
+ * Main init function
+ */
 async function init() {
+	// Call the loadGl function
 	loadGl();
-	
+	// Instantiate handlers
 	loadingHandler = new PbrLoadingHandler();
 	movementHandler = new MovementHandler();
 	interactionHandler = new InteractionHandler();
 	collisionHandler = new CollisionHandler();
 	levelHandler = new LevelHandler();
 	sceneHandler = new SceneHandler(movementHandler, interactionHandler, levelHandler);
-
+	// Main loading function
 	var settings = "resources/settings/settings.json"
 	let activeLevel = await loadingHandler.init(settings);
-
+	// Start the game
 	main(activeLevel);
 }
 
+// Onload
 window.onload = init;
 

@@ -1,18 +1,50 @@
-//Utils ver. 0.4
-//Includes minimal mat3 support
-//Includes texture operations
-//Includes initInteraction() function
+/********************************
+ * 
+ * Utils.js
+ * 
+ * Support to: mat3, texture,
+ * file loading, shaders,
+ * objects, 
+ * 
+ *******************************/
 
+/**
+ * "Static class" utils
+ */
 var utils = {
+
+	/********************************
+	 * GL functions
+	 *******************************/
+
+	/**
+	 * The lerp() function is used to find a number between two numbers
+	 * @param {*} from 
+	 * @param {*} to 
+	 * @param {*} percentage 
+	 * @returns 
+	 */
 	lerp: function(from, to, percentage){
 		return from*(1-percentage) + to*percentage;
 	},
 
+	/**
+	 * Gets the percentage given start time and finish time
+	 * @param {*} duration 
+	 * @param {*} startTime 
+	 * @param {*} timeNow 
+	 * @returns 
+	 */
 	getAnimationPercentage: function(duration, startTime, timeNow){
 		let delta = timeNow - startTime;
 		return delta / duration;
 	},
 
+	/**
+	 * Returns the correct cube face
+	 * @param {*} targetString 
+	 * @returns 
+	 */
 	computeTargetFace: function (targetString) {
 		switch (targetString) {
 			case "gl.TEXTURE_CUBE_MAP_POSITIVE_X":
@@ -30,63 +62,26 @@ var utils = {
 		}
 	},
 
-	getTextureSlotOffset: function (gl, slot) {
-		return (slot - gl.TEXTURE0);
-	},
-
-	loadTextResource: function (url) {
-		return new Promise((resolve, reject) => {
-			var request = new XMLHttpRequest();
-			request.open('GET', url + "?a=" + Math.random(), true);
-			request.onload = function () {
-				if (request.status < 200 || request.status > 299) {
-					reject("Error: HTTP Status " + request.status + " on resource: " + url);
-				} else {
-					resolve(request.responseText);
-				}
-			};
-			request.send();
-		});
-	},
-
-	loadImage: function (url) {
-		return new Promise((resolve, reject) => {
-			var image = new Image();
-			image.onload = function () {
-				resolve(image);
-			}
-			image.src = url;
-		})
-	},
-
-	loadJSONResource: function (url) {
-		return new Promise((resolve, reject) => {
-			utils.loadTextResource(url)
-				.then(
-					(result) => {
-						try {
-							resolve(JSON.parse(result));
-						} catch (e) {
-							reject(e);
-						}
-					}
-					, (error) => {
-						reject(error);
-					}
-				)
-		})
-	},
-
+	/**
+	 * Create and compile a shader program
+	 * @param {*} gl 
+	 * @param {*} shaderText 
+	 * @returns 
+	 */
 	createAndCompileShaders: function (gl, shaderText) {
-
 		var vertexShader = utils.createShader(gl, gl.VERTEX_SHADER, shaderText[0]);
 		var fragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, shaderText[1]);
-
 		var program = utils.createProgram(gl, vertexShader, fragmentShader);
-
 		return program;
 	},
 
+	/**
+	 * Create a shader
+	 * @param {*} gl 
+	 * @param {*} type 
+	 * @param {*} source 
+	 * @returns 
+	 */
 	createShader: function (gl, type, source) {
 		var shader = gl.createShader(type);
 		gl.shaderSource(shader, source);
@@ -105,9 +100,15 @@ var utils = {
 			gl.deleteShader(shader);
 			throw "could not compile shader:" + gl.getShaderInfoLog(shader);
 		}
-
 	},
 
+	/**
+	 * Create a shader program
+	 * @param {*} gl 
+	 * @param {*} vertexShader 
+	 * @param {*} fragmentShader 
+	 * @returns 
+	 */
 	createProgram: function (gl, vertexShader, fragmentShader) {
 		var program = gl.createProgram();
 		gl.attachShader(program, vertexShader);
@@ -124,68 +125,93 @@ var utils = {
 		}
 	},
 
+	/**
+	 * Resize the canvas to fit the screen size
+	 * @param {*} canvas 
+	 */
 	resizeCanvasToDisplaySize: function (canvas) {
 		const expandFullScreen = () => {
 			canvas.width = window.innerWidth;
 			canvas.height = window.innerHeight;
-			//console.log(canvas.width+" "+window.innerWidth);
 
 		};
 		expandFullScreen();
 		// Resize screen when the browser has triggered the resize event
 		window.addEventListener('resize', expandFullScreen);
 	},
-	//**** MODEL UTILS
-	// Function to load a 3D model in JSON format
-	get_json: async function (url, func) {
-		var response = await fetch(url);
-		if (!response.ok) {
-			alert('Network response was not ok');
-			return;
-		}
-		var json = await response.json();
-		func(json);
-	},
-	get_objstr: async function (url) {
-		var response = await fetch(url);
-		if (!response.ok) {
-			alert('Network response was not ok');
-			return;
-		}
-		var text = await response.text();
-		return text;
+
+	/**
+	 * Sum the texture number to the gl offset
+	 * @param {*} gl 
+	 * @param {*} slot 
+	 * @returns 
+	 */
+	 getTextureSlotOffset: function (gl, slot) {
+		return (slot - gl.TEXTURE0);
 	},
 
-	//function to convert decimal value of colors 
-	decimalToHex: function (d, padding) {
-		var hex = Number(d).toString(16);
-		padding = typeof (padding) === "undefined" || padding === null ? padding = 2 : padding;
-
-		while (hex.length < padding) {
-			hex = "0" + hex;
-		}
-
-		return hex;
+	/********************************
+	 * File loading functions
+	 *******************************/
+	
+	/**
+	 * Load text file and put it in a variable (Promise)
+	 * @param {*} url 
+	 * @returns 
+	 */
+	loadTextResource: function (url) {
+		return new Promise((resolve, reject) => {
+			var request = new XMLHttpRequest();
+			request.open('GET', url + "?a=" + Math.random(), true);
+			request.onload = function () {
+				if (request.status < 200 || request.status > 299) {
+					reject("Error: HTTP Status " + request.status + " on resource: " + url);
+				} else {
+					resolve(request.responseText);
+				}
+			};
+			request.send();
+		});
 	},
 
+	/**
+	 * Load an image (Promise)
+	 * @param {*} url 
+	 * @returns 
+	 */
+	loadImage: function (url) {
+		return new Promise((resolve, reject) => {
+			var image = new Image();
+			image.onload = function () {
+				resolve(image);
+			}
+			image.src = url;
+		})
+	},
 
+	/**
+	 * Load text file, parse it and put it in a variable (Promise)
+	 * @param {*} url 
+	 * @returns 
+	 */
+	loadJSONResource: function (url) {
+		return new Promise((resolve, reject) => {
+			utils.loadTextResource(url)
+				.then(
+					(result) => {
+						try {
+							resolve(JSON.parse(result));
+						} catch (e) {
+							reject(e);
+						}
+					}
+					, (error) => {
+						reject(error);
+					}
+				)
+		})
+	},
 
-
-
-
-	//*** SHADERS UTILS	
-	/*Function to load a shader's code, compile it and return the handle to it
-	Requires:
-		path to the shader's text (url)
-
-	*/
-
-	/*fetch('http://foo.com/static/bar.glsl') .then(response => {
-	if (!response.ok) {
-	  alert('Network response was not ok');
-	}
-	return response.text();
-  }).then(data => console.log(data));*/
 
 	loadFile: async function (url, data, callback, errorCallBack) {
 		var response = await fetch(url);
@@ -291,12 +317,41 @@ var utils = {
 		return image;
 	},
 
+	/********************************
+	 * Computation functions
+	 *******************************/
 
+	/**
+	 * Convert a decimal number to hex number
+	 * @param {*} d 
+	 * @param {*} padding 
+	 * @returns 
+	 */
+	decimalToHex: function (d, padding) {
+		var hex = Number(d).toString(16);
+		padding = typeof (padding) === "undefined" || padding === null ? padding = 2 : padding;
 
+		while (hex.length < padding) {
+			hex = "0" + hex;
+		}
+
+		return hex;
+	},
+
+	/**
+	 * If a number is power of two
+	 * @param {*} x 
+	 * @returns 
+	 */
 	isPowerOfTwo: function (x) {
 		return (x & (x - 1)) == 0;
 	},
 
+	/**
+	 * Compute the nearest highest power of two
+	 * @param {*} x 
+	 * @returns 
+	 */
 	nextHighestPowerOfTwo: function (x) {
 		--x;
 		for (var i = 1; i < 32; i <<= 1) {
@@ -304,64 +359,20 @@ var utils = {
 		}
 		return x + 1;
 	},
-
-
-	//*** Interaction UTILS	
-	initInteraction: function (canvas) {
-		// global variables: keys, mouse
-		// Init keyboard keydown
-		window.addEventListener('keydown', (e) => {
-			interactionHandler.keys[e.code] = true;
-			console.log(e);
-			e.preventDefault();
-		});
-		// Init keyboard keyup
-		window.addEventListener('keyup', (e) => {
-			interactionHandler.keys[e.code] = false;
-			e.preventDefault();
-		});
-		// Init pointer lock
-		canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
-		document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
-		canvas.onclick = function () {
-			canvas.requestPointerLock();
-		}
-		document.addEventListener('pointerlockchange', lockChangeAlert, false);
-		document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
-		function lockChangeAlert() {
-			if (document.pointerLockElement === canvas ||
-				document.mozPointerLockElement === canvas) {
-				window.addEventListener('mousemove', onMouseMove, false);
-			} else {
-				window.removeEventListener("mousemove", onMouseMove, false);
-			}
-		}
-		// Mouse move function
-		function onMouseMove(e) {
-			interactionHandler.mouse.lastLastMovementX = interactionHandler.mouse.movementX;
-			interactionHandler.mouse.lastLastMovementY = interactionHandler.mouse.movementY;
-			interactionHandler.mouse.lastMovementX = interactionHandler.mouse.movementX;
-			interactionHandler.mouse.lastMovementY = interactionHandler.mouse.movementY;
-			interactionHandler.mouse.movementX = e.movementX;
-			interactionHandler.mouse.movementY = e.movementY;
-		}
-		// Init mouse wheel movements
-		window.addEventListener('wheel', (e) => {
-			wheel.deltaX += e.deltaX;
-			wheel.deltaY += e.deltaY;
-		});
-	},
-
-
-
-
-
-	//*** MATH LIBRARY
-
+	
+	/**
+	 * Convert an angle from deg to rad
+	 * @param {*} angle 
+	 * @returns 
+	 */
 	degToRad: function (angle) {
 		return (angle * Math.PI / 180);
 	},
 
+	/**
+	 * Returns an identity matrix
+	 * @returns 
+	 */
 	identityMatrix: function () {
 		return [1, 0, 0, 0,
 			0, 1, 0, 0,
@@ -369,6 +380,10 @@ var utils = {
 			0, 0, 0, 1];
 	},
 
+	/**
+	 * 
+	 * @returns 
+	 */
 	identityMatrix3: function () {
 		return [1, 0, 0,
 			0, 1, 0,
@@ -767,6 +782,63 @@ var utils = {
 		let norm = Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);
 		return [v[0]/norm, v[1]/norm, v[2]/norm];
 	},
+
+
+
+
+
+
+
+	//*** Interaction UTILS	
+	initInteraction: function (canvas) {
+		// global variables: keys, mouse
+		// Init keyboard keydown
+		window.addEventListener('keydown', (e) => {
+			interactionHandler.keys[e.code] = true;
+			console.log(e);
+			e.preventDefault();
+		});
+		// Init keyboard keyup
+		window.addEventListener('keyup', (e) => {
+			interactionHandler.keys[e.code] = false;
+			e.preventDefault();
+		});
+		// Init pointer lock
+		canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
+		document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
+		canvas.onclick = function () {
+			canvas.requestPointerLock();
+		}
+		document.addEventListener('pointerlockchange', lockChangeAlert, false);
+		document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
+		function lockChangeAlert() {
+			if (document.pointerLockElement === canvas ||
+				document.mozPointerLockElement === canvas) {
+				window.addEventListener('mousemove', onMouseMove, false);
+			} else {
+				window.removeEventListener("mousemove", onMouseMove, false);
+			}
+		}
+		// Mouse move function
+		function onMouseMove(e) {
+			interactionHandler.mouse.lastLastMovementX = interactionHandler.mouse.movementX;
+			interactionHandler.mouse.lastLastMovementY = interactionHandler.mouse.movementY;
+			interactionHandler.mouse.lastMovementX = interactionHandler.mouse.movementX;
+			interactionHandler.mouse.lastMovementY = interactionHandler.mouse.movementY;
+			interactionHandler.mouse.movementX = e.movementX;
+			interactionHandler.mouse.movementY = e.movementY;
+		}
+		// Init mouse wheel movements
+		window.addEventListener('wheel', (e) => {
+			wheel.deltaX += e.deltaX;
+			wheel.deltaY += e.deltaY;
+		});
+	},
+
+
+
+
+
 
 
 	//*** Obj loading
