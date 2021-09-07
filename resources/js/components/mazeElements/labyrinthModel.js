@@ -43,12 +43,20 @@ class LabyrinthModel extends PbrLabyrinthElement {
         this.program.world = gl.getUniformLocation(this.program, 'u_world');
         this.program.viewWorldPosition = gl.getUniformLocation(this.program, 'u_viewWorldPosition');
         this.program.diffuse = gl.getUniformLocation(this.program, 'diffuse');
-        this.program.ambient = gl.getUniformLocation(this.program, 'ambient');
         this.program.emissive = gl.getUniformLocation(this.program, 'emissive');
         this.program.specular = gl.getUniformLocation(this.program, 'specular');
         this.program.shininess = gl.getUniformLocation(this.program, 'shininess');
         this.program.opacity = gl.getUniformLocation(this.program, 'opacity');
+
+        this.program.lightPosition = gl.getUniformLocation(this.program, 'u_lightPosition');
         this.program.lightDirection = gl.getUniformLocation(this.program, 'u_lightDirection');
+		this.program.lightColor = gl.getUniformLocation(this.program, 'u_lightColor');
+		this.program.cutOff = gl.getUniformLocation(this.program, 'u_cutOff');
+		this.program.outerCutOff = gl.getUniformLocation(this.program, 'u_outerCutOff');
+		this.program.linDecay = gl.getUniformLocation(this.program, 'u_linDecay');
+		this.program.constDecay = gl.getUniformLocation(this.program, 'u_constDecay');
+		this.program.quadDecay = gl.getUniformLocation(this.program, 'u_quadDecay');
+
         this.program.ambientLightDay = gl.getUniformLocation(this.program, 'u_ambientLightDay');
 		this.program.ambientLightNight = gl.getUniformLocation(this.program, 'u_ambientLightNight');
 		this.program.radians_over_time = gl.getUniformLocation(this.program, 'u_radians_over_time');
@@ -80,6 +88,7 @@ class LabyrinthModel extends PbrLabyrinthElement {
 			for(i = 0; i < element.data.position.length; i+=4){
 				colorArray = colorArray.concat(this.color);
 			}
+			console.log(colorArray);
 
 			let colorBufferObject = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, colorBufferObject);
@@ -129,16 +138,31 @@ class LabyrinthModel extends PbrLabyrinthElement {
 			gl.uniformMatrix4fv(this.program.world, gl.FALSE, utils.transposeMatrix(this.worldMatrix));
 			gl.uniformMatrix4fv(this.program.projection, gl.FALSE, utils.transposeMatrix(perspectiveMatrix));
 			gl.uniform3f(this.program.viewWorldPosition, camPos.x, camPos.y, camPos.z);
+
 			gl.uniform3fv(this.program.diffuse, this.material[element.material].diffuse);
 			gl.uniform3fv(this.program.ambient, this.material[element.material].ambient);
 			gl.uniform3fv(this.program.emissive, this.emissive);
 			gl.uniform3fv(this.program.specular, this.material[element.material].specular);
 			gl.uniform1f(this.program.shininess, this.material[element.material].shininess);
 			gl.uniform1f(this.program.opacity, this.material[element.material].opacity);
+
+			gl.uniform3f(this.program.lightPosition, light.position.x, light.position.y, light.position.z);
 			gl.uniform3fv(this.program.lightDirection, [light.direction.x, light.direction.y, light.direction.z]);
+			gl.uniform1f(this.program.cutOff, light.cutOff);
+			gl.uniform1f(this.program.outerCutOff, light.outerCutOff);
+			gl.uniform1f(this.program.constDecay, light.constDecay);
+			gl.uniform1f(this.program.linDecay, light.linDecay);
+			gl.uniform1f(this.program.quadDecay, light.quadDecay);
+			if (light.ignition.value)
+				gl.uniform3f(this.program.lightColor, light.color.r, light.color.g, light.color.b);
+			else
+				gl.uniform3f(this.program.lightColor, 0.0, 0.0, 0.0);
+
 			gl.uniform3f(this.program.ambientLightDay, skybox.textures[0].ambientLight.r, skybox.textures[0].ambientLight.g, skybox.textures[0].ambientLight.b);
 			gl.uniform3f(this.program.ambientLightNight, skybox.textures[1].ambientLight.r, skybox.textures[1].ambientLight.g, skybox.textures[1].ambientLight.b);
 			gl.uniform1f(this.program.radians_over_time, utils.degToRad(now % 360));
+
+			
 			
 			gl.drawArrays(gl.TRIANGLES, 0, element.data.position.length/3);
 		});

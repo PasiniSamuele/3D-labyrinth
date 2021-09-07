@@ -110,6 +110,8 @@ class PbrLabyrinthElement {
 		gl.uniform1f(this.program.constDecay, light.constDecay);
 		gl.uniform1f(this.program.linDecay, light.linDecay);
 		gl.uniform1f(this.program.quadDecay, light.quadDecay);
+		gl.uniform1f(this.program.ambientStrenghtDay, skybox.textures[0].ambientLight.strength);
+		gl.uniform1f(this.program.ambientStrenghtNight, skybox.textures[1].ambientLight.strength);
 		gl.uniform3f(this.program.lightDir, light.direction.x, light.direction.y, light.direction.z);
 		gl.uniform3f(this.program.camPos, camPos.x, camPos.y, camPos.z);
 		gl.uniform3f(this.program.ambientLightDay, skybox.textures[0].ambientLight.r, skybox.textures[0].ambientLight.g, skybox.textures[0].ambientLight.b);
@@ -146,6 +148,8 @@ class PbrLabyrinthElement {
 		this.program.constDecay = gl.getUniformLocation(this.program, 'constDecay');
 		this.program.quadDecay = gl.getUniformLocation(this.program, 'quadDecay');
 		this.program.radians_over_time = gl.getUniformLocation(this.program, 'radians_over_time');
+		this.program.ambientStrengthDay = gl.getUniformLocation(this.program, 'ambientStrengthDay');
+		this.program.ambientStrengthNight = gl.getUniformLocation(this.program, 'ambientStrengthNight');
 	}
 
 }

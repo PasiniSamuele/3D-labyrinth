@@ -10,7 +10,7 @@ class Suzanne extends LabyrinthModel {
 		super(structure, parent, program, objStr, mtlStr);
 		// Color settings (radioattiva)
 		this.color = [1, 0.75, 0];
-		this.emissive = [1, 1, 0];
+		this.emissive = [0, 0, 0];
 	}
 
 	/**

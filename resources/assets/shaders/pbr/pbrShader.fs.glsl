@@ -28,6 +28,8 @@ uniform float outerCutOff;
 uniform float constDecay;
 uniform float linDecay;
 uniform float quadDecay;	
+uniform float ambientStrengthDay;
+uniform float ambientStrengthNight;
 
 uniform vec3 camPos;
 
@@ -107,7 +109,7 @@ void main(){
     float roughness = texture(roughnessMap, fragTexCoord).r;
     float ao        = texture(aoMap, fragTexCoord).r;
 
-    vec3 N = fragNormal;
+    vec3 N = normal;
     vec3 V = normalize(camPos - fragVertPosition);
     vec3 R = reflect(-V, N); 
 
@@ -169,13 +171,13 @@ void main(){
     
 
 
-
-    vec3 ambient =  mix(ambientLightNight,ambientLightDay,(cos(radians_over_time)+1.0)/2.0)* albedo * ao;
+    float ambientStrength = mix(ambientStrengthDay,ambientStrengthNight,(cos(radians_over_time)+1.0)/2.0);
+    vec3 ambient =  mix(ambientLightDay,ambientLightNight,(cos(radians_over_time)+1.0)/2.0)* albedo * ao * ambientStrength;
     
     vec3 color = ambient + Lo;
 
     // HDR tonemapping
-    color = color / (color + vec3(1.0));
+    //color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0/2.2)); 
 
