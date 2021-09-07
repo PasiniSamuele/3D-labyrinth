@@ -1,22 +1,23 @@
-/*******************
+/********************************
+ * 
  * InteractionHandler.js
- ******************/
+ * 
+ *******************************/
 
 /**
  * Object to manage the movements of the camera
  */
 class MovementHandler {
 
+	/**
+	 * Constructor
+	 */
 	constructor(){
 		this.blocked=false;
 	}
-	/*******************
-	 * Methods
-	 ******************/
 
 	/**
 	 * Function to be called every time the display is updated
-	 *
 	 * @param { object } camera camera object
 	 * @param { object } interactionHandler interactionHandler object
 	 * @param { object } light light object

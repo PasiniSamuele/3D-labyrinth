@@ -1,8 +1,25 @@
+/********************************
+ * 
+ * LevelHandler.js
+ * 
+ *******************************/
+
+/**
+ * Object to manage the level behaviour
+ */
 class LevelHandler {
+
+	/**
+	 * Constructor
+	 */
     constructor(){
         
     }
 
+	/**
+	 * Set the actual level
+	 * @param {*} level 
+	 */
     setLevel(level){
         this.level = level;
 		let start = labyrinthUtils.computeStartPos(this.level.labyrinth.structure2D);
@@ -12,15 +29,18 @@ class LevelHandler {
         };
     }
 
+	/**
+	 * The current level is about to get finished
+	 * @returns 
+	 */
     finished(){
         return false;
         let column = Math.floor(this.level.camera.position.x + this.offset.column);
 		let row = Math.floor(this.level.camera.position.z + this.offset.row);
-
         if(this.level.labyrinth.structure2D[row][column] === mazeElement.FINAL_POS){
             return true;
         }
-
         return false;
     }
+
 }

@@ -1,6 +1,8 @@
-/*******************
+/********************************
+ * 
  * LoadingHandler.js
- ******************/
+ * 
+ *******************************/
 
 /**
  * Object that loads the program
@@ -19,9 +21,7 @@ class PbrLoadingHandler {
 
 	/**
 	 * Function to initialize level loading
-	 *
 	 * @param { string } settingsUrl Url where is located the settings file
-	 * 
 	 * @returns { object } returns the actual "level" object
 	 */
 	async init(settingsUrl) {
@@ -37,15 +37,12 @@ class PbrLoadingHandler {
 
 	/**
 	 * Function to loading all the resources asyncronously
-	 *
 	 * @param { object } level object "level" containing various information
-	 * 
 	 * @returns { object } returns the actual "level" object
 	 */
 	async initResources(level) {
 		// Load JSON file
 		let levelSettings = await utils.loadJSONResource(level.level);
-
 		// Asyncronously load the resources
 		const results = await Promise.all([
 			utils.loadJSONResource(levelSettings.structure.url),					// 0 lab JSON structure
@@ -66,7 +63,6 @@ class PbrLoadingHandler {
 			utils.loadTextResource(levelSettings.structure.models.pedestal.obj), //15
 			utils.loadTextResource(levelSettings.structure.models.pedestal.mtl),
 		]);
-
 		// Create the shaders
 		let program = [[],];
 		let labWallVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[1]);
@@ -79,15 +75,14 @@ class PbrLoadingHandler {
 		let chFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[10]);
 		let labModelVertexShader = utils.createShader(gl, gl.VERTEX_SHADER, results[11]);
 		let labModelFragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, results[12]);
-
+		// Create the programs
 		program[0][0] = utils.createProgram(gl, labWallVertexShader, labWallFragmentShader);
 		program[0][1] = utils.createProgram(gl, labFloorVertexShader, labFloorFragmentShader);
 		program[0][2] = utils.createProgram(gl, labModelVertexShader, labModelFragmentShader);
 		program[0][3] = utils.createProgram(gl, labModelVertexShader, labModelFragmentShader);
 		program[1] = utils.createProgram(gl, envVertexShader, envFragmentShader);
 		program[2] = utils.createProgram(gl, chVertexShader, chFragmentShader);
-
-		//Define the labyrinth structure
+		// Define the labyrinth structure
 		let maze2D;
 		if (this.randomGeneration)
 			maze2D = labyrinthUtils.generate2DLabyrinth(
@@ -98,6 +93,7 @@ class PbrLoadingHandler {
 		else
 			maze2D = results[0];
 		collisionHandler.setStructure(maze2D);
+		collisionHandler.setCollisionParameters(levelSettings.structure.collision.x, levelSettings.structure.collision.z);
 		// Create the camera
 		let camera = new Camera(levelSettings.camera, labyrinthUtils.getStartingAngle(maze2D));
 		// Create the skybox
@@ -107,14 +103,6 @@ class PbrLoadingHandler {
 			textures.push(new SkyboxTexture(skybox.images, skybox.ambientLight, gl.TEXTURE0 + index++));
 		});
 		let skybox = new Skybox(textures, program[1]);
-		// Create the labyrinth
-		//let labyrinth;
-		/*if (this.randomGeneration) {
-			let randomSettings = await utils.loadJSONResource(level.random);
-			let maze2D = generate2DLabyrinth(randomSettings.rows, randomSettings.columns, randomSettings.joinSides, randomSettings.join_parameters);
-			labyrinth = new Labyrinth(maze2D, program[0], levelSettings.structure.images, index);
-		}*/
-		//labyrinth = new Labyrinth(results[0], program[0], levelSettings.structure.images, index);
 		// Set the actual level
 		let character = new Character(results[7], results[8], levelSettings.character.offset, program[2], levelSettings.character.light);
 		let pbrTexture = {};
@@ -130,9 +118,9 @@ class PbrLoadingHandler {
 			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++);
-
+		// Create the labyrinth
 		let labyrinth = new PbrLabyrinth(maze2D, program[0], pbrTexture, [results[13], results[14]], [results[15], results[16]]);
-
+		// Create the level
 		let activeLevel = new Level(labyrinth, skybox, character, camera);
 		// Return the actual level
 		return activeLevel;
@@ -140,7 +128,6 @@ class PbrLoadingHandler {
 
 	/**
 	 * Function to load the next level
-	 * 
 	 * @returns { object } returns the next "level" object
 	 */
 	async loadNextLevel() {
