@@ -22,7 +22,7 @@ uniform float u_constDecay;
 uniform float u_quadDecay;
 
 uniform vec3 u_ambientLightDay;
-uniform vec3 u_ambientLightNight;ù
+uniform vec3 u_ambientLightNight;
 uniform float ambientStrengthDay;
 uniform float ambientStrengthNight;
 uniform float radians_over_time;
@@ -49,7 +49,7 @@ void main () {
     vec3 surfaceToViewDirection = normalize(v_surfaceToView);
     vec3 halfVector = normalize(normalize(u_lightDirection) + surfaceToViewDirection);
 
-    float fakeLight = clamp(dot(normalize(u_lightDirection), normal, 0.0, 1.0);
+    float fakeLight = clamp(dot(normalize(u_lightDirection), normal), 0.0, 1.0);
     float specularLight = clamp(dot(normal, halfVector), 0.0, 1.0);
 
     vec3 effectiveDiffuse = diffuse * v_color.rgb;
