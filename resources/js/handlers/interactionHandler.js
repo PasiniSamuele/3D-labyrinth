@@ -28,13 +28,19 @@ class InteractionHandler {
 
 		// Init keyboard keydown
 		window.addEventListener('keydown', (e) => {
-			this.keys[e.code] = true;
-			e.preventDefault();
+			// Avoid special keys
+			if (e.code[0] != 'F' && e.code[0] != 'E' && !e.shiftKey && !e.ctrlKey && !e.altKey) {
+				this.keys[e.code] = true;
+				e.preventDefault();
+			}
 		});
 		// Init keyboard keyup
 		window.addEventListener('keyup', (e) => {
-			this.keys[e.code] = false;
-			e.preventDefault();
+			// Avoid special keys
+			if (e.code[0] != 'F' && e.code[0] != 'E' && !e.shiftKey && !e.ctrlKey && !e.altKey) {
+				this.keys[e.code] = false;
+				e.preventDefault();
+			}
 		});
 
 		// Init pointer lock
