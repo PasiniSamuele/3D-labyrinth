@@ -1,6 +1,6 @@
 class CollisionHandler {
 	constructor() {
-		this.DEBUGCOLLISION = false;
+		this.DEBUGCOLLISION = true;
 	}
 
 	checkCameraCollision(x, newx, z, newz) {
