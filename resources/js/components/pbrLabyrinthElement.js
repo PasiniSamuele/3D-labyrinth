@@ -77,6 +77,7 @@ class PbrLabyrinthElement {
 		//skybox.bindMaps(this.program);
 		gl.uniformMatrix4fv(this.program.projMatrix, gl.FALSE, utils.transposeMatrix(projectionMatrix));
 		gl.uniformMatrix4fv(this.program.worldMatrix, gl.FALSE, utils.transposeMatrix(this.worldMatrix));
+		gl.uniformMatrix4fv(this.program.normalMatrix, gl.FALSE, utils.invertMatrix(utils.transposeMatrix(this.worldMatrix)));
 		gl.activeTexture(this.texture.albedoSlot);
 		gl.bindTexture(gl.TEXTURE_2D, this.texture.albedo);
 		gl.uniform1i(this.program.albedoMap, utils.getTextureSlotOffset(gl, this.texture.albedoSlot));
@@ -111,7 +112,6 @@ class PbrLabyrinthElement {
 		gl.uniform1f(this.program.quadDecay, light.quadDecay);
 		gl.uniform1f(this.program.ambientStrengthDay, skybox.textures[0].ambientLight.strength);
 		gl.uniform1f(this.program.ambientStrengthNight, skybox.textures[1].ambientLight.strength);
-		console.log(skybox);
 		gl.uniform3f(this.program.lightDir, light.direction.x, light.direction.y, light.direction.z);
 		gl.uniform3f(this.program.directionalLightDir, skybox.lightDir.x, skybox.lightDir.y, skybox.lightDir.z);
 		gl.uniform3f(this.program.camPos, camPos.x, camPos.y, camPos.z);
@@ -132,6 +132,7 @@ class PbrLabyrinthElement {
 		this.program.projMatrix = gl.getUniformLocation(this.program, 'projMatrix');
 		this.program.worldMatrix = gl.getUniformLocation(this.program, 'worldMatrix');
 		this.program.vertPosition = gl.getAttribLocation(this.program, 'vertPosition');
+		this.program.normalMatrix = gl.getUniformLocation(this.program, 'normalMatrix');
 
 		//FRAGMENT
 		this.program.ambientLightDay = gl.getUniformLocation(this.program, 'ambientLightDay');

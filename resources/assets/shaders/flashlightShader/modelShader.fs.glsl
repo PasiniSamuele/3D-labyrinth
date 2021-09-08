@@ -27,47 +27,42 @@ uniform float u_ambientStrengthDay;
 uniform float u_ambientStrengthNight;
 uniform float radians_over_time;
 
+uniform vec3 u_directLightDirection;
+uniform vec3 u_directColorDay;
+uniform vec3 u_directColorNight;
+
 out vec4 outColor;
 
 void main () {
-    vec4 v_color = vec4(color, 1.0);
-    //  spotlight cone
-    vec3 L = normalize(u_lightPosition - v_position);
+    //  color
+	vec4 v_color = vec4(color, 1.0);
+    vec3 directColor = mix(u_directColorNight,u_directColorDay,(cos(radians_over_time)+1.0)/2.0);
 
-    float theta     = dot(L, normalize(-u_lightDirection));
-	float epsilon   = u_cutOff - u_outerCutOff;
-	float intensity = clamp((theta - u_outerCutOff) / epsilon, 0.0, 1.0); 
-	
-    vec3 radiance = u_lightColor * intensity;
-    float d = length(u_lightPosition - v_position);
-    float attenuation = 1.0 / (u_constDecay + u_linDecay * d + u_quadDecay * (d * d));    
-
-    radiance*=attenuation;
-
-    //  lambert diffuse + blinn specular
-    vec3 normal = normalize(v_normal);
-
-    vec3 surfaceToViewDirection = normalize(v_surfaceToView);
-    vec3 halfVector = normalize(normalize(u_lightDirection) + surfaceToViewDirection);
-
-    //float fakeLight = clamp(dot(normalize(u_lightDirection), normal), 0.0, 1.0);
-    float specularLight = clamp(dot(normal, halfVector), 0.0, 1.0);
-
-    //vec3 effectiveDiffuse = diffuse * v_color.rgb;
-    float effectiveOpacity = opacity * v_color.a;
+    vec3 eyeDir = normalize(v_surfaceToView);
+    vec3 L = normalize(-u_directLightDirection);
+    vec3 nNormal = normalize(v_normal);
     
+    //  lambert diffuse
+    
+	float LdotN = clamp(dot(nNormal, L), 0.0, 1.0);
+
+    vec3 diffuseComponent = directColor * diffuse * LdotN;
+
+    //  blinn specular
+    float NLE = dot(normalize(eyeDir + L), nNormal);
+    float powN = pow(clamp(NLE, 0.0, 1.0), shininess);
+    //vec3 LScol = specular * clamp(sign(LdotN),0.0, 1.0);
+	//vec3 halfVec = normalize(L + eyeDir);
+	//float HdotN = clamp(dot(v_normal, halfVec), 0.0, 1.0);
+
+	//vec3 specularComponent = LScol * pow(HdotN, shininess);
+
+    vec3 specularComponent = directColor * specular * powN;
+
     //  ambient
-    float ambientStrength = mix(u_ambientStrengthDay,u_ambientStrengthNight,(cos(radians_over_time)+1.0)/2.0);
-    vec3 ambient = mix(u_ambientLightDay,u_ambientLightNight,(cos(radians_over_time)+1.0)/2.0) * ambientStrength;
+    float ambientStrength = mix(u_ambientStrengthNight,u_ambientStrengthDay,(cos(radians_over_time)+1.0)/2.0);
+    vec3 ambient = mix(u_ambientLightNight,u_ambientLightDay,(cos(radians_over_time)+1.0)/2.0) * ambientStrength;
 
-    outColor = vec4(
-        emissive +
-        ambient +
-        radiance*
-        //(effectiveDiffuse * fakeLight),
-        (specular * pow(specularLight, shininess)),
-        effectiveOpacity)*
-        v_color;
-
-    //outColor = vec4(emissive + ambient, effectiveOpacity)*v_color;
+    //  out color
+    outColor = vec4(clamp(/*emissive +*/ ambient + diffuseComponent + specularComponent, 0.0, 1.0), opacity)*v_color;
 }

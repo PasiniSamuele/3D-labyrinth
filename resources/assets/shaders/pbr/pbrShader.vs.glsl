@@ -11,12 +11,11 @@ out vec3 fragNormal;
 
 uniform mat4 projMatrix;
 uniform mat4 worldMatrix;
+uniform mat4 normalMatrix;
 
 void main(){
     fragVertPosition = (worldMatrix*vec4(vertPosition, 1.0)).xyz;
     fragTexCoord = texCoord;
-    fragNormal = (worldMatrix*vec4(normal, 1.0)).xyz;
+    fragNormal = mat3(normalMatrix)*normal;
     gl_Position = projMatrix * vec4(vertPosition, 1.0);
-
-    
 }
