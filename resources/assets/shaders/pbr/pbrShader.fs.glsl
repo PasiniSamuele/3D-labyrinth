@@ -157,7 +157,7 @@ vec3 directLightContribution(vec3 V, vec3 N, float roughness, vec3 F0, float met
     vec3 L = normalize(-directionalLightDir);
     vec3 H = normalize(V + L);
 
-	vec3 directColor = mix(directionalLightDay,directionalLightNight,(cos(radians_over_time)+1.0)/2.0);
+	vec3 directColor = mix(directionalLightNight,directionalLightDay,(cos(radians_over_time)+1.0)/2.0);
   
 
 	//vec3 radiance = lightColor;
@@ -223,8 +223,8 @@ void main(){
     
 
 
-    float ambientStrength = mix(ambientStrengthDay,ambientStrengthNight,(cos(radians_over_time)+1.0)/2.0);
-    vec3 ambient =  mix(ambientLightDay,ambientLightNight,(cos(radians_over_time)+1.0)/2.0)* albedo * ao * ambientStrength;
+    float ambientStrength = mix(ambientStrengthNight,ambientStrengthDay,(cos(radians_over_time)+1.0)/2.0);
+    vec3 ambient =  mix(ambientLightNight,ambientLightDay,(cos(radians_over_time)+1.0)/2.0)* albedo * ao * ambientStrength;
     
     vec3 color = ambient +
      Lo;

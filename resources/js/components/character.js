@@ -57,6 +57,7 @@ class Character {
         this.program.projection = gl.getUniformLocation(this.program, 'u_projection');
         this.program.view = gl.getUniformLocation(this.program, 'u_view');
         this.program.world = gl.getUniformLocation(this.program, 'u_world');
+		this.program.normalMatrix = gl.getUniformLocation(this.program, 'u_normalMatrix');
 		
         this.program.viewWorldPosition = gl.getUniformLocation(this.program, 'u_viewWorldPosition');
         this.program.diffuse = gl.getUniformLocation(this.program, 'diffuse');
@@ -79,6 +80,10 @@ class Character {
 		this.program.radians_over_time = gl.getUniformLocation(this.program, 'radians_over_time');
 		this.program.ambientStrengthDay = gl.getUniformLocation(this.program, 'u_ambientStrengthDay');
 		this.program.ambientStrengthNight = gl.getUniformLocation(this.program, 'u_ambientStrengthNight');
+
+		this.program.directLightDirection = gl.getUniformLocation(this.program, 'u_directLightDirection');
+		this.program.directColorDay = gl.getUniformLocation(this.program, 'u_directColorDay');
+		this.program.directColorNight = gl.getUniformLocation(this.program, 'u_directColorNight');
     }
 
 	loadVAO() {
@@ -140,11 +145,10 @@ class Character {
 		this.mesh.geometries.forEach((element, pos) => {
 			gl.bindVertexArray(this.vao[pos]);
 
-			console.log(this.colours[element.material]);
-
 			gl.uniformMatrix4fv(this.program.view, gl.FALSE, utils.transposeMatrix(camera.viewMatrix));
 			gl.uniformMatrix4fv(this.program.world, gl.FALSE, utils.transposeMatrix(worldMatrix));
 			gl.uniformMatrix4fv(this.program.projection, gl.FALSE, utils.transposeMatrix(projectionMatrix));
+			gl.uniformMatrix4fv(this.program.normalMatrix, gl.FALSE, utils.invertMatrix(utils.transposeMatrix(worldMatrix)));
 			gl.uniform3f(this.program.viewWorldPosition, camera.position.x, camera.position.y, camera.position.z);
 			gl.uniform3fv(this.program.color, this.colours[element.material]);
 
@@ -156,7 +160,7 @@ class Character {
 			gl.uniform1f(this.program.opacity, this.material[element.material].opacity);
 
 			gl.uniform3f(this.program.lightPosition, light.position.x, light.position.y, light.position.z);
-			gl.uniform3fv(this.program.lightDirection, [light.direction.x, light.direction.y, light.direction.z]);
+			gl.uniform3f(this.program.lightDirection, light.direction.x, light.direction.y, light.direction.z);
 			gl.uniform1f(this.program.cutOff, light.cutOff);
 			gl.uniform1f(this.program.outerCutOff, light.outerCutOff);
 			gl.uniform1f(this.program.constDecay, light.constDecay);
@@ -172,6 +176,10 @@ class Character {
 			gl.uniform1f(this.program.radians_over_time, utils.degToRad(now % 360));
 			gl.uniform1f(this.program.ambientStrengthDay, skybox.textures[0].ambientLight.strength);
 			gl.uniform1f(this.program.ambientStrengthNight, skybox.textures[1].ambientLight.strength);
+
+			gl.uniform3f(this.program.directLightDirection, skybox.lightDir.x, skybox.lightDir.y, skybox.lightDir.z);
+			gl.uniform3f(this.program.directColorDay, skybox.textures[0].directionalLight.r, skybox.textures[0].directionalLight.g, skybox.textures[0].directionalLight.b);
+			gl.uniform3f(this.program.directColorNight, skybox.textures[1].directionalLight.r, skybox.textures[1].directionalLight.g, skybox.textures[1].directionalLight.b);
 			
 			gl.drawArrays(gl.TRIANGLES, 0, element.data.position.length/3);
 		});
