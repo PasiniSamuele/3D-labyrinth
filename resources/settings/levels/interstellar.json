@@ -1,6 +1,6 @@
 {
 	"structure": {
-		"url": "resources/assets/labyrinths/lab2.json",
+		"url": "resources/assets/labyrinths/lab3.json",
 		"shaders": {
 			"wall": {
 				"vertex": "resources/assets/shaders/pbr/pbrShader.vs.glsl",
@@ -11,8 +11,8 @@
 				"fragment": "resources/assets/shaders/pbr/pbrShader.fs.glsl"
 			},
 			"models": {
-				"vertex": "resources/assets/shaders/flashlightShader/flashlightShader.vs.glsl",
-				"fragment": "resources/assets/shaders/flashlightShader/flashlightShader.fs.glsl"
+				"vertex": "resources/assets/shaders/models/modelShader.vs.glsl",
+				"fragment": "resources/assets/shaders/models/modelShader.fs.glsl"
 			}
 		},
 		"collision": {
@@ -44,12 +44,10 @@
 				"metallic": "resources/assets/textures/space-cruiser-panels1-ue/metallic.png",
 				"roughness": "resources/assets/textures/space-cruiser-panels1-ue/roughness.png"
 			}
-		}
-	},
-	"labyrinth": {
+		},
 		"random": {
-			"rows": 20,
-			"columns": 20,
+			"rows": 30,
+			"columns": 30,
 			"joinSides": true,
 			"joinProbabilities": 0.05
 		}
@@ -153,8 +151,8 @@
 			"mtl": "resources/assets/models/Flashlight.mtl"
 		},
 		"shaders": {
-			"vertex": "resources/assets/shaders/flashlightShader/flashlightShader.vs.glsl",
-			"fragment": "resources/assets/shaders/flashlightShader/flashlightShader.fs.glsl"
+			"vertex": "resources/assets/shaders/character/characterShader.vs.glsl",
+			"fragment": "resources/assets/shaders/character/characterShader.fs.glsl"
 		},
 		"colours": {
 			"Color_000_": [

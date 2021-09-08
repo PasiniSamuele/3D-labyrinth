@@ -86,10 +86,10 @@ class PbrLoadingHandler {
 		let maze2D;
 		if (this.randomGeneration)
 			maze2D = labyrinthUtils.generate2DLabyrinth(
-				levelSettings.structure.labyrinth.random.rows,
-				levelSettings.structure.labyrinth.random.columns,
-				levelSettings.structure.labyrinth.random.joinSides,
-				levelSettings.structure.labyrinth.random.join_parameters);
+				levelSettings.structure.random.rows,
+				levelSettings.structure.random.columns,
+				levelSettings.structure.random.joinSides,
+				levelSettings.structure.random.join_parameters);
 		else
 			maze2D = results[0];
 		collisionHandler.setStructure(maze2D);
