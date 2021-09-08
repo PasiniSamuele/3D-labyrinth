@@ -15,7 +15,7 @@ class CollisionHandler {
 	constructor() {
 		this.xOff;
 		this.zOff;
-		this.DEBUG_COLLISION = true;
+		this.DEBUG_COLLISION = false;
 	}
 
 	/**

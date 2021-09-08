@@ -38,12 +38,12 @@ void main () {
 	vec4 v_color = vec4(color, 1.0);
     vec3 directColor = mix(u_directColorNight,u_directColorDay,(cos(radians_over_time)+1.0)/2.0);
 
+    //  initialize
     vec3 eyeDir = normalize(v_surfaceToView);
     vec3 L = normalize(-u_directLightDirection);
     vec3 nNormal = normalize(v_normal);
     
     //  lambert diffuse
-    
 	float LdotN = clamp(dot(nNormal, L), 0.0, 1.0);
 
     vec3 diffuseComponent = directColor * diffuse * LdotN;
@@ -51,11 +51,6 @@ void main () {
     //  blinn specular
     float NLE = dot(normalize(eyeDir + L), nNormal);
     float powN = pow(clamp(NLE, 0.0, 1.0), shininess);
-    //vec3 LScol = specular * clamp(sign(LdotN),0.0, 1.0);
-	//vec3 halfVec = normalize(L + eyeDir);
-	//float HdotN = clamp(dot(v_normal, halfVec), 0.0, 1.0);
-
-	//vec3 specularComponent = LScol * pow(HdotN, shininess);
 
     vec3 specularComponent = directColor * specular * powN;
 
@@ -64,5 +59,5 @@ void main () {
     vec3 ambient = mix(u_ambientLightNight,u_ambientLightDay,(cos(radians_over_time)+1.0)/2.0) * ambientStrength;
 
     //  out color
-    outColor = vec4(clamp(/*emissive +*/ ambient + diffuseComponent + specularComponent, 0.0, 1.0), opacity)*v_color;
+    outColor = vec4(clamp(emissive + ambient + diffuseComponent + specularComponent, 0.0, 1.0), opacity)*v_color;
 }

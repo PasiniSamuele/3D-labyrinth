@@ -37,12 +37,14 @@ class LabyrinthModel extends PbrLabyrinthElement {
 	loadLocations(){
         this.program.position = gl.getAttribLocation(this.program, 'a_position');
         this.program.normal = gl.getAttribLocation(this.program, 'a_normal');
-        this.program.color = gl.getAttribLocation(this.program, 'a_color');
 
         this.program.projection = gl.getUniformLocation(this.program, 'u_projection');
         //this.program.view = gl.getUniformLocation(this.program, 'u_view');
         this.program.world = gl.getUniformLocation(this.program, 'u_world');
         this.program.viewWorldPosition = gl.getUniformLocation(this.program, 'u_viewWorldPosition');
+		this.program.normalMatrix = gl.getUniformLocation(this.program, 'u_normalMatrix');
+
+        this.program.color = gl.getUniformLocation(this.program, 'color');
         this.program.diffuse = gl.getUniformLocation(this.program, 'diffuse');
         this.program.emissive = gl.getUniformLocation(this.program, 'emissive');
         this.program.specular = gl.getUniformLocation(this.program, 'specular');
@@ -63,6 +65,10 @@ class LabyrinthModel extends PbrLabyrinthElement {
 		this.program.radians_over_time = gl.getUniformLocation(this.program, 'radians_over_time');
 		this.program.ambientStrengthDay = gl.getUniformLocation(this.program, 'u_ambientStrengthDay');
 		this.program.ambientStrengthNight = gl.getUniformLocation(this.program, 'u_ambientStrengthNight');
+
+		this.program.directLightDirection = gl.getUniformLocation(this.program, 'u_directLightDirection');
+		this.program.directColorDay = gl.getUniformLocation(this.program, 'u_directColorDay');
+		this.program.directColorNight = gl.getUniformLocation(this.program, 'u_directColorNight');
     }
 
 	/**
@@ -85,24 +91,6 @@ class LabyrinthModel extends PbrLabyrinthElement {
 				gl.FALSE,
 				3 * Float32Array.BYTES_PER_ELEMENT,
 				0 * Float32Array.BYTES_PER_ELEMENT// Offset from the beginning of a single vertex to this attribute
-			);
-
-			let colorArray = [];
-			for(i = 0; i < element.data.position.length; i+=3){
-				colorArray = colorArray.concat(this.color);
-			}
-
-			let colorBufferObject = gl.createBuffer();
-			gl.bindBuffer(gl.ARRAY_BUFFER, colorBufferObject);
-			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colorArray), gl.STATIC_DRAW);
-			gl.enableVertexAttribArray(this.program.color);
-			gl.vertexAttribPointer(
-				this.program.color,
-				4,
-				gl.FLOAT,
-				gl.FALSE,
-				4 * Float32Array.BYTES_PER_ELEMENT,
-				0 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
 			);
 
 			let normBufferObject = gl.createBuffer();
@@ -142,8 +130,10 @@ class LabyrinthModel extends PbrLabyrinthElement {
 			//gl.uniformMatrix4fv(this.program.view, gl.FALSE, utils.transposeMatrix(viewMatrix));
 			gl.uniformMatrix4fv(this.program.world, gl.FALSE, utils.transposeMatrix(this.worldMatrix));
 			gl.uniformMatrix4fv(this.program.projection, gl.FALSE, utils.transposeMatrix(projectionMatrix));
+			gl.uniformMatrix4fv(this.program.normalMatrix, gl.FALSE, utils.invertMatrix(utils.transposeMatrix(this.worldMatrix)));
 			gl.uniform3f(this.program.viewWorldPosition, camPos.x, camPos.y, camPos.z);
 
+			gl.uniform3fv(this.program.color, this.color);
 			gl.uniform3fv(this.program.diffuse, this.material[element.material].diffuse);
 			gl.uniform3fv(this.program.ambient, this.material[element.material].ambient);
 			gl.uniform3fv(this.program.emissive, this.emissive);
@@ -169,6 +159,10 @@ class LabyrinthModel extends PbrLabyrinthElement {
 			gl.uniform1f(this.program.radians_over_time, utils.degToRad(now % 360));
 			gl.uniform1f(this.program.ambientStrengthDay, skybox.textures[0].ambientLight.strength);
 			gl.uniform1f(this.program.ambientStrengthNight, skybox.textures[1].ambientLight.strength);
+
+			gl.uniform3f(this.program.directLightDirection, skybox.lightDir.x, skybox.lightDir.y, skybox.lightDir.z);
+			gl.uniform3f(this.program.directColorDay, skybox.textures[0].directionalLight.r, skybox.textures[0].directionalLight.g, skybox.textures[0].directionalLight.b);
+			gl.uniform3f(this.program.directColorNight, skybox.textures[1].directionalLight.r, skybox.textures[1].directionalLight.g, skybox.textures[1].directionalLight.b);
 			
 			gl.drawArrays(gl.TRIANGLES, 0, element.data.position.length/3);
 		});
