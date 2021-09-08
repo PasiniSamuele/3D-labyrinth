@@ -59,13 +59,26 @@
 			"vertex": "resources/assets/shaders/envDayNightShader/envmap.vs.glsl",
 			"fragment": "resources/assets/shaders/envDayNightShader/envmap.fs.glsl"
 		},
+		"light": {
+			"direction": {
+				"x": -1.0,
+				"y": -2.0,
+				"z": 0.25
+			}
+		},
 		"skyboxes": [
+			
 			{
 				"ambientLight": {
 					"r": 0.541,
 					"g": 0.973,
 					"b": 1,
 					"strength": 0.3
+				},
+				"directionalLight": {
+					"r": 1.00,
+					"g": 0.96,
+					"b": 0.62
 				},
 				"images": [
 					{
@@ -96,10 +109,15 @@
 			},
 			{
 				"ambientLight": {
-					"r": 0.012,
-					"g": 0.1,
-					"b": 0.243,
-					"strength": 0.2
+					"r": 0.20,
+					"g": 0.50,
+					"b": 0.60,
+					"strength": 0.20
+				},
+				"directionalLight": {
+					"r": 0.15,
+					"g": 0.45,
+					"b": 0.30
 				},
 				"images": [
 					{
@@ -138,6 +156,53 @@
 		"shaders": {
 			"vertex": "resources/assets/shaders/flashlightShader/flashlightShader.vs.glsl",
 			"fragment": "resources/assets/shaders/flashlightShader/flashlightShader.fs.glsl"
+		},
+		"colours": {
+			"Color_000_": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"Color_002_": [
+				0.7529,
+				0.7529,
+				0.7529
+			],
+			"Color_007_": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"Color_009_": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"Metal_Corrogated_Shiny_": [
+				0.7529,
+				0.7529,
+				0.7529
+			],
+			"Metal_Seamed_": [
+				1.0,
+				0.715,
+				0.0
+			],
+			"Translucent_Glass_Gray_": [
+				1.0,
+				0.715,
+				0.0
+			],
+			"fpArms_skinMale_mat": [
+				0.8784,
+				0.6745,
+				0.4117
+			],
+			"material": [
+				0.0,
+				0.0,
+				0.0
+			]
 		},
 		"offset": {
 			"x": 0.0,
