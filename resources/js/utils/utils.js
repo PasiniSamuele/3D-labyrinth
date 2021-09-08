@@ -929,7 +929,7 @@ var utils = {
 			const parts = line.split(/\s+/).slice(1);
 			const handler = keywords[keyword];
 			if (!handler) {
-				console.warn('unhandled keyword:', keyword);  // eslint-disable-line no-console
+				//console.warn('unhandled keyword:', keyword);  // eslint-disable-line no-console
 				continue;
 			}
 			handler(parts, unparsedArgs);
@@ -993,7 +993,7 @@ var utils = {
 			const parts = line.split(/\s+/).slice(1);
 			const handler = keywords[keyword];
 			if (!handler) {
-				console.warn('unhandled keyword:', keyword);  // eslint-disable-line no-console
+				//console.warn('unhandled keyword:', keyword);  // eslint-disable-line no-console
 				continue;
 			}
 			handler(parts, unparsedArgs);

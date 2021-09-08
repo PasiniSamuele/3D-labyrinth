@@ -66,8 +66,7 @@ class PbrLabyrinthElement {
 	}
 
 	draw(perspectiveMatrix, viewMatrix, light, camPos, skybox, now) {
-
-
+		
 		// For each [..]
 		this.children.forEach(child => child.draw(perspectiveMatrix, viewMatrix));
 		let viewWorldMatrix = utils.multiplyMatrices(viewMatrix, this.worldMatrix);
@@ -112,10 +111,14 @@ class PbrLabyrinthElement {
 		gl.uniform1f(this.program.quadDecay, light.quadDecay);
 		gl.uniform1f(this.program.ambientStrengthDay, skybox.textures[0].ambientLight.strength);
 		gl.uniform1f(this.program.ambientStrengthNight, skybox.textures[1].ambientLight.strength);
+		console.log(skybox);
 		gl.uniform3f(this.program.lightDir, light.direction.x, light.direction.y, light.direction.z);
+		gl.uniform3f(this.program.directionalLightDir, skybox.lightDir.x, skybox.lightDir.y, skybox.lightDir.z);
 		gl.uniform3f(this.program.camPos, camPos.x, camPos.y, camPos.z);
 		gl.uniform3f(this.program.ambientLightDay, skybox.textures[0].ambientLight.r, skybox.textures[0].ambientLight.g, skybox.textures[0].ambientLight.b);
 		gl.uniform3f(this.program.ambientLightNight, skybox.textures[1].ambientLight.r, skybox.textures[1].ambientLight.g, skybox.textures[1].ambientLight.b);
+		gl.uniform3f(this.program.directionalLightDay, skybox.textures[0].directionalLight.r, skybox.textures[0].directionalLight.g, skybox.textures[0].directionalLight.b);
+		gl.uniform3f(this.program.directionalLightNight, skybox.textures[1].directionalLight.r, skybox.textures[1].directionalLight.g, skybox.textures[1].directionalLight.b);
 		gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
 	}
 
@@ -150,6 +153,9 @@ class PbrLabyrinthElement {
 		this.program.radians_over_time = gl.getUniformLocation(this.program, 'radians_over_time');
 		this.program.ambientStrengthDay = gl.getUniformLocation(this.program, 'ambientStrengthDay');
 		this.program.ambientStrengthNight = gl.getUniformLocation(this.program, 'ambientStrengthNight');
+		this.program.directionalLightDir = gl.getUniformLocation(this.program, 'directionalLightDir');
+		this.program.directionalLightDay = gl.getUniformLocation(this.program, 'directionalLightDay');
+		this.program.directionalLightNight = gl.getUniformLocation(this.program, 'directionalLightNight');
 	}
 
 }

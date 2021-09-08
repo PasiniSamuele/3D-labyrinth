@@ -12,10 +12,11 @@ class SkyboxTexture {
      * @param { object } faceInfos Images of the faces info
      * @param { object } slot gl.TEXTURE slot for this Texture
      */
-    constructor(faceInfos, ambientLight,  slot) {
+    constructor(faceInfos, ambientLight, light,  slot) {
         this.faceInfos = faceInfos;
         this.slot = slot;
         this.ambientLight = ambientLight;
+        this.directionalLight = light;
         this.init();
     }
 

@@ -6,9 +6,7 @@ in vec2 fragTexCoord;
 in vec3 fragVertPosition;
 in vec3 fragNormal;
 
-// IBL
-uniform vec3 ambientLightDay;
-uniform vec3 ambientLightNight;
+
 uniform float radians_over_time;
 
 
@@ -27,9 +25,18 @@ uniform float cutOff;
 uniform float outerCutOff;
 uniform float constDecay;
 uniform float linDecay;
-uniform float quadDecay;	
+uniform float quadDecay;
+
+//ambient
 uniform float ambientStrengthDay;
 uniform float ambientStrengthNight;
+uniform vec3 ambientLightDay;
+uniform vec3 ambientLightNight;
+
+//direct
+uniform vec3 directionalLightDir;
+uniform vec3 directionalLightDay;
+uniform vec3 directionalLightNight;
 
 uniform vec3 camPos;
 
@@ -101,28 +108,8 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(max(1.0 - cosTheta, 0.0), 5.0);
 }  
 
-void main(){
-
-    vec3 albedo     = pow(texture(albedoMap, fragTexCoord).rgb, vec3(2.2));
-    vec3 normal     = getNormalFromMap();
-    float metallic  = texture(metallicMap, fragTexCoord).r;
-    float roughness = texture(roughnessMap, fragTexCoord).r;
-    float ao        = texture(aoMap, fragTexCoord).r;
-
-    vec3 N = normal;
-    vec3 V = normalize(camPos - fragVertPosition);
-    vec3 R = reflect(-V, N); 
-
-    // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
-    // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
-    vec3 F0 = vec3(0.04); 
-    F0 = mix(F0, albedo, metallic);
-
-
-    // reflectance equation
-    vec3 Lo = vec3(0.0);
-
-    // calculate per-light radiance
+vec3 spotlightContribution(vec3 V, vec3 N, float roughness, vec3 F0, float metallic, vec3 albedo){
+     // calculate per-light radiance
     vec3 L = normalize(lightPosition - fragVertPosition);
     vec3 H = normalize(V + L);
     float theta     = dot(L, normalize(-lightDir));
@@ -139,7 +126,9 @@ void main(){
     // Cook-Torrance BRDF
     float NDFlight = DistributionGGX(N, H, roughness);   
     float Glight    = GeometrySmith(N, V, L, roughness);    
-    vec3 Flight     = fresnelSchlick(max(dot(H, V), 0.0), F0);        
+    vec3 Flight     = fresnelSchlick(max(dot(H, V), 0.0), F0);    
+    vec3 Lo = vec3(0.0);
+    
     
     vec3 numerator    = NDFlight  * Glight  * Flight ;
     float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; // 0.001 to prevent divide by zero.
@@ -161,8 +150,71 @@ void main(){
 
     // add to outgoing radiance Lo
     Lo += (kDlight  * albedo / PI + specularLight) * radiance * NdotL; // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+    return Lo;
+}
 
-    // ambient lighting (we now use IBL as the ambient term)
+vec3 directLightContribution(vec3 V, vec3 N, float roughness, vec3 F0, float metallic, vec3 albedo){
+    vec3 L = normalize(-directionalLightDir);
+    vec3 H = normalize(V + L);
+
+	vec3 directColor = mix(directionalLightDay,directionalLightNight,(cos(radians_over_time)+1.0)/2.0);
+  
+
+	//vec3 radiance = lightColor;
+    // Cook-Torrance BRDF
+    float NDFlight = DistributionGGX(N, H, roughness);   
+    float Glight    = GeometrySmith(N, V, L, roughness);    
+    vec3 Flight     = fresnelSchlick(max(dot(H, V), 0.0), F0);    
+    vec3 Lo = vec3(0.0);
+    
+    
+    vec3 numerator    = NDFlight  * Glight  * Flight ;
+    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; // 0.001 to prevent divide by zero.
+    vec3 specularLight = numerator / denominator;
+    
+        // kS is equal to Fresnel
+    vec3 kSlight  = Flight ;
+    // for energy conservation, the diffuse and specular light can't
+    // be above 1.0 (unless the surface emits light); to preserve this
+    // relationship the diffuse component (kD) should equal 1.0 - kS.
+    vec3 kDlight  = vec3(1.0) - kSlight ;
+    // multiply kD by the inverse metalness such that only non-metals 
+    // have diffuse lighting, or a linear blend if partly metal (pure metals
+    // have no diffuse light).
+    kDlight  *= 1.0 - metallic;	                
+        
+    // scale light by NdotL
+    float NdotL = max(dot(N, L), 0.0);        
+
+    // add to outgoing radiance Lo
+    Lo += (kDlight  * albedo / PI + specularLight) * directColor * NdotL; // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+    return Lo;
+}
+
+
+void main(){
+
+    vec3 albedo     = pow(texture(albedoMap, fragTexCoord).rgb, vec3(2.2));
+    vec3 normal     = getNormalFromMap();
+    float metallic  = texture(metallicMap, fragTexCoord).r;
+    float roughness = texture(roughnessMap, fragTexCoord).r;
+    float ao        = texture(aoMap, fragTexCoord).r;
+
+    vec3 N = normal;
+    vec3 V = normalize(camPos - fragVertPosition);
+
+    // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
+    // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
+    vec3 F0 = vec3(0.04); 
+    F0 = mix(F0, albedo, metallic);
+
+
+    // reflectance equation
+    vec3 Lo = vec3(0.0);
+
+    Lo+=directLightContribution(V, N, roughness, F0, metallic, albedo) + spotlightContribution(V, N, roughness, F0, metallic, albedo);
+
+    // ambient lighting 
     vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
     
     vec3 kS = F;
@@ -172,9 +224,10 @@ void main(){
 
 
     float ambientStrength = mix(ambientStrengthDay,ambientStrengthNight,(cos(radians_over_time)+1.0)/2.0);
-    vec3 ambient =  mix(ambientLightDay,ambientLightNight,(cos(radians_over_time)+1.0)/2.0)* albedo * ao/* * ambientStrength*/;
+    vec3 ambient =  mix(ambientLightDay,ambientLightNight,(cos(radians_over_time)+1.0)/2.0)* albedo * ao * ambientStrength;
     
-    vec3 color = ambient + Lo;
+    vec3 color = ambient +
+     Lo;
 
     // HDR tonemapping
     //color = color / (color + vec3(1.0));

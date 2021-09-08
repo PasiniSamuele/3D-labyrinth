@@ -38,8 +38,9 @@ class LabyrinthModel extends PbrLabyrinthElement {
         this.program.position = gl.getAttribLocation(this.program, 'a_position');
         this.program.normal = gl.getAttribLocation(this.program, 'a_normal');
         this.program.color = gl.getAttribLocation(this.program, 'a_color');
+
         this.program.projection = gl.getUniformLocation(this.program, 'u_projection');
-        this.program.view = gl.getUniformLocation(this.program, 'u_view');
+        //this.program.view = gl.getUniformLocation(this.program, 'u_view');
         this.program.world = gl.getUniformLocation(this.program, 'u_world');
         this.program.viewWorldPosition = gl.getUniformLocation(this.program, 'u_viewWorldPosition');
         this.program.diffuse = gl.getUniformLocation(this.program, 'diffuse');
@@ -59,7 +60,7 @@ class LabyrinthModel extends PbrLabyrinthElement {
 
         this.program.ambientLightDay = gl.getUniformLocation(this.program, 'u_ambientLightDay');
 		this.program.ambientLightNight = gl.getUniformLocation(this.program, 'u_ambientLightNight');
-		this.program.radians_over_time = gl.getUniformLocation(this.program, 'u_radians_over_time');
+		this.program.radians_over_time = gl.getUniformLocation(this.program, 'radians_over_time');
 		this.program.ambientStrengthDay = gl.getUniformLocation(this.program, 'u_ambientStrengthDay');
 		this.program.ambientStrengthNight = gl.getUniformLocation(this.program, 'u_ambientStrengthNight');
     }
@@ -87,10 +88,9 @@ class LabyrinthModel extends PbrLabyrinthElement {
 			);
 
 			let colorArray = [];
-			for(i = 0; i < element.data.position.length; i+=4){
+			for(i = 0; i < element.data.position.length; i+=3){
 				colorArray = colorArray.concat(this.color);
 			}
-			console.log(colorArray);
 
 			let colorBufferObject = gl.createBuffer();
 			gl.bindBuffer(gl.ARRAY_BUFFER, colorBufferObject);
@@ -98,10 +98,10 @@ class LabyrinthModel extends PbrLabyrinthElement {
 			gl.enableVertexAttribArray(this.program.color);
 			gl.vertexAttribPointer(
 				this.program.color,
-				3,
+				4,
 				gl.FLOAT,
 				gl.FALSE,
-				3 * Float32Array.BYTES_PER_ELEMENT,
+				4 * Float32Array.BYTES_PER_ELEMENT,
 				0 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
 			);
 
@@ -130,6 +130,8 @@ class LabyrinthModel extends PbrLabyrinthElement {
 	draw(perspectiveMatrix, viewMatrix, light, camPos, skybox, now) {
 		// Calls the parent draw
 		this.children.forEach(child => child.draw(perspectiveMatrix, viewMatrix, light, camPos));
+		let viewWorldMatrix = utils.multiplyMatrices(viewMatrix, this.worldMatrix);
+		let projectionMatrix = utils.multiplyMatrices(perspectiveMatrix, viewWorldMatrix);
 		
 		// GL stuffs
         gl.useProgram(this.program);
@@ -137,22 +139,22 @@ class LabyrinthModel extends PbrLabyrinthElement {
 		this.mesh.geometries.forEach((element, pos) => {
 			gl.bindVertexArray(this.vao[pos]);
 
-			gl.uniformMatrix4fv(this.program.view, gl.FALSE, utils.transposeMatrix(viewMatrix));
+			//gl.uniformMatrix4fv(this.program.view, gl.FALSE, utils.transposeMatrix(viewMatrix));
 			gl.uniformMatrix4fv(this.program.world, gl.FALSE, utils.transposeMatrix(this.worldMatrix));
-			gl.uniformMatrix4fv(this.program.projection, gl.FALSE, utils.transposeMatrix(perspectiveMatrix));
+			gl.uniformMatrix4fv(this.program.projection, gl.FALSE, utils.transposeMatrix(projectionMatrix));
 			gl.uniform3f(this.program.viewWorldPosition, camPos.x, camPos.y, camPos.z);
 
 			gl.uniform3fv(this.program.diffuse, this.material[element.material].diffuse);
 			gl.uniform3fv(this.program.ambient, this.material[element.material].ambient);
 			gl.uniform3fv(this.program.emissive, this.emissive);
 			gl.uniform3fv(this.program.specular, this.material[element.material].specular);
-			gl.uniform1f(this.program.shininess, 100);//this.material[element.material].shininess);
+			gl.uniform1f(this.program.shininess, this.material[element.material].shininess);
 			gl.uniform1f(this.program.opacity, this.material[element.material].opacity);
 
 			gl.uniform3f(this.program.lightPosition, light.position.x, light.position.y, light.position.z);
-			gl.uniform3fv(this.program.lightDirection, [light.direction.x, light.direction.y, light.direction.z]);
-			gl.uniform1f(this.program.cutOff, light.cutOff);
-			gl.uniform1f(this.program.outerCutOff, light.outerCutOff);
+			gl.uniform3f(this.program.lightDirection, light.direction.x, light.direction.y, light.direction.z);
+			gl.uniform1f(this.program.cutOff, Math.cos(utils.degToRad(light.cutOff)));
+			gl.uniform1f(this.program.outerCutOff, Math.cos(utils.degToRad(light.outerCutOff)));
 			gl.uniform1f(this.program.constDecay, light.constDecay);
 			gl.uniform1f(this.program.linDecay, light.linDecay);
 			gl.uniform1f(this.program.quadDecay, light.quadDecay);

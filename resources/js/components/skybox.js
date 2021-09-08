@@ -12,9 +12,10 @@ class Skybox {
      * @param { object } textures textures used by the skybox
      * @param { object } program gl program associated to the object
      */
-    constructor(textures, program) {
+    constructor(textures, program, lightDir) {
         this.textures = textures;
         this.program = program;
+        this.lightDir = lightDir;
         this.locations = {};
         this.init();
     }

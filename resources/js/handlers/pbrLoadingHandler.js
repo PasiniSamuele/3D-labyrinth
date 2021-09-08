@@ -100,11 +100,11 @@ class PbrLoadingHandler {
 		let textures = [];
 		let index = 0;	//unique texture index for skybox & labyrinth elements
 		levelSettings.skybox.skyboxes.forEach((skybox) => {
-			textures.push(new SkyboxTexture(skybox.images, skybox.ambientLight, gl.TEXTURE0 + index++));
+			textures.push(new SkyboxTexture(skybox.images, skybox.ambientLight, skybox.directionalLight, gl.TEXTURE0 + index++));
 		});
-		let skybox = new Skybox(textures, program[1]);
+		let skybox = new Skybox(textures, program[1], levelSettings.skybox.light.direction);
 		// Set the actual level
-		let character = new Character(results[7], results[8], levelSettings.character.offset, program[2], levelSettings.character.light);
+		let character = new Character(results[7], results[8], levelSettings.character.offset, program[2], levelSettings.character.light, levelSettings.character.colours);
 		let pbrTexture = {};
 		pbrTexture.floor = new PbrTexture(levelSettings.structure.textures.floor,
 			gl.TEXTURE0 + index++,

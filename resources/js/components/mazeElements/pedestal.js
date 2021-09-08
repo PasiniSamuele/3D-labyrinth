@@ -18,8 +18,8 @@ class Pedestal extends LabyrinthModel {
 	constructor(structure, parent, program, objStr, mtlStr) {
 		super(structure, parent, program, objStr, mtlStr);
 		// Color settings
-		this.color = [0.5, 0.5, 0.5];
-		this.emissive = [0, 0, 0];
+		this.color = [94/255, 55/255, 13/255, 37/255];
+		this.emissive = [0.0, 0.0, 0.0];
 	}
 
 	/**
