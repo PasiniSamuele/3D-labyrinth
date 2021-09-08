@@ -3,19 +3,19 @@
 	"settings": {
 		"levels": [
 			{
+				"level": "resources/settings/levels/grass.json"
+			},
+			{
 				"level": "resources/settings/levels/urban.json"
+			},
+			{
+				"level": "resources/settings/levels/old-wild-west.json"
 			},
 			{
 				"level": "resources/settings/levels/snow.json"
 			},
 			{
 				"level": "resources/settings/levels/interstellar.json"
-			},
-			{
-				"level": "resources/settings/levels/old-wild-west.json"
-			},
-			{
-				"level": "resources/settings/levels/grass.json"
 			}
 		]
 	}
