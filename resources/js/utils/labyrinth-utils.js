@@ -514,6 +514,13 @@ var labyrinthUtils = {
         //generate path
         labyrinth = iterateLabyrinth(labyrinth, start_row, start_col);
 
+        //break other walls
+        for(i = 1; i < labyrinth.length; i+=2){
+            for(j = 1; j < labyrinth[0].length; j+=2){
+                if(joinSides && Math.random() < joinProbability) labyrinth[i][j] = mazeElement.FLOOR;
+            }
+        }
+
         //compute final position (AS THE FURTHEST FROM THE STARTING POINT)
         let maze = labyrinth.map(function(arr) {return arr.slice()});
         let finalPosition = computeFinalPosition(maze, [start_row, start_col]);

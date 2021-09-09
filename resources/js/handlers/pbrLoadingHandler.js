@@ -139,7 +139,7 @@ class PbrLoadingHandler {
 		} else this.actualLevel++;
 		// Load recources and return
 		if (this.actualLevel >= this.levels.length){
-			alert("you win");
+			alert("YOU WIN!!! Starting random generation...");
 			this.randomGeneration = true;
 			do{
 				this.actualLevel = Math.floor(Math.random()*this.levels.length);
