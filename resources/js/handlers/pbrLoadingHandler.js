@@ -100,7 +100,7 @@ class PbrLoadingHandler {
 		let textures = [];
 		let index = 0;	//unique texture index for skybox & labyrinth elements
 		levelSettings.skybox.skyboxes.forEach((skybox) => {
-			textures.push(new SkyboxTexture(skybox.images, skybox.ambientLight, skybox.directionalLight, gl.TEXTURE0 + index++));
+			textures.push(new SkyboxTexture(skybox.images, skybox.ambientLight, skybox.directionalLight, gl.TEXTURE0 + index++, skybox.width, skybox.height));
 		});
 		let skybox = new Skybox(textures, program[1], levelSettings.skybox.light.direction);
 		// Set the actual level
@@ -132,14 +132,21 @@ class PbrLoadingHandler {
 	 */
 	async loadNextLevel() {
 		// Increment actual level index
-		this.actualLevel++;
+		if(this.randomGeneration){
+			do{
+				this.actualLevel = Math.floor(Math.random()*this.levels.length);
+			}while(this.actualLevel>this.levels.length-1);
+		} else this.actualLevel++;
 		// Load recources and return
-		if (this.actualLevel >= this.levels.length)
-			return null;
-		else {
-			let activeLevel = await this.initResources(this.levels[this.actualLevel]);
-			return activeLevel;
+		if (this.actualLevel >= this.levels.length){
+			alert("you win");
+			this.randomGeneration = true;
+			do{
+				this.actualLevel = Math.floor(Math.random()*this.levels.length);
+			}while(this.actualLevel>this.levels.length-1);
 		}
+		let activeLevel = await this.initResources(this.levels[this.actualLevel]);
+		return activeLevel;
 	};
 
 }

@@ -13,7 +13,6 @@ class MovementHandler {
 	 * Constructor
 	 */
 	constructor(){
-		this.blocked=false;
 	}
 
 	/**
@@ -26,7 +25,6 @@ class MovementHandler {
 	 */
 	idle(camera, interactionHandler, light) {
 		// Keys recognition
-		if(!this.blocked){
 			if (interactionHandler.keys['KeyW']) { camera.moveForward(); }
 			if (interactionHandler.keys['KeyS']) { camera.moveBackward(); }
 			if (interactionHandler.keys['KeyD']) { camera.moveRight(); }
@@ -43,14 +41,11 @@ class MovementHandler {
 					light.ignition.lastTime = Date.now() / 1000;
 				}
 			}
-		}
 		// Mouse movements recognition
 		if (interactionHandler.mouse.x != 0) {
-			if(!this.blocked)
 				camera.setRotationX(interactionHandler.mouse.x);
 		}
 		if (interactionHandler.mouse.y != 0) {
-			if(!this.blocked)
 				camera.setRotationY(interactionHandler.mouse.y);
 		}
 		// Return camera, interactionHandler, light

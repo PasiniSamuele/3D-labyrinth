@@ -61,6 +61,10 @@ vec3 getNormalFromMap()
     return normalize(TBN * tangentNormal);
 }
 
+/*
+*   Trowbridge-Reitx GGX Normal distribution function 
+*   (microfacets alligned with the halfway vector)
+*/
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
     float a = roughness*roughness;

@@ -12,11 +12,13 @@ class SkyboxTexture {
      * @param { object } faceInfos Images of the faces info
      * @param { object } slot gl.TEXTURE slot for this Texture
      */
-    constructor(faceInfos, ambientLight, light,  slot) {
+    constructor(faceInfos, ambientLight, light,  slot, width, height) {
         this.faceInfos = faceInfos;
         this.slot = slot;
         this.ambientLight = ambientLight;
         this.directionalLight = light;
+        this.width = width;
+        this.height = height;
         this.init();
     }
 
@@ -36,12 +38,10 @@ class SkyboxTexture {
             // Upload the canvas to the cubemap face.
             const level = 0;
             const internalFormat = gl.RGBA;
-            const width = 1024;
-            const height = 1024;
             const format = gl.RGBA;
             const type = gl.UNSIGNED_BYTE;
             // setup each face so it's immediately renderable
-            gl.texImage2D(target, level, internalFormat, width, height, 0, format, type, null);
+            gl.texImage2D(target, level, internalFormat, this.width, this.height, 0, format, type, null);
 
             // Asynchronously load an image
             const image = new Image();

@@ -59,9 +59,9 @@
 		},
 		"light": {
 			"direction": {
-				"r": 0.45,
-				"g": 0.30,
-				"b": 0.20
+				"x": 1.0,
+				"y": -2.0,
+				"z": 0.25
 			}
 		},
 		"skyboxes": [
@@ -77,6 +77,8 @@
 					"g": 0.682,
 					"b": 0.325
 				},
+				"width":512,
+				"height":512,
 				"images": [
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
@@ -116,6 +118,8 @@
 					"g": 0.0,
 					"b": 0.0
 				},
+				"width":1024,
+				"height":1024,
 				"images": [
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",

@@ -114,8 +114,6 @@ class SceneHandler {
 	 *******************************/
 
 	setupCameraToMonkey() {
-		this.level.camera.blocked = true;
-		this.movementHandler.blocked = false;
 		this.animations.cameraToMonkey.startTime = this.then;
 		this.animations.cameraToMonkey.startPosition = this.level.camera.position;
 		let angle = this.animations.cameraToMonkey.startPosition.angle;

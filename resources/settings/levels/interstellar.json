@@ -77,6 +77,8 @@
 					"g": 0.15,
 					"b": 0.75
 				},
+				"width":1024,
+				"height":1024,
 				"images": [
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
@@ -116,6 +118,8 @@
 					"g": 0.15,
 					"b": 0.25
 				},
+				"width":1024,
+				"height":1024,
 				"images": [
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
@@ -309,7 +313,7 @@
 			"x": {
 				"default": 0.0,
 				"max": 2.0,
-				"decelerationCoefficient": 20.0
+				"decelerationCoefficient": 1.0
 			},
 			"y": {
 				"default": 0.0,
@@ -319,7 +323,7 @@
 			"z": {
 				"default": 0.0,
 				"max": 4.0,
-				"decelerationCoefficient": 10.0
+				"decelerationCoefficient": 1.0
 			},
 			"angle": {
 				"default": 0.0,

@@ -27,7 +27,6 @@ function main(activeLevel) {
 	interactionHandler.resetKeys();
 	sceneHandler.setLevel(activeLevel);
 	levelHandler.setLevel(activeLevel);
-	movementHandler.blocked=false;
 	sceneHandler.start();
 }
 

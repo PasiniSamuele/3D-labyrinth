@@ -15,7 +15,7 @@ class CollisionHandler {
 	constructor() {
 		this.xOff;
 		this.zOff;
-		this.DEBUG_COLLISION = true;
+		this.DEBUG_COLLISION = false;
 	}
 
 	/**
@@ -37,11 +37,13 @@ class CollisionHandler {
 			let newzAbsolute = Math.floor(newz + this.offset.row + Math.sign(zvar) * this.zOff);
 			let minxAbsolute = Math.floor(newx + this.offset.column - Math.sign(xvar) * this.xOff);
 			let minzAbsolute = Math.floor(newz + this.offset.row - Math.sign(zvar) * this.zOff);
+
 			let cond1 = labyrinthUtils.isBlock(this.structure, newzAbsolute, newxAbsolute);
 			let cond2 = labyrinthUtils.isBlock(this.structure, zAbsolute, newxAbsolute);
 			let cond3 = labyrinthUtils.isBlock(this.structure, newzAbsolute, xAbsolute);
 			let cond4 = labyrinthUtils.isBlock(this.structure, newzAbsolute, minxAbsolute);
 			let cond5 = labyrinthUtils.isBlock(this.structure, minzAbsolute, newxAbsolute);
+
 			if (xAbsolute != newxAbsolute && (cond2 || cond1 && !cond2 && !cond3 || !cond1 && cond5)) {
 				newx = x;
 				xCollide = true;

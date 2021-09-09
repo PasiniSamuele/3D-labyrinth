@@ -31,11 +31,11 @@
 		},
 		"textures": {
 			"floor": {
-				"albedo": "resources/assets/textures/wornpaintedwoodsiding-ue/albedo.png",
-				"normal": "resources/assets/textures/wornpaintedwoodsiding-ue/Normal.png",
-				"ao": "resources/assets/textures/wornpaintedwoodsiding-ue/ao.png",
-				"metallic": "resources/assets/textures/wornpaintedwoodsiding-ue/metallic.png",
-				"roughness": "resources/assets/textures/wornpaintedwoodsiding-ue/roughness.png"
+				"albedo": "resources/assets/textures/haystack/albedo.png",
+				"normal": "resources/assets/textures/haystack/Normal.png",
+				"ao": "resources/assets/textures/haystack/ao.png",
+				"metallic": "resources/assets/textures/haystack/metallic.png",
+				"roughness": "resources/assets/textures/haystack/roughness.png"
 			},
 			"wall": {
 				"albedo": "resources/assets/textures/woodframe1-ue/albedo.png",
@@ -77,6 +77,8 @@
 					"g": 0.96,
 					"b": 0.62
 				},
+				"width":512,
+				"height":512,
 				"images": [
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
@@ -116,6 +118,8 @@
 					"g": 0.30,
 					"b": 0.20
 				},
+				"width":512,
+				"height":512,
 				"images": [
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",

@@ -77,6 +77,8 @@
 					"g": 0.96,
 					"b": 0.62
 				},
+				"width":1024,
+				"height":1024,
 				"images": [
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
@@ -116,6 +118,8 @@
 					"g": 0.05,
 					"b": 0.10
 				},
+				"width":1024,
+				"height":1024,
 				"images": [
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",

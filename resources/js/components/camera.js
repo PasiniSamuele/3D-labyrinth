@@ -56,9 +56,8 @@ class Camera {
 		this.lastRotationX = [];
 		this.lastRotationY = [];
 		// DEBUG PARAMETERS
-		this.DEBUG = true;
+		this.DEBUG = false;
 
-		this.blocked=false;
 	}
 
 	/*******************
@@ -69,8 +68,7 @@ class Camera {
 	 * Move the camera right
 	 */
 	moveRight() {
-		if(!this.blocked)
-			this.acceleration.x = this.settings.acceleration.x.max;
+		this.acceleration.x = this.settings.acceleration.x.max;
 		/*this.acceleration.x += this.viewMatrixNoElevation[0] * this.settings.acceleration.x.max;
 		this.acceleration.y += this.viewMatrixNoElevation[1] * this.settings.acceleration.x.max;
 		this.acceleration.z += this.viewMatrixNoElevation[2] * this.settings.acceleration.x.max;*/
@@ -80,8 +78,7 @@ class Camera {
 	 * Move the camera left
 	 */
 	moveLeft() {
-		if(!this.blocked)
-			this.acceleration.x = -this.settings.acceleration.x.max;
+		this.acceleration.x = -this.settings.acceleration.x.max;
 		/*this.acceleration.x += this.viewMatrixNoElevation[0] * -this.settings.acceleration.x.max;
 		this.acceleration.y += this.viewMatrixNoElevation[1] * -this.settings.acceleration.x.max;
 		this.acceleration.z += this.viewMatrixNoElevation[2] * -this.settings.acceleration.x.max;*/
@@ -92,8 +89,7 @@ class Camera {
 	 */
 	moveUp() {
 		if (this.DEBUG) {
-			if(!this.blocked)
-				this.acceleration.y = this.settings.acceleration.y.max;
+			this.acceleration.y = this.settings.acceleration.y.max;
 			/*this.acceleration.x += this.viewMatrixNoElevation[4] * this.settings.acceleration.y.max;
 			this.acceleration.y += this.viewMatrixNoElevation[5] * this.settings.acceleration.y.max;
 			this.acceleration.z += this.viewMatrixNoElevation[6] * this.settings.acceleration.y.max;*/
@@ -105,8 +101,7 @@ class Camera {
 	 */
 	moveDown() {
 		if (this.DEBUG) {
-			if(!this.blocked)
-				this.acceleration.y = -this.settings.acceleration.y.max;
+			this.acceleration.y = -this.settings.acceleration.y.max;
 			/*this.acceleration.x += this.viewMatrixNoElevation[4] * -this.settings.acceleration.y.max;
 			this.acceleration.y += this.viewMatrixNoElevation[5] * -this.settings.acceleration.y.max;
 			this.acceleration.z += this.viewMatrixNoElevation[6] * -this.settings.acceleration.y.max;*/
@@ -117,8 +112,7 @@ class Camera {
 	 * Move the camera forward
 	 */
 	moveForward() {
-		if(!this.blocked)
-			this.acceleration.z = -this.settings.acceleration.z.max;
+		this.acceleration.z = -this.settings.acceleration.z.max;
 		/*this.acceleration.x += this.viewMatrixNoElevation[8] * -this.settings.acceleration.z.max;
 		this.acceleration.y += this.viewMatrixNoElevation[9] * -this.settings.acceleration.z.max;
 		this.acceleration.z += this.viewMatrixNoElevation[10] * -this.settings.acceleration.z.max;*/
@@ -128,7 +122,6 @@ class Camera {
 	 * Move the camera backward
 	 */
 	moveBackward() {
-		if(!this.blocked)
 			this.acceleration.z = this.settings.acceleration.z.max;
 		/*this.acceleration.x += this.viewMatrixNoElevation[8] * this.settings.acceleration.z.max;
 		this.acceleration.y += this.viewMatrixNoElevation[9] * this.settings.acceleration.z.max;
@@ -138,22 +131,22 @@ class Camera {
 	/**
 	 * Rotate the camera right
 	 */
-	rotateRight() {if(!this.blocked) this.acceleration.angle = this.settings.acceleration.angle.max; };
+	rotateRight() { this.acceleration.angle = this.settings.acceleration.angle.max; };
 
 	/**
 	 * Rotate the camera left
 	 */
-	rotateLeft() {if(!this.blocked) this.acceleration.angle = -this.settings.acceleration.angle.max; };
+	rotateLeft() { this.acceleration.angle = -this.settings.acceleration.angle.max; };
 
 	/**
 	 * Rotate the camera up
 	 */
-	rotateUp() { if(!this.blocked) this.acceleration.elevation = this.settings.acceleration.elevation.max; };
+	rotateUp() {  this.acceleration.elevation = this.settings.acceleration.elevation.max; };
 
 	/**
 	 * Rotate the camera down
 	 */
-	rotateDown() { if(!this.blocked) this.acceleration.elevation = -this.settings.acceleration.elevation.max; };
+	rotateDown() {  this.acceleration.elevation = -this.settings.acceleration.elevation.max; };
 
 	/**
 	 * Set an arbitrary camera rotation (x-axis)
@@ -161,7 +154,6 @@ class Camera {
 	 * @param { number } value number of pixels equal to the deviation of the mouse from the central point of the x-axis (-inf, +inf) [pixel]
 	 */
 	setRotationX(value) {
-		if(!this.blocked){
 			// Smoothness
 			if (this.lastRotationX.length > this.settings.position.angle.mouseSmoothness)
 				this.lastRotationX.shift();
@@ -171,7 +163,6 @@ class Camera {
 				lastRotationSum += this.lastRotationX[i];
 			// New value
 			this.position.angle += ((lastRotationSum + value) / this.lastRotationX.length) * this.settings.position.angle.mouseReactivity;
-		}
 	}
 
 	/**
@@ -180,7 +171,6 @@ class Camera {
 	 * @param { number } value number of pixels equal to the deviation of the mouse from the central point of the y-axis (-inf, +inf) [pixel]
 	 */
 	setRotationY(value) {
-		if(!this.blocked){
 		// Limit control
 			if (this.DEBUG || (this.position.elevation < this.settings.position.elevation.max || value > 0) && (this.position.elevation > this.settings.position.elevation.min || value < 0)) {
 				// Smoothness
@@ -197,7 +187,6 @@ class Camera {
 					this.position.elevation = this.settings.position.elevation.max;
 				else if (this.position.elevation < this.settings.position.elevation.min)
 					this.position.elevation = this.settings.position.elevation.min;
-			}
 		}
 	}
 
@@ -256,11 +245,11 @@ class Camera {
 	 ******************/
 
 	resetAccelerations() {
-		this.acceleration.x = 0.0;
-		this.acceleration.y = 0.0;
-		this.acceleration.z = 0.0;
-		this.acceleration.angle = 0.0;
-		this.acceleration.elevation = 0.0;
+		this.acceleration.x = this.settings.acceleration.x.default;
+		this.acceleration.y = this.settings.acceleration.y.default;
+		this.acceleration.z = this.settings.acceleration.z.default;
+		this.acceleration.angle = this.settings.acceleration.angle.default;
+		this.acceleration.elevation = this.settings.acceleration.elevation.default;
 	}
 
 	computeAbsoluteSpeed() {

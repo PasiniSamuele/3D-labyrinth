@@ -3,7 +3,6 @@ precision mediump float;
 
 in vec3 v_normal;
 in vec3 v_surfaceToView;
-in vec3 v_position;
 
 uniform vec3 color;
 uniform vec3 diffuse;
@@ -11,15 +10,6 @@ uniform vec3 emissive;
 uniform vec3 specular;
 uniform float shininess;
 uniform float opacity;
-
-uniform vec3 u_lightPosition;
-uniform vec3 u_lightDirection;
-uniform vec3 u_lightColor;
-uniform float u_cutOff;
-uniform float u_outerCutOff;
-uniform float u_linDecay;
-uniform float u_constDecay;
-uniform float u_quadDecay;
 
 uniform vec3 u_ambientLightDay;
 uniform vec3 u_ambientLightNight;
