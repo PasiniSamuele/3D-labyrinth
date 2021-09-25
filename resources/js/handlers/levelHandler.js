@@ -36,7 +36,7 @@ class LevelHandler {
     finished(){
         let column = Math.floor(this.level.camera.position.x + this.offset.column);
 		let row = Math.floor(this.level.camera.position.z + this.offset.row);
-        if(this.level.labyrinth.structure2D[row][column] === mazeElement.FINAL_POS){
+        if(row >= 0 && this.level.labyrinth.structure2D.length > row && column >= 0 && this.level.labyrinth.structure2D[row][column] === mazeElement.FINAL_POS){
             return true;
         }
         return false;
