@@ -68,7 +68,7 @@ class SceneHandler {
 			this.interactionHandler = movementHandlerRet.interactionHandler;
 			this.level.character.light = movementHandlerRet.light;
 		}
-
+		
 		// Camera object idle
 		this.level.camera.idle(deltaTime);
 
@@ -140,6 +140,7 @@ class SceneHandler {
 	}
 
 	setupTakeMonkey() {
+		this.level.camera.setAbsoluteSpeed(0, 0, 0);
 		this.animations.takeMonkey.startTime = this.then;
 		this.animations.takeMonkey.endPosition = labyrinthUtils.getEndingPositionWithOffset(this.level.labyrinth.structure2D, 0.5);
 		this.animations.takeMonkey.duration = 1.0;
