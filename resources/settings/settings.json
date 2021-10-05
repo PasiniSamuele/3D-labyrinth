@@ -3,19 +3,22 @@
 	"settings": {
 		"levels": [
 			{
-				"level": "resources/settings/levels/urban.json"
+				"level": "resources/settings/levels/0_tutorial.json"
 			},
 			{
-				"level": "resources/settings/levels/snow.json"
+				"level": "resources/settings/levels/1_urban.json"
 			},
 			{
-				"level": "resources/settings/levels/interstellar.json"
+				"level": "resources/settings/levels/2_snow.json"
 			},
 			{
-				"level": "resources/settings/levels/volcano.json"
+				"level": "resources/settings/levels/3_interstellar.json"
 			},
 			{
-				"level": "resources/settings/levels/old-wild-west.json"
+				"level": "resources/settings/levels/4_volcano.json"
+			},
+			{
+				"level": "resources/settings/levels/5_old-wild-west.json"
 			}
 		]
 	}

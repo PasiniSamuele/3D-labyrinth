@@ -67,47 +67,6 @@
 		"skyboxes": [
 			{
 				"ambientLight": {
-					"r": 0.94,
-					"g": 0.97,
-					"b": 1.00,
-					"strength": 0.20
-				},
-				"directionalLight": {
-					"r": 1.00,
-					"g": 0.96,
-					"b": 0.62
-				},
-				"width":1024,
-				"height":1024,
-				"images": [
-					{
-						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
-						"url": "resources/assets/env/miramar/right.jpg"
-					},
-					{
-						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_X",
-						"url": "resources/assets/env/miramar/left.jpg"
-					},
-					{
-						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Y",
-						"url": "resources/assets/env/miramar/top.jpg"
-					},
-					{
-						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y",
-						"url": "resources/assets/env/miramar/bottom.jpg"
-					},
-					{
-						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Z",
-						"url": "resources/assets/env/miramar/back.jpg"
-					},
-					{
-						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
-						"url": "resources/assets/env/miramar/front.jpg"
-					}
-				]
-			},
-			{
-				"ambientLight": {
 					"r": 0.01,
 					"g": 0.02,
 					"b": 0.11,
@@ -144,6 +103,47 @@
 					{
 						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
 						"url": "resources/assets/env/grimmnight/front.jpg"
+					}
+				]
+			},
+			{
+				"ambientLight": {
+					"r": 0.94,
+					"g": 0.97,
+					"b": 1.00,
+					"strength": 0.20
+				},
+				"directionalLight": {
+					"r": 1.00,
+					"g": 0.96,
+					"b": 0.62
+				},
+				"width":1024,
+				"height":1024,
+				"images": [
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_X",
+						"url": "resources/assets/env/miramar/right.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_X",
+						"url": "resources/assets/env/miramar/left.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Y",
+						"url": "resources/assets/env/miramar/top.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Y",
+						"url": "resources/assets/env/miramar/bottom.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_POSITIVE_Z",
+						"url": "resources/assets/env/miramar/back.jpg"
+					},
+					{
+						"target": "gl.TEXTURE_CUBE_MAP_NEGATIVE_Z",
+						"url": "resources/assets/env/miramar/front.jpg"
 					}
 				]
 			}
