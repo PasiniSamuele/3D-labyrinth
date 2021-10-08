@@ -226,7 +226,7 @@
 			"cutOff":25,
 			"outerCutOff":35,
 			"ignition": {
-				"default": false,
+				"default": true,
 				"switchTime": 0.5
 			},
 			"offset":{
