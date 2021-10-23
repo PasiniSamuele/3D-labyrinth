@@ -35,14 +35,16 @@
 				"normal": "resources/assets/textures/space-cruiser-panels2-ue/Normal.png",
 				"ao": "resources/assets/textures/space-cruiser-panels2-ue/ao.png",
 				"metallic": "resources/assets/textures/space-cruiser-panels2-ue/metallic.png",
-				"roughness": "resources/assets/textures/space-cruiser-panels2-ue/roughness.png"
+				"roughness": "resources/assets/textures/space-cruiser-panels2-ue/roughness.png",
+				"shadows": "resources/assets/ao/ao.png" 
 			},
 			"wall": {
 				"albedo": "resources/assets/textures/space-cruiser-panels1-ue/albedo.png",
 				"normal": "resources/assets/textures/space-cruiser-panels1-ue/normal.png",
 				"ao": "resources/assets/textures/space-cruiser-panels1-ue/ao.png",
 				"metallic": "resources/assets/textures/space-cruiser-panels1-ue/metallic.png",
-				"roughness": "resources/assets/textures/space-cruiser-panels1-ue/roughness.png"
+				"roughness": "resources/assets/textures/space-cruiser-panels1-ue/roughness.png",
+				"shadows": "resources/assets/ao/ao.png" 
 			}
 		},
 		"random": {

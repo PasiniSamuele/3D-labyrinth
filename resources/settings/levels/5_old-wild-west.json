@@ -35,14 +35,16 @@
 				"normal": "resources/assets/textures/haystack/Normal.png",
 				"ao": "resources/assets/textures/haystack/ao.png",
 				"metallic": "resources/assets/textures/haystack/metallic.png",
-				"roughness": "resources/assets/textures/haystack/roughness.png"
+				"roughness": "resources/assets/textures/haystack/roughness.png",
+				"shadows": "resources/assets/ao/ao.png" 
 			},
 			"wall": {
 				"albedo": "resources/assets/textures/woodframe1-ue/albedo.png",
 				"normal": "resources/assets/textures/woodframe1-ue/normal.png",
 				"ao": "resources/assets/textures/woodframe1-ue/ao.png",
 				"metallic": "resources/assets/textures/woodframe1-ue/metallic.png",
-				"roughness": "resources/assets/textures/woodframe1-ue/roughness.png"
+				"roughness": "resources/assets/textures/woodframe1-ue/roughness.png",
+				"shadows": "resources/assets/ao/ao.png" 
 			}
 		},
 		"random": {

@@ -35,14 +35,16 @@
 				"normal": "resources/assets/textures/gravel/normal.png",
 				"ao": "resources/assets/textures/gravel/ao.png",
 				"metallic": "resources/assets/textures/gravel/metallic.png",
-				"roughness": "resources/assets/textures/gravel/roughness.png"
+				"roughness": "resources/assets/textures/gravel/roughness.png",
+				"shadows": "resources/assets/ao/ao.png" 
 			},
 			"wall": {
 				"albedo": "resources/assets/textures/red-bricks2-bl/albedo.png",
 				"normal": "resources/assets/textures/red-bricks2-bl/normal.png",
 				"ao": "resources/assets/textures/red-bricks2-bl/ao.png",
 				"metallic": "resources/assets/textures/red-bricks2-bl/metallic.png",
-				"roughness": "resources/assets/textures/red-bricks2-bl/roughness.png"
+				"roughness": "resources/assets/textures/red-bricks2-bl/roughness.png",
+				"shadows": "resources/assets/ao/ao.png" 
 			}
 		},
 		"random": {
