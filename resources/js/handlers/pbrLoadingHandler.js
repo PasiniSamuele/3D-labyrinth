@@ -111,8 +111,10 @@ class PbrLoadingHandler {
 			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++,
+			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++)
 		pbrTexture.wall = new PbrTexture(levelSettings.structure.textures.wall,
+			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++,
 			gl.TEXTURE0 + index++,

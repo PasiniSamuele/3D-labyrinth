@@ -3,6 +3,7 @@ precision mediump float;
 
 //from vs
 in vec2 fragTexCoord;
+in vec2 fragShadowUv;
 in vec3 fragVertPosition;
 in vec3 fragNormal;
 
@@ -16,6 +17,7 @@ uniform sampler2D normalMap;
 uniform sampler2D metallicMap;
 uniform sampler2D roughnessMap;
 uniform sampler2D aoMap;
+uniform sampler2D shadows;
 
 //flashlight
 uniform vec3 lightPosition;
@@ -203,6 +205,8 @@ void main(){
     float metallic  = texture(metallicMap, fragTexCoord).r;
     float roughness = texture(roughnessMap, fragTexCoord).r;
     float ao        = texture(aoMap, fragTexCoord).r;
+    float sh        = texture(shadows, fragShadowUv).r;
+
 
     vec3 N = normal;
     vec3 V = normalize(camPos - fragVertPosition);
@@ -238,6 +242,7 @@ void main(){
     // gamma correct
     color = pow(color, vec3(1.0/2.2)); 
 
-   outColor = vec4(color , 1.0);
+  // outColor = vec4(color , 1.0);
+  outColor = vec4(sh, sh, sh, 1.0);
     // outColor = vec4(1.0, 0.0, 0.0 , 1.0);
 }

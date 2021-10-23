@@ -97,6 +97,10 @@ class PbrLabyrinthElement {
 		gl.activeTexture(this.texture.aoSlot);
 		gl.bindTexture(gl.TEXTURE_2D, this.texture.ao);
 		gl.uniform1i(this.program.aoMap, utils.getTextureSlotOffset(gl, this.texture.aoSlot));
+
+		gl.bindTexture(gl.TEXTURE_2D, this.texture.shadows);
+		gl.uniform1i(this.program.shadows, utils.getTextureSlotOffset(gl, this.texture.shadowSlot));
+
 		gl.uniform3f(this.program.lightPosition, light.position.x, light.position.y, light.position.z);
 
 		if (light.ignition.value)
@@ -128,6 +132,7 @@ class PbrLabyrinthElement {
 		//VERTEX
 
 		this.program.texCoord = gl.getAttribLocation(this.program, 'texCoord');
+		this.program.shadowUv = gl.getAttribLocation(this.program, 'shadowUv');
 		this.program.normal = gl.getAttribLocation(this.program, 'normal');
 		this.program.projMatrix = gl.getUniformLocation(this.program, 'projMatrix');
 		this.program.worldMatrix = gl.getUniformLocation(this.program, 'worldMatrix');
@@ -142,6 +147,7 @@ class PbrLabyrinthElement {
 		this.program.metallicMap = gl.getUniformLocation(this.program, 'metallicMap');
 		this.program.roughnessMap = gl.getUniformLocation(this.program, 'roughnessMap');
 		this.program.aoMap = gl.getUniformLocation(this.program, 'aoMap');
+		this.program.shadows = gl.getUniformLocation(this.program, 'shadows');
 		this.program.lightPosition = gl.getUniformLocation(this.program, 'lightPosition');
 		this.program.lightColor = gl.getUniformLocation(this.program, 'lightColor');
 		this.program.cutOff = gl.getUniformLocation(this.program, 'cutOff');
