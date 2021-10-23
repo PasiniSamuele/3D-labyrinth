@@ -72,6 +72,7 @@ class PbrFloor extends PbrLabyrinthElement {
 		this.colours = floor3D[2];
 		this.normals = floor3D[3];
 		this.uvs = floor3D[4];
+		this.shadows = floor3D[5];
 	}
 
 

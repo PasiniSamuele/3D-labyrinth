@@ -37,6 +37,83 @@ const vertPosition = {
     TOP_RIGHT: 3
 };
 
+const shadowTextures = {
+    BLANK: {
+        u: 0.0,
+        v: 0.75
+    },
+    B: {
+        u: 0.25,
+        v: 0.75
+    },
+    BR: {
+        u: 0.5,
+        v: 0.75
+    },
+    BL: {
+        u: 0.75,
+        v: 0.75
+    },
+    TBR:{
+        u: 0.0,
+        v: 0.5
+    },
+    TB: {
+        u: 0.25,
+        v: 0.5
+    },
+    TBL: {
+        u: 0.5,
+        v: 0.5
+    },
+    R: {
+        u: 0.75,
+        v: 0.5
+    },
+    LR: {
+        u: 0.0,
+        v: 0.25
+    },
+    L: {
+        u: 0.25,
+        v: 0.25
+    },
+    T: {
+        u: 0.5,
+        v: 0.25
+    },
+    TR: {
+        u: 0.75,
+        v: 0.25
+    },
+    TL: {
+        u: 0.0,
+        v: 0.0
+    },
+    TLR: {
+        u: 0.25,
+        v: 0.0
+    },
+    BLR: {
+        u: 0.5,
+        v: 0.0
+    },
+    TBLR: {
+        u: 0.75,
+        v: 0.0
+    }
+};
+
+let getShadowPosition = function(Tcond, Bcond, Lcond, Rcond){
+    let shadowArray = [shadowTextures.BLANK, shadowTextures.R, shadowTextures.L, shadowTextures.LR, 
+        shadowTextures.B, shadowTextures.BR, shadowTextures.BL, shadowTextures.BLR, 
+        shadowTextures.T, shadowTextures.TR, shadowTextures.TL, shadowTextures.TLR,
+        shadowTextures.TB, shadowTextures.TBR, shadowTextures.TBL, shadowTextures.TBLR];
+    
+    let pos = (Tcond ? 8 : 0) + (Bcond ? 4 : 0) + (Lcond ? 2 : 0) + (Rcond ? 1 : 0);
+    return shadowArray[pos];
+}
+
 let computeColor = function(material){
     switch(material){
         case mazeElement.FLOOR:
@@ -73,6 +150,19 @@ let computeNormals = function(direction){
             return [1.0, 0.0, 0.0];
         case mazeDirection.FLOOR:
             return [0.0, 1.0, 0.0];
+    }
+}
+
+let computeShadows = function(corner, baseUV){
+    switch(corner){
+        case vertPosition.BOTTOM_LEFT:
+            return [baseUV.u, baseUV.v];
+        case vertPosition.BOTTOM_RIGHT:
+            return [baseUV.u+0.25, baseUV.v];
+        case vertPosition.TOP_LEFT:
+            return [baseUV.u, baseUV.v+0.25];
+        case vertPosition.TOP_RIGHT:
+            return [baseUV.u+0.25, baseUV.v+0.25];
     }
 }
 
@@ -189,8 +279,9 @@ var labyrinthUtils = {
         let uvs = [];
         let icount = 0;
         let colours = [];
+        let shadows = [];
 
-        let computeVertex = function(x,y,z,dir,uv,mat){
+        let computeVertex = function(x,y,z,dir,uv,mat,shad){
 
             colours = colours.concat(computeColor(mat));
         
@@ -202,6 +293,7 @@ var labyrinthUtils = {
         
             normals = normals.concat(computeNormals(dir));
             uvs = uvs.concat(computeUV(uv));
+            shadows = shadows.concat(computeShadows(uv, shad));
         
             return vertex;
         }
@@ -225,11 +317,17 @@ var labyrinthUtils = {
             for(let j = 0; j < X_SIZE; j++){
                 if(!mazeElement.BLOCKS.includes(labyrinth[i][j])){
                     if(DEBUG_FLOOR){
+                        let shadow = getShadowPosition(
+                            (i == 0 ? true : mazeElement.BLOCKS.includes(labyrinth[i-1][j])),
+                            (i == labyrinth.length-1 ? true : mazeElement.BLOCKS.includes(labyrinth[i+1][j])),
+                            (j == 0 ? true : mazeElement.BLOCKS.includes(labyrinth[i][j-1])),
+                            (j == labyrinth[0].length-1 ? true : mazeElement.BLOCKS.includes(labyrinth[i][j+1]))
+                        );
                         vertices.push(
-                            computeVertex(j, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_LEFT, labyrinth[i][j]),
-                            computeVertex(j, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_LEFT, labyrinth[i][j]), 
-                            computeVertex(j+1, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_RIGHT, labyrinth[i][j]),
-                            computeVertex(j+1, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_RIGHT, labyrinth[i][j])
+                            computeVertex(j, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_LEFT, labyrinth[i][j], shadow),
+                            computeVertex(j, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_LEFT, labyrinth[i][j], shadow), 
+                            computeVertex(j+1, MIN_Y, i+1, mazeDirection.FLOOR, vertPosition.BOTTOM_RIGHT, labyrinth[i][j], shadow),
+                            computeVertex(j+1, MIN_Y, i, mazeDirection.FLOOR, vertPosition.TOP_RIGHT, labyrinth[i][j], shadow)
                         );
                         incrementIndexes();
                     }
@@ -237,8 +335,8 @@ var labyrinthUtils = {
             }
         }
 
-        if(VERTICES2D) return [vertices, [].concat(indexes), colours, normals, uvs];
-        else return [[].concat.apply([],vertices), [].concat(indexes), colours, normals, uvs];
+        if(VERTICES2D) return [vertices, [].concat(indexes), colours, normals, uvs, shadows];
+        else return [[].concat.apply([],vertices), [].concat(indexes), colours, normals, uvs, shadows];
     },
 
     /**
@@ -278,8 +376,9 @@ var labyrinthUtils = {
         let uvs = [];
         let icount = 0;
         let colours = [];
+        let shadows = [];
 
-        let computeVertex = function(x,y,z,dir,uv,mat){
+        let computeVertex = function(x,y,z,dir,uv,mat,shad){
 
             colours = colours.concat(computeColor(mat));
         
@@ -291,6 +390,7 @@ var labyrinthUtils = {
         
             normals = normals.concat(computeNormals(dir));
             uvs = uvs.concat(computeUV(uv));
+            shadows = shadows.concat(computeShadows(uv, shad));
         
             return vertex;
         }
@@ -319,44 +419,48 @@ var labyrinthUtils = {
                 if(!mazeElement.BLOCKS.includes(labyrinth[i][j])){
                     //FRONT
                     if(DEBUG_FRONT && ((i-1 < 0) ? true : mazeElement.BLOCKS.includes(labyrinth[i-1][j]))) {
+                        let shadow = shadowTextures.B;
                         vertices.push(
-                            computeVertex(j, MAX_Y, i, mazeDirection.FRONT, vertPosition.TOP_LEFT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j]),
-                            computeVertex(j, MIN_Y, i, mazeDirection.FRONT, vertPosition.BOTTOM_LEFT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j]),
-                            computeVertex(j+1, MIN_Y, i, mazeDirection.FRONT, vertPosition.BOTTOM_RIGHT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j]),
-                            computeVertex(j+1, MAX_Y, i, mazeDirection.FRONT, vertPosition.TOP_RIGHT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j])
+                            computeVertex(j, MAX_Y, i, mazeDirection.FRONT, vertPosition.TOP_LEFT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j], shadow),
+                            computeVertex(j, MIN_Y, i, mazeDirection.FRONT, vertPosition.BOTTOM_LEFT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j], shadow),
+                            computeVertex(j+1, MIN_Y, i, mazeDirection.FRONT, vertPosition.BOTTOM_RIGHT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j], shadow),
+                            computeVertex(j+1, MAX_Y, i, mazeDirection.FRONT, vertPosition.TOP_RIGHT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j], shadow)
                         );
                         incrementIndexes();
                     }
 
                     //RIGHT
                     if(DEBUG_RIGHT && ((j+1 >= X_SIZE) ? true : mazeElement.BLOCKS.includes(labyrinth[i][j+1]))){
+                        let shadow = shadowTextures.B;
                         vertices.push(
-                            computeVertex(j+1, MAX_Y, i, mazeDirection.RIGHT, vertPosition.TOP_LEFT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1]),
-                            computeVertex(j+1, MIN_Y, i, mazeDirection.RIGHT, vertPosition.BOTTOM_LEFT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1]),
-                            computeVertex(j+1, MIN_Y, i+1, mazeDirection.RIGHT, vertPosition.BOTTOM_RIGHT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1]),
-                            computeVertex(j+1, MAX_Y, i+1, mazeDirection.RIGHT, vertPosition.TOP_RIGHT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1])
+                            computeVertex(j+1, MAX_Y, i, mazeDirection.RIGHT, vertPosition.TOP_LEFT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1], shadow),
+                            computeVertex(j+1, MIN_Y, i, mazeDirection.RIGHT, vertPosition.BOTTOM_LEFT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1], shadow),
+                            computeVertex(j+1, MIN_Y, i+1, mazeDirection.RIGHT, vertPosition.BOTTOM_RIGHT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1], shadow),
+                            computeVertex(j+1, MAX_Y, i+1, mazeDirection.RIGHT, vertPosition.TOP_RIGHT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1], shadow)
                         );
                         incrementIndexes();
                     }
 
                     //BACK
                     if(DEBUG_BACK && ((i+1 >= Z_SIZE) ? true : mazeElement.BLOCKS.includes(labyrinth[i+1][j]))){
+                        let shadow = shadowTextures.B;
                         vertices.push(
-                            computeVertex(j+1, MAX_Y, i+1, mazeDirection.BACK, vertPosition.TOP_LEFT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j]),
-                            computeVertex(j+1, MIN_Y, i+1, mazeDirection.BACK, vertPosition.BOTTOM_LEFT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j]),
-                            computeVertex(j, MIN_Y, i+1, mazeDirection.BACK, vertPosition.BOTTOM_RIGHT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j]),
-                            computeVertex(j, MAX_Y, i+1, mazeDirection.BACK, vertPosition.TOP_RIGHT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j])
+                            computeVertex(j+1, MAX_Y, i+1, mazeDirection.BACK, vertPosition.TOP_LEFT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j], shadow),
+                            computeVertex(j+1, MIN_Y, i+1, mazeDirection.BACK, vertPosition.BOTTOM_LEFT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j], shadow),
+                            computeVertex(j, MIN_Y, i+1, mazeDirection.BACK, vertPosition.BOTTOM_RIGHT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j], shadow),
+                            computeVertex(j, MAX_Y, i+1, mazeDirection.BACK, vertPosition.TOP_RIGHT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j], shadow)
                         );
                         incrementIndexes();
                     }
 
                     //LEFT
                     if(DEBUG_LEFT && ((j-1 < 0) ? true : mazeElement.BLOCKS.includes(labyrinth[i][j-1]))){
+                        let shadow = shadowTextures.B;
                         vertices.push(
-                            computeVertex(j, MAX_Y, i+1, mazeDirection.LEFT, vertPosition.TOP_LEFT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
-                            computeVertex(j, MIN_Y, i+1, mazeDirection.LEFT, vertPosition.BOTTOM_LEFT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
-                            computeVertex(j, MIN_Y, i, mazeDirection.LEFT, vertPosition.BOTTOM_RIGHT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1]),
-                            computeVertex(j, MAX_Y, i, mazeDirection.LEFT, vertPosition.TOP_RIGHT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1])
+                            computeVertex(j, MAX_Y, i+1, mazeDirection.LEFT, vertPosition.TOP_LEFT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1], shadow),
+                            computeVertex(j, MIN_Y, i+1, mazeDirection.LEFT, vertPosition.BOTTOM_LEFT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1], shadow),
+                            computeVertex(j, MIN_Y, i, mazeDirection.LEFT, vertPosition.BOTTOM_RIGHT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1], shadow),
+                            computeVertex(j, MAX_Y, i, mazeDirection.LEFT, vertPosition.TOP_RIGHT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1], shadow)
                         );
                         incrementIndexes();
                     }
@@ -364,8 +468,8 @@ var labyrinthUtils = {
             }
         }
 
-        if(VERTICES2D) return [vertices, [].concat(indexes), colours, normals, uvs];
-        else return [[].concat.apply([],vertices), [].concat(indexes), colours, normals, uvs];
+        if(VERTICES2D) return [vertices, [].concat(indexes), colours, normals, uvs, shadows];
+        else return [[].concat.apply([],vertices), [].concat(indexes), colours, normals, uvs, shadows];
     },
 
     /**

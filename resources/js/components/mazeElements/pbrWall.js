@@ -87,6 +87,7 @@ class PbrWall extends PbrLabyrinthElement {
 		this.colours = walls3D[2];
 		this.normals = walls3D[3];
 		this.uvs = walls3D[4];
+		this.shadows = walls3D[5];
 	}
 
 
