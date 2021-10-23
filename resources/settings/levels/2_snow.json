@@ -36,7 +36,7 @@
 				"ao": "resources/assets/textures/snowcoveredpath_ue/ao.png",
 				"metallic": "resources/assets/textures/snowcoveredpath_ue/metallic.png",
 				"roughness": "resources/assets/textures/snowcoveredpath_ue/roughness.png",
-				"shadows": "resources/assets/ao/ao.png" 
+				"shadows": "resources/assets/ao/ao.jpg" 
 			},
 			"wall": {
 				"albedo": "resources/assets/textures/rock-snow-ice1-2k-ue/albedo.png",
@@ -44,7 +44,7 @@
 				"ao": "resources/assets/textures/rock-snow-ice1-2k-ue/ao.png",
 				"metallic": "resources/assets/textures/rock-snow-ice1-2k-ue/metallic.png",
 				"roughness": "resources/assets/textures/rock-snow-ice1-2k-ue/roughness.png",
-				"shadows": "resources/assets/ao/ao.png" 
+				"shadows": "resources/assets/ao/ao.jpg" 
 			}
 		},
 		"random": {

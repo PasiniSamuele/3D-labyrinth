@@ -36,7 +36,7 @@
 				"ao": "resources/assets/textures/bog/ao.png",
 				"metallic": "resources/assets/textures/bog/metallic.png",
 				"roughness": "resources/assets/textures/bog/roughness.png",
-				"shadows": "resources/assets/ao/ao.png" 
+				"shadows": "resources/assets/ao/ao.jpg" 
 			},
 			"wall": {
 				"albedo": "resources/assets/textures/wet-cave-wall/albedo.png",
@@ -44,7 +44,7 @@
 				"ao": "resources/assets/textures/wet-cave-wall/ao.png",
 				"metallic": "resources/assets/textures/wet-cave-wall/metallic.png",
 				"roughness": "resources/assets/textures/wet-cave-wall/roughness.png",
-				"shadows": "resources/assets/ao/ao.png" 
+				"shadows": "resources/assets/ao/ao.jpg" 
 			}
 		},
 		"random": {

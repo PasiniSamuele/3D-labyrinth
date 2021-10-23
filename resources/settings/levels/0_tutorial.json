@@ -36,7 +36,7 @@
 				"ao": "resources/assets/textures/gravel/ao.png",
 				"metallic": "resources/assets/textures/gravel/metallic.png",
 				"roughness": "resources/assets/textures/gravel/roughness.png",
-				"shadows": "resources/assets/ao/ao.png" 
+				"shadows": "resources/assets/ao/ao.jpg" 
 			},
 			"wall": {
 				"albedo": "resources/assets/textures/red-bricks2-bl/albedo.png",
@@ -44,7 +44,7 @@
 				"ao": "resources/assets/textures/red-bricks2-bl/ao.png",
 				"metallic": "resources/assets/textures/red-bricks2-bl/metallic.png",
 				"roughness": "resources/assets/textures/red-bricks2-bl/roughness.png",
-				"shadows": "resources/assets/ao/ao.png" 
+				"shadows": "resources/assets/ao/ao.jpg" 
 			}
 		},
 		"random": {

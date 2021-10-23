@@ -36,7 +36,7 @@
 				"ao": "resources/assets/textures/metal-ventilation/ao.png",
 				"metallic": "resources/assets/textures/metal-ventilation/metallic.png",
 				"roughness": "resources/assets/textures/metal-ventilation/roughness.png",
-				"shadows": "resources/assets/ao/ao.png" 
+				"shadows": "resources/assets/ao/ao.jpg" 
 			},
 			"wall": {
 				"albedo": "resources/assets/textures/lava-rock/albedo.png",
@@ -44,7 +44,7 @@
 				"ao": "resources/assets/textures/lava-rock/ao.png",
 				"metallic": "resources/assets/textures/lava-rock/metallic.png",
 				"roughness": "resources/assets/textures/lava-rock/roughness.png",
-				"shadows": "resources/assets/ao/ao.png" 
+				"shadows": "resources/assets/ao/ao.jpg" 
 			}
 		},
 		"random": {
