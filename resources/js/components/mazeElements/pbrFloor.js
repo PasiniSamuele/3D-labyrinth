@@ -63,6 +63,19 @@ class PbrFloor extends PbrLabyrinthElement {
 			3 * Float32Array.BYTES_PER_ELEMENT,
 			0 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
 		);
+
+		var shadowBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, shadowBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.shadows), gl.STATIC_DRAW);
+		gl.enableVertexAttribArray(this.program.shadowUv);
+		gl.vertexAttribPointer(
+			this.program.shadowUv,
+			2,
+			gl.FLOAT,
+			gl.FALSE,
+			2 * Float32Array.BYTES_PER_ELEMENT,
+			0 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
+		);
 	}
 
 	loadComponent() {

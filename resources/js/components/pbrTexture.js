@@ -16,13 +16,14 @@
 	 * @param {*} roughnessSlot 
 	 * @param {*} aoSlot 
 	 */
-    constructor(imageUrls, albedoSlot, normalSlot, metallicSlot, roughnessSlot, aoSlot){
+    constructor(imageUrls, albedoSlot, normalSlot, metallicSlot, roughnessSlot, aoSlot, shadowSlot){
         this.imageUrls = imageUrls;
         this.albedoSlot = albedoSlot;
         this.normalSlot = normalSlot;
         this.metallicSlot = metallicSlot;
         this.roughnessSlot = roughnessSlot;
         this.aoSlot = aoSlot;
+        this.shadowSlot = shadowSlot;
     }
 
 	/**
@@ -34,6 +35,7 @@
         this.metallic =this.loadTexture(this.metallicSlot, this.imageUrls.metallic);
         this.roughness =this.loadTexture(this.roughnessSlot, this.imageUrls.roughness);
         this.ao =this.loadTexture(this.aoSlot, this.imageUrls.ao);
+        this.shadows =this.loadTexture(this.aoSlot, this.imageUrls.shadows);
     }
 
 	/**
