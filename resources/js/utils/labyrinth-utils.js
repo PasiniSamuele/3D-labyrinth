@@ -413,13 +413,17 @@ var labyrinthUtils = {
         //
         //  COMPUTE WALLS
         //
-
         for(let i = 0; i < Z_SIZE; i++){
             for(let j = 0; j < X_SIZE; j++){
                 if(!mazeElement.BLOCKS.includes(labyrinth[i][j])){
                     //FRONT
                     if(DEBUG_FRONT && ((i-1 < 0) ? true : mazeElement.BLOCKS.includes(labyrinth[i-1][j]))) {
-                        let shadow = shadowTextures.B;
+                        let shadow = getShadowPosition(
+                            false,
+                            true,
+                            (j == 0 ? true : mazeElement.BLOCKS.includes(labyrinth[i][j-1])),
+                            (j == labyrinth[0].length-1 ? true : mazeElement.BLOCKS.includes(labyrinth[i][j+1]))
+                        );
                         vertices.push(
                             computeVertex(j, MAX_Y, i, mazeDirection.FRONT, vertPosition.TOP_LEFT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j], shadow),
                             computeVertex(j, MIN_Y, i, mazeDirection.FRONT, vertPosition.BOTTOM_LEFT, (i-1 < 0) ? mazeElement.WALL : labyrinth[i-1][j], shadow),
@@ -431,7 +435,12 @@ var labyrinthUtils = {
 
                     //RIGHT
                     if(DEBUG_RIGHT && ((j+1 >= X_SIZE) ? true : mazeElement.BLOCKS.includes(labyrinth[i][j+1]))){
-                        let shadow = shadowTextures.B;
+                        let shadow = getShadowPosition(
+                            false,
+                            true,
+                            (i == 0 ? true : mazeElement.BLOCKS.includes(labyrinth[i-1][j])),
+                            (i == labyrinth.length-1 ? true : mazeElement.BLOCKS.includes(labyrinth[i+1][j]))
+                        );
                         vertices.push(
                             computeVertex(j+1, MAX_Y, i, mazeDirection.RIGHT, vertPosition.TOP_LEFT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1], shadow),
                             computeVertex(j+1, MIN_Y, i, mazeDirection.RIGHT, vertPosition.BOTTOM_LEFT, (j+1 >= X_SIZE) ? mazeElement.WALL : labyrinth[i][j+1], shadow),
@@ -443,7 +452,12 @@ var labyrinthUtils = {
 
                     //BACK
                     if(DEBUG_BACK && ((i+1 >= Z_SIZE) ? true : mazeElement.BLOCKS.includes(labyrinth[i+1][j]))){
-                        let shadow = shadowTextures.B;
+                        let shadow = getShadowPosition(
+                            false,
+                            true,
+                            (j == labyrinth[0].length-1 ? true : mazeElement.BLOCKS.includes(labyrinth[i][j+1])),
+                            (j == 0 ? true : mazeElement.BLOCKS.includes(labyrinth[i][j-1]))
+                        );
                         vertices.push(
                             computeVertex(j+1, MAX_Y, i+1, mazeDirection.BACK, vertPosition.TOP_LEFT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j], shadow),
                             computeVertex(j+1, MIN_Y, i+1, mazeDirection.BACK, vertPosition.BOTTOM_LEFT, (i+1 >= Z_SIZE) ? mazeElement.WALL : labyrinth[i+1][j], shadow),
@@ -455,7 +469,12 @@ var labyrinthUtils = {
 
                     //LEFT
                     if(DEBUG_LEFT && ((j-1 < 0) ? true : mazeElement.BLOCKS.includes(labyrinth[i][j-1]))){
-                        let shadow = shadowTextures.B;
+                        let shadow = getShadowPosition(
+                            false,
+                            true,
+                            (i == labyrinth.length-1 ? true : mazeElement.BLOCKS.includes(labyrinth[i+1][j])),
+                            (i == 0 ? true : mazeElement.BLOCKS.includes(labyrinth[i-1][j]))
+                        );
                         vertices.push(
                             computeVertex(j, MAX_Y, i+1, mazeDirection.LEFT, vertPosition.TOP_LEFT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1], shadow),
                             computeVertex(j, MIN_Y, i+1, mazeDirection.LEFT, vertPosition.BOTTOM_LEFT, (j-1 < 0) ? mazeElement.WALL : labyrinth[i][j-1], shadow),
