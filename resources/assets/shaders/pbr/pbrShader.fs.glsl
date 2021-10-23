@@ -205,7 +205,7 @@ void main(){
     float metallic  = texture(metallicMap, fragTexCoord).r;
     float roughness = texture(roughnessMap, fragTexCoord).r;
     float ao        = texture(aoMap, fragTexCoord).r;
-    float sh        = texture(shadows, fragShadowUv).r;
+    vec4 sh        = texture(shadows, fragShadowUv);
 
 
     vec3 N = normal;
@@ -243,6 +243,6 @@ void main(){
     color = pow(color, vec3(1.0/2.2)); 
 
   // outColor = vec4(color , 1.0);
-  outColor = vec4(sh, sh, sh, 1.0);
+  outColor = vec4(sh);
     // outColor = vec4(1.0, 0.0, 0.0 , 1.0);
 }

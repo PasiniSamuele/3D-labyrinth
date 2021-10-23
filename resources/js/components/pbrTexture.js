@@ -35,7 +35,7 @@
         this.metallic =this.loadTexture(this.metallicSlot, this.imageUrls.metallic);
         this.roughness =this.loadTexture(this.roughnessSlot, this.imageUrls.roughness);
         this.ao =this.loadTexture(this.aoSlot, this.imageUrls.ao);
-        this.shadows =this.loadTexture(this.aoSlot, this.imageUrls.shadows);
+        this.shadows =this.loadTexture(this.shadowSlot, this.imageUrls.shadows);
     }
 
 	/**
