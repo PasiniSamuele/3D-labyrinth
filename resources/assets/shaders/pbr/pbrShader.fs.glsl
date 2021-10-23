@@ -205,7 +205,7 @@ void main(){
     float metallic  = texture(metallicMap, fragTexCoord).r;
     float roughness = texture(roughnessMap, fragTexCoord).r;
     float ao        = texture(aoMap, fragTexCoord).r;
-    vec4 sh        = texture(shadows, fragShadowUv);
+    float sh        = texture(shadows, fragShadowUv).r;
 
 
     vec3 N = normal;
@@ -232,9 +232,9 @@ void main(){
 
 
     float ambientStrength = mix(ambientStrengthNight,ambientStrengthDay,(cos(radians_over_time)+1.0)/2.0);
-    vec3 ambient =  mix(ambientLightNight,ambientLightDay,(cos(radians_over_time)+1.0)/2.0)* albedo * ao * ambientStrength;
+    vec3 ambient =  mix(ambientLightNight,ambientLightDay,(cos(radians_over_time)+1.0)/2.0)* albedo* ao * ambientStrength;
     
-    vec3 color = ambient +
+    vec3 color = ambient  +
      Lo;
 
     // HDR tonemapping
@@ -242,7 +242,6 @@ void main(){
     // gamma correct
     color = pow(color, vec3(1.0/2.2)); 
 
-  // outColor = vec4(color , 1.0);
-  outColor = vec4(sh);
-    // outColor = vec4(1.0, 0.0, 0.0 , 1.0);
+    outColor = vec4(color , 1.0);
+     //outColor = vec4(sh, 0.0, 0.0 , 1.0);
 }
