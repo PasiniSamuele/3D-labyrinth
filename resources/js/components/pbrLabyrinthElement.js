@@ -98,6 +98,7 @@ class PbrLabyrinthElement {
 		gl.bindTexture(gl.TEXTURE_2D, this.texture.ao);
 		gl.uniform1i(this.program.aoMap, utils.getTextureSlotOffset(gl, this.texture.aoSlot));
 
+		gl.activeTexture(this.texture.shadowSlot);
 		gl.bindTexture(gl.TEXTURE_2D, this.texture.shadows);
 		gl.uniform1i(this.program.shadows, utils.getTextureSlotOffset(gl, this.texture.shadowSlot));
 
