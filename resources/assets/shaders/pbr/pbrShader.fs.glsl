@@ -232,7 +232,7 @@ void main(){
 
 
     float ambientStrength = mix(ambientStrengthNight,ambientStrengthDay,(cos(radians_over_time)+1.0)/2.0);
-    vec3 ambient =  mix(ambientLightNight,ambientLightDay,(cos(radians_over_time)+1.0)/2.0)* albedo* ao * ambientStrength;
+    vec3 ambient =  mix(ambientLightNight,ambientLightDay,(cos(radians_over_time)+1.0)/2.0)* albedo * ao * ambientStrength;
     
     vec3 color = ambient  +
      Lo;
