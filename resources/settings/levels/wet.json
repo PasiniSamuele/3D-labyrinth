@@ -154,7 +154,7 @@
 	},
 	"character": {
 		"url": {
-			"obj": "resources/assets/models/Flashlight.obj",
+			"obj": "resources/assets/models/Flashlight_Idle2.obj",
 			"mtl": "resources/assets/models/Flashlight.mtl"
 		},
 		"shaders": {
